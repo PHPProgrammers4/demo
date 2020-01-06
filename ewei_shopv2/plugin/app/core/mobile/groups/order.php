@@ -1,16 +1,9 @@
 <?php
 
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class Order_EweiShopV2Page extends AppMobilePage
 {
@@ -72,7 +65,7 @@ class Order_EweiShopV2Page extends AppMobilePage
             $orders[$key]['amount'] = $value['price'] + $value['freight'] - $value['creditmoney'];
         }
         $orders = set_medias($orders, 'thumb');
-        return app_json(array('list'=>$orders,'pagesize'=>$psize,'total'=>$total));
+        app_json(array('list'=>$orders,'pagesize'=>$psize,'total'=>$total));
 
     }
 
@@ -222,7 +215,7 @@ class Order_EweiShopV2Page extends AppMobilePage
             $goodRefund = true;
         }
 
-        return app_json( array(
+        app_json( array(
             'express' => $express,
             'goodRefund' => $goodRefund,
             'order' => $order,
@@ -250,7 +243,7 @@ class Order_EweiShopV2Page extends AppMobilePage
         }
         
         if(empty($openid)){
-            return app_error( AppError::$ParamsError );
+            app_error( AppError::$ParamsError );
         }
         $uniacid = $_W['uniacid'];
         //是否为核销单
@@ -274,7 +267,7 @@ class Order_EweiShopV2Page extends AppMobilePage
         $originalOpenid = substr($openid, strripos($openid, '_') + 1);
 
         if(!$originalOpenid) {
-            return app_error(-1, "授权后才可进行操作");
+            app_error(-1, "授权后才可进行操作");
         }
         $member = m('member')->getMember($openid);
 
@@ -290,7 +283,7 @@ class Order_EweiShopV2Page extends AppMobilePage
             array(':id' => $goodid,':uniacid' => $uniacid));
 
         if (empty($goods['status'])) {
-            return app_error( 1,'您选择的商品已经下架，请浏览其他商品或联系商家！' );
+            app_error( 1,'您选择的商品已经下架，请浏览其他商品或联系商家！' );
         }
 
         //规格
@@ -301,14 +294,14 @@ class Order_EweiShopV2Page extends AppMobilePage
                 array(':openid'=>$openid,':status'=>0,':goodid'=>$goodid,':uniacid'=>$uniacid));
 
         if(!empty($goods['purchaselimit']) && $goods['purchaselimit']<=$ordernum){
-            return app_error( 1,'您已到达此商品购买上限，请浏览其他商品或联系商家！' );
+            app_error( 1,'您已到达此商品购买上限，请浏览其他商品或联系商家！' );
         }
 
 
         //如果开启了阶梯团
         if( $goods['is_ladder'] == 1 && $type == 'groups' ){
             if( empty($ladder_id) && empty( $teamid ) ){
-                return app_error( 1,'缺少阶梯团ID' );
+                app_error( 1,'缺少阶梯团ID' );
             }
 
             $is_ladder = 1;
@@ -335,22 +328,22 @@ class Order_EweiShopV2Page extends AppMobilePage
 					where goodid = :goodid and status >= 0 and  openid = :openid and uniacid = :uniacid and success = 0 and deleted = 0 ',
             array(':goodid' => $goodid,':openid'=>$openid,':uniacid' => $uniacid));
         if($order && $order['status']== 0){
-            return app_error( 1,'您的订单已存在，请尽快完成支付！' );
+            app_error( 1,'您的订单已存在，请尽快完成支付！' );
         }
         if($order && $order['is_team'] == 1 && $type != 'single' && $order['status']== 1){
-            return app_error( 1,'您已经参与了该团，请等待拼团结束后再进行购买！' );
+            app_error( 1,'您已经参与了该团，请等待拼团结束后再进行购买！' );
         }
 
         //如果开启了阶梯团
         if( $goods['is_ladder'] == 0 ){
             if($order && $ordernum >= $order['groupnum'] && $order['is_team'] == 1 && $type != 'single'){
-                return app_error( 1,'该团人数已达上限，请浏览其他商品或联系商家！(1)' );
+                app_error( 1,'该团人数已达上限，请浏览其他商品或联系商家！(1)' );
             }
         }else{
 
             //查询阶梯团限制人数
             if($order && $ladder_ordernum >= $ladder['ladder_num'] && $order['is_team'] == 1 && $type != 'single'){
-                return app_error( 1,'该团人数已达上限，请浏览其他商品或联系商家！(2)' );
+                app_error( 1,'该团人数已达上限，请浏览其他商品或联系商家！(2)' );
             }
         }
 
@@ -362,10 +355,10 @@ class Order_EweiShopV2Page extends AppMobilePage
                 array(':teamid'=>$teamid,':uniacid' => $uniacid));
             foreach($orders as $key => $value){
                 if($orders && $value['success']== -1){
-                    return app_error( 1,'该活动已过期，请浏览其他商品或联系商家！' );
+                    app_error( 1,'该活动已过期，请浏览其他商品或联系商家！' );
                 }
                 if($orders && $value['success']==1){
-                    return app_error( 1,'该活动已结束，请浏览其他商品或联系商家！' );
+                    app_error( 1,'该活动已结束，请浏览其他商品或联系商家！' );
                 }
             }
 
@@ -373,13 +366,13 @@ class Order_EweiShopV2Page extends AppMobilePage
                 $num = pdo_fetchcolumn('select count(1) from ' . tablename('ewei_shop_groups_order') . " where teamid = :teamid and status > :status and goodid = :goodid and uniacid = :uniacid ",
                     array(':teamid'=>$teamid,':status'=>0,':goodid'=>$goods['id'],':uniacid'=>$uniacid));
                 if($num>=$goods['groupnum']){
-                    return app_error( 1,'该活动已成功组团，请浏览其他商品或联系商家！' );
+                    app_error( 1,'该活动已成功组团，请浏览其他商品或联系商家！' );
                 }
             }else{
                 $num = pdo_fetchcolumn('select count(1) from ' . tablename('ewei_shop_groups_order') . " where teamid = :teamid and status > :status and goodid = :goodid and uniacid = :uniacid and ladder_id = :ladder_id",
                     array(':teamid'=>$teamid,':status'=>0,':goodid'=>$goods['id'],':uniacid'=>$uniacid , ':ladder_id' => $ladder_id ));
                 if($num>=$ladder['ladder_num']){
-                    return app_error( 1,'该活动已成功组团，请浏览其他商品或联系商家！' );
+                    app_error( 1,'该活动已成功组团，请浏览其他商品或联系商家！' );
                 }
             }
 
@@ -388,14 +381,14 @@ class Order_EweiShopV2Page extends AppMobilePage
             //是拼团还是单买
             if($type=='groups' && $goods['more_spec'] == 0 && $is_ladder == 0){ //团购普通
                 if($goods['stock']<=0){
-                    return app_error( 1,'您选择的商品库存不足，请浏览其他商品或联系商家！' );
+                    app_error( 1,'您选择的商品库存不足，请浏览其他商品或联系商家！' );
                 }
                 $price = $goods['groupsprice'];
                 $groupnum = intval($goods['groupnum']);//团购人数
                 $is_team = 1;
             }elseif($type=='groups' && $goods['more_spec'] == 1 && $is_ladder == 0){ //团购多规格
                 if($groups_option['stock']<=0){
-                    return app_error( 1,'您选择的商品库存不足，请浏览其他商品或联系商家！(1)' );
+                    app_error( 1,'您选择的商品库存不足，请浏览其他商品或联系商家！(1)' );
                 }
                 $goods['groupsprice'] = $groups_option['price'];
                 $price = $groups_option['price'];
@@ -408,7 +401,7 @@ class Order_EweiShopV2Page extends AppMobilePage
                 $is_team = 1;
             }elseif($type=='single' && $goods['more_spec'] == 0){ //单购普通
                 if($goods['stock']<=0){
-                    return app_error( 1,'您选择的商品库存不足，请浏览其他商品或联系商家！' );
+                    app_error( 1,'您选择的商品库存不足，请浏览其他商品或联系商家！' );
                 }
                 $goods['groupsprice'] = $goods['singleprice'];
                 $price = $goods['singleprice'];
@@ -418,7 +411,7 @@ class Order_EweiShopV2Page extends AppMobilePage
             }else { //单购多规格
 
                 if($groups_option['stock']<=0){
-                    return app_error( 1,'您选择的商品库存不足，请浏览其他商品或联系商家！(2)' );
+                    app_error( 1,'您选择的商品库存不足，请浏览其他商品或联系商家！(2)' );
                 }
                 $price = $groups_option['single_price'];
                 $groupnum = 1;
@@ -593,11 +586,11 @@ class Order_EweiShopV2Page extends AppMobilePage
 
         if ($_W['ispost'] == true) {
             if(empty($_GPC['aid']) && !$isverify){
-                return app_error(1,'请选择收货地址！');
+                app_error(1,'请选择收货地址！');
             }
             if($isverify){
                 if(empty($_GPC['realname']) || empty($_GPC['mobile'])){
-                    return app_error( 1,'联系人或联系电话不能为空！' );
+                    app_error( 1,'联系人或联系电话不能为空！' );
                 }
             }
             if(intval($_GPC['aid'])>0 && !$isverify){
@@ -605,10 +598,10 @@ class Order_EweiShopV2Page extends AppMobilePage
                 $order_address = pdo_fetch('select * from ' . tablename('ewei_shop_member_address') . ' where id=:id and openid=:openid and uniacid=:uniacid   limit 1'
                     , array(':uniacid' => $uniacid, ':openid' => $openid, ':id' => intval($_GPC['aid'])));
                 if (empty($order_address)) {
-                    return app_error( 1,'未找到地址' );
+                    app_error( 1,'未找到地址' );
                 } else {
                     if (empty($order_address['province']) || empty($order_address['city'])) {
-                        return app_error( 1,'地址请选择省市信息' );
+                        app_error( 1,'地址请选择省市信息' );
                     }
                 }
             }
@@ -665,7 +658,7 @@ class Order_EweiShopV2Page extends AppMobilePage
 
             $order_insert = pdo_insert('ewei_shop_groups_order', $data);
             if(!$order_insert){
-                return app_error( 1,'生成订单失败！' );
+                app_error( 1,'生成订单失败！' );
             }
             $orderid = pdo_insertid();
             if(empty($teamid) && $type=='groups'){
@@ -689,7 +682,7 @@ class Order_EweiShopV2Page extends AppMobilePage
             $order = pdo_fetch("select * from " . tablename('ewei_shop_groups_order') . '
 						where id = :id and uniacid = :uniacid ',array(':id' => $orderid,':uniacid' => $uniacid));
 
-            return app_json( array('teamid' => empty($teamid) ? $order["teamid"] : $teamid,'orderid'=>$orderid) );
+            app_json( array('teamid' => empty($teamid) ? $order["teamid"] : $teamid,'orderid'=>$orderid) );
         }
 
         //组成新数组以便小程序调用
@@ -730,7 +723,7 @@ class Order_EweiShopV2Page extends AppMobilePage
             'f_data' => $appDatas['f_data'],
             'fields' => $appDatas['fields'],
         );
-        return app_json( array( 'data' => $data ) );
+        app_json( array( 'data' => $data ) );
     }
 
     /**
@@ -746,10 +739,10 @@ class Order_EweiShopV2Page extends AppMobilePage
         $order = pdo_fetch("select * from " . tablename('ewei_shop_groups_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1'
             , array(':id' => $orderid, ':uniacid' => $_W['uniacid'], ':openid' => $open_id));
         if (empty($order)) {
-            return app_error(1, '订单未找到');
+            app_error(1, '订单未找到');
         }
         if ($order['status'] != 2) {
-            return app_error(1, '订单不能确认收货');
+            app_error(1, '订单不能确认收货');
         }
         if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
 
@@ -764,7 +757,7 @@ class Order_EweiShopV2Page extends AppMobilePage
         //模板消息
         p('groups')->sendTeamMessage($orderid);
 
-        return app_json();
+        app_json();
     }
     /**
      * 删除订单
@@ -780,14 +773,14 @@ class Order_EweiShopV2Page extends AppMobilePage
         $order = pdo_fetch("select id,status from " . tablename('ewei_shop_groups_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1'
             , array(':id' => $orderid, ':uniacid' => $_W['uniacid'], ':openid' => $open_id));
         if (empty($order)) {
-            return app_error(1, '订单未找到!');
+            app_error(1, '订单未找到!');
         }
         if ($order['status'] != 3 && $order['status'] != -1) {
-            return app_error(1, '无法删除');
+            app_error(1, '无法删除');
         }
 
         pdo_update('ewei_shop_groups_order', array('deleted' => 1), array('id' => $order['id'], 'uniacid' => $_W['uniacid']));
-        return app_json();
+        app_json();
     }
 
     /**
@@ -804,15 +797,15 @@ class Order_EweiShopV2Page extends AppMobilePage
             $total = pdo_fetchcolumn('select count(1) from ' . tablename('ewei_shop_groups_order') . "  where teamid = :teamid  "
                 ,array(':teamid'=>$order['teamid']));
             if (empty($order)) {
-                return app_error(1, '订单未找到');
+                app_error(1, '订单未找到');
             }
             if ($order['status'] != 0) {
-                return app_error(1, '订单不能取消');
+                app_error(1, '订单不能取消');
             }
             pdo_update('ewei_shop_groups_order', array('status' => -1, 'canceltime' => time() , 'cancel_reason' => $cancel_reason), array('id' => $order['id'], 'uniacid' => $_W['uniacid']));
             //模板消息
             p('groups')->sendTeamMessage($orderid);
-            return app_json();
+            app_json();
     }
 
     /*
@@ -825,18 +818,18 @@ class Order_EweiShopV2Page extends AppMobilePage
         $orderid = intval($_GPC['id']);
 
         if (empty($orderid)) {
-            return app_error( 1,'请传入orderid' );
+            app_error( 1,'请传入orderid' );
         }
         $order = pdo_fetch("select * from " . tablename('ewei_shop_groups_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1'
             , array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
         if (empty($order)) {
-            return app_error(1,'订单未查到!');
+            app_error(1,'订单未查到!');
         }
         if (empty($order['addressid'])) {
-            return app_error(1,'订单非快递单，无法查看物流信息!');
+            app_error(1,'订单非快递单，无法查看物流信息!');
         }
         if ($order['status'] < 2) {
-            return app_error(1,'订单未发货，无法查看物流信息!');
+            app_error(1,'订单未发货，无法查看物流信息!');
         }
         //商品信息
         $goods = pdo_fetch("select *  from " . tablename('ewei_shop_groups_goods') . "  where id=:id and uniacid=:uniacid ", array(':uniacid' => $uniacid, ':id' => $order['goodid']));
@@ -853,7 +846,7 @@ class Order_EweiShopV2Page extends AppMobilePage
         }
 
 
-        return app_json(array(
+        app_json(array(
             'com' => $order['expresscom'],
             'sn' => $order['expresssn'],
             'status' => $status,

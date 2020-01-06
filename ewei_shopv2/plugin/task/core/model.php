@@ -455,8 +455,8 @@ class TaskModel extends PluginModel
 	public function perms()
 	{
 		return array(
-			'task' => array('text' => $this->getName(), 'isplugin' => true, 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log', 'log' => '扫描记录', 'clear' => '清除缓存-log', 'setdefault' => '设置默认海报-log')
-		);
+	'task' => array('text' => $this->getName(), 'isplugin' => true, 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log', 'log' => '扫描记录', 'clear' => '清除缓存-log', 'setdefault' => '设置默认海报-log')
+	);
 	}
 
 	public function responseUnsubscribe($param = '')
@@ -2038,7 +2038,7 @@ class TaskModel extends PluginModel
 			if (!empty($this->taskType)) {
 				foreach ($this->taskType as &$value) {
 					if ($value['type_key'] == 'pyramid_num') {
-						$value['verb'] = $set['texts']['agent'] . '推荐' . $set['texts']['down'] . '人数达';
+						$value['verb'] = $set['texts']['agent'] . '推荐下级人数达';
 					}
 				}
 			}
@@ -2206,15 +2206,13 @@ class TaskModel extends PluginModel
 
 		if ($isArr) {
 			$condition = ' id = \'' . implode(' \' or id = \'', $ids) . '\'';
-			$condition_record = ' taskid = \'' . implode(' \' or taskid = \'', $ids) . '\'';
 
 			if ($hasKeywordTask) {
 				$hasKeywordTaskIds = implode(',', $hasKeywordTask);
 				pdo_query('delete from ' . tablename('rule_keyword') . (' where id in (' . $hasKeywordTaskIds . ')'));
 			}
 
-			pdo_query('delete from ' . tablename('ewei_shop_task_list') . (' where ' . $condition));
-			return pdo_query('delete from ' . tablename('ewei_shop_task_record') . (' where ' . $condition_record));
+			return pdo_query('delete from ' . tablename('ewei_shop_task_list') . (' where ' . $condition));
 		}
 
 		if (!$isArr && !$isNum) {
@@ -2728,7 +2726,7 @@ class TaskModel extends PluginModel
 		}
 
 		if ($task['repeat_type'] == 3) {
-			if ($task['repeat_cycle'] == 0) {
+			if ($task['repeat_cycle'] == 1) {
 				if (86400 < (int) strtotime(date('Ymd')) - (int) strtotime(date('Ymd', $compareTime))) {
 					return true;
 				}
@@ -2736,7 +2734,7 @@ class TaskModel extends PluginModel
 				return error(-1, '明天才能再接此任务');
 			}
 
-			if ($task['repeat_cycle'] == 1) {
+			if ($task['repeat_cycle'] == 2) {
 				$w = date('w', $compareTime);
 				$w == 0 && ($w = 7);
 				$between = $this->diffBetweenTwoDays($compareTime, $time);
@@ -2748,7 +2746,7 @@ class TaskModel extends PluginModel
 				return error(-1, '下个周才能再接此任务');
 			}
 
-			if ($task['repeat_cycle'] == 2) {
+			if ($task['repeat_cycle'] == 3) {
 				if (0 < date('Ym') - date('Ym', $compareTime)) {
 					return true;
 				}
@@ -3435,7 +3433,7 @@ class TaskModel extends PluginModel
 			'keyword4' => array('title' => '操作结果', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 			'remark'   => array('value' => '截止时间：' . $record['stoptime'] == '0000-00-00 00:00:00' ? '无限制' : substr($record['stoptime'], 0, 16) . '
 完成任务可获得丰厚奖励，赶快去完成任务吧~~', 'color' => '#000000')
-		);
+			);
 		$url = mobileUrl('task.detail', array('rid' => $record['id']), 1);
 
 		if (strexists($url, '/addons/ewei_shopv2/')) {
@@ -3473,7 +3471,7 @@ class TaskModel extends PluginModel
 			'remark'   => array('value' => '接取时间：' . date('Y-m-d H:i') . '
 当前进度：' . $record['task_progress'] . '/' . $record['task_demand'] . '
 完成任务可获得丰厚奖励，赶快去完成任务吧~~', 'color' => '#000000')
-		);
+			);
 		$url = mobileUrl('task.detail', array('rid' => $record['id']), 1);
 
 		if (strexists($url, '/addons/ewei_shopv2/')) {
@@ -3504,7 +3502,7 @@ class TaskModel extends PluginModel
 			'keyword3' => array('title' => '处理结果', 'value' => $record['tasktitle'], 'color' => '#000000'),
 			'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 			'remark'   => array('value' => '如有疑问请联系在线客服', 'color' => '#000000')
-		);
+			);
 		$url = mobileUrl('task.reward', array(), 1);
 
 		if (strexists($url, '/addons/ewei_shopv2/')) {
@@ -3537,7 +3535,7 @@ class TaskModel extends PluginModel
 			'remark'   => array('value' => '领取时间：' . substr($record['picktime'], 0, 16) . '
 截止时间：' . substr($record['stoptime'], 0, 16) . '
 这是您的专属任务海报，快推出去让大家知道吧~~', 'color' => '#000000')
-		);
+			);
 		$url = mobileUrl('task.detail', array('rid' => $record['id']), 1);
 
 		if (strexists($url, '/addons/ewei_shopv2/')) {
@@ -3572,7 +3570,7 @@ class TaskModel extends PluginModel
 			'remark'   => array('value' => '当前进度：' . $record['task_progress'] . '/' . $record['task_demand'] . '
 扫描关注：' . $this_member['nickname'] . '
 扫描时间：' . date('Y-m-d H:i') . '如有疑问请联系在线客服', 'color' => '#000000')
-		);
+			);
 		$url = mobileUrl('task.reward', NULL, 1);
 
 		if (strexists($url, '/addons/ewei_shopv2/')) {
@@ -3604,7 +3602,7 @@ class TaskModel extends PluginModel
 			'keyword3' => array('title' => '处理结果', 'value' => $record['tasktitle'], 'color' => '#000000'),
 			'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 			'remark'   => array('value' => '快去查看您的奖励吧~~', 'color' => '#000000')
-		);
+			);
 		$url = mobileUrl('task.reward', NULL, 1);
 
 		if (strexists($url, '/addons/ewei_shopv2/')) {
@@ -3636,7 +3634,7 @@ class TaskModel extends PluginModel
 			'keyword3' => array('title' => '处理结果', 'value' => $record['tasktitle'], 'color' => '#000000'),
 			'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 			'remark'   => array('value' => '快去查看您的奖励吧~~', 'color' => '#000000')
-		);
+			);
 		$url = mobileUrl('task.reward', NULL, 1);
 
 		if (strexists($url, '/addons/ewei_shopv2/')) {

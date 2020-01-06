@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -52,7 +51,7 @@ class Setting_EweiShopV2Page extends PluginWebPage
 				'task_data'  => array(),
 				'updatetime' => '',
 				'addtime'    => ''
-			);
+				);
 			$starttime = time();
 			$endtime = strtotime(date('Y-m-d H:i', $starttime) . '+30 days');
 		}

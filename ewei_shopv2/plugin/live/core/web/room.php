@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -136,7 +136,7 @@ class Room_EweiShopV2Page extends PluginWebPage
 				'customname2' => array('name' => trim($_GPC['dtab']['customname2']), 'type' => trim($_GPC['dtab']['customtype2']), 'url' => $_GPC['dtab']['customurl2'], 'introduce' => m('common')->html_images($_GPC['dtab']['customintroduce2']), 'isshow' => in_array('customname2', $nestable) ? 1 : 0),
 				'customname3' => array('name' => trim($_GPC['dtab']['customname3']), 'type' => trim($_GPC['dtab']['customtype3']), 'url' => $_GPC['dtab']['customurl3'], 'introduce' => m('common')->html_images($_GPC['dtab']['customintroduce3']), 'isshow' => in_array('customname3', $nestable) ? 1 : 0),
 				'customname4' => array('name' => trim($_GPC['dtab']['customname4']), 'type' => trim($_GPC['dtab']['customtype4']), 'url' => $_GPC['dtab']['customurl4'], 'introduce' => m('common')->html_images($_GPC['dtab']['customintroduce4']), 'isshow' => in_array('customname4', $nestable) ? 1 : 0)
-			);
+				);
 			$tab_total = !intval($tabs['goods']['isshow']) + !intval($tabs['introduce']['isshow']) + intval($tabs['customname1']['isshow']) + intval($tabs['customname2']['isshow']) + intval($tabs['customname3']['isshow']) + intval($tabs['customname4']['isshow']);
 
 			if (4 < $tab_total) {
@@ -313,8 +313,8 @@ class Room_EweiShopV2Page extends PluginWebPage
 
 		unset($l);
 		$levels = array_merge(array(
-			array('id' => 0, 'key' => 'default', 'levelname' => empty($_W['shopset']['shop']['levelname']) ? '默认会员' : $_W['shopset']['shop']['levelname'])
-		), $levels);
+	array('id' => 0, 'key' => 'default', 'levelname' => empty($_W['shopset']['shop']['levelname']) ? '默认会员' : $_W['shopset']['shop']['levelname'])
+	), $levels);
 		$groups = m('member')->getGroups();
 
 		if ($item['showlevels'] != '') {
@@ -348,7 +348,7 @@ class Room_EweiShopV2Page extends PluginWebPage
 			array('type' => 2, 'identity' => 'tencentcloud', 'name' => '腾讯云直播'),
 			array('type' => 2, 'identity' => 'alicloud', 'name' => '阿里云直播'),
 			array('type' => 2, 'identity' => 'other', 'name' => '其他直播')
-		);
+			);
 		$category = pdo_fetchall('select * from ' . tablename('ewei_shop_live_category') . ' where uniacid = ' . $uniacid . ' and enabled = 1 ');
 		if (0 < $id && !empty($item['goodsid'])) {
 			$goods = pdo_fetchall('select g.id,g.title,g.marketprice,lg.liveprice,lg.minliveprice,lg.maxliveprice,g.thumb,g.hasoption,lg.liveid,g.total  from ' . tablename('ewei_shop_live_goods') . ' as lg 

@@ -21,20 +21,20 @@
             type: "GET",
             url:'{php echo mobileUrl('index.share_url',array(),true);}',
             data:{url:verify_url},
-            dataType: "json",
+        dataType: "json",
             success: function(data){
             jssdkconfig = data.result || { jsApiList:[] };
             jssdkconfig.debug = false;
-            jssdkconfig.jsApiList = ['checkJsApi','onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo','showOptionMenu', 'hideMenuItems', 'onMenuShareQZone', 'scanQRCode','openLocation','openAddress','addCard','chooseCard','openCard'];
+            jssdkconfig.jsApiList = ['checkJsApi','onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo','showOptionMenu', 'hideMenuItems', 'onMenuShareQZone', 'scanQRCode','openLocation'];
             wx.config(jssdkconfig);
             wx.ready(function () {
                 wx.showOptionMenu();
 
-                    {if !empty($_W['shopshare']['hideMenus'])}
-                        wx.hideMenuItems({
-                            menuList: {php echo  json_encode($_W['shopshare']['hideMenus'])}
-                        });
-                    {/if}
+                {if !empty($_W['shopshare']['hideMenus'])}
+                wx.hideMenuItems({
+                    menuList: {php echo  json_encode($_W['shopshare']['hideMenus'])}
+            });
+                {/if}
                     window.shareData.success = "{$_W['shopshare']['way']}";
                     if(window.shareData.success){
                         var success = window.shareData.success;
@@ -58,11 +58,11 @@
                     wx.onMenuShareWeibo(window.shareData);
                     wx.onMenuShareQZone(window.shareData);
                 });
-            },
-            error:function(e){
-                console.log(JSON.stringify(e));
-            }
-        });
+        },
+        error:function(e){
+            console.log(JSON.stringify(e));
+        }
+    });
     },700);
 
     {if !empty($_W['shopset']['wap']['open']) && !is_weixin()}

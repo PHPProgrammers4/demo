@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -394,110 +393,8 @@ class PosteraModel extends PluginModel
 	public function perms()
 	{
 		return array(
-			'postera' => array('text' => $this->getName(), 'isplugin' => true, 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log', 'log' => '扫描记录', 'clear' => '清除缓存-log', 'setdefault' => '设置默认海报-log')
-		);
-	}
-
-	public function create_folder()
-	{
-		global $_W;
-		$path = IA_ROOT . '/addons/ewei_shopv2/data/postera/';
-
-		if (!is_dir($path)) {
-			mkdir($path);
-		}
-	}
-
-	public function previewPoster($poster, $goodsId, $id)
-	{
-		global $_W;
-		$path = IA_ROOT . '/addons/ewei_shopv2/data/postera/' . $_W['uniacid'] . '/';
-
-		if (!is_dir($path)) {
-			mkdir($path);
-		}
-
-		if (!empty($goodsId)) {
-			$goods = pdo_fetch('select id,title,thumb,commission_thumb,marketprice,productprice from ' . tablename('ewei_shop_goods') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $goodsId, ':uniacid' => $_W['uniacid']));
-		}
-
-		$md5 = md5(json_encode(array('goodsid' => $goodsId, 'bg' => $poster['bg'], 'data' => $poster['data'], 'version' => 1, 'rand' => time())));
-		$file = $md5 . '.png';
-
-		if (!is_file($path . $file)) {
-			set_time_limit(0);
-			@ini_set('memory_limit', '256M');
-			$bg = $this->createImage(tomedia($poster['bg']));
-			$width = imagesx($bg);
-			$height = imagesy($bg);
-
-			if (640 < $width) {
-				$height = $height * (640 / $width);
-				$width = 640;
-			}
-
-			if (1008 < $height) {
-				$width = $width * (1008 / $height);
-				$height = 1008;
-			}
-
-			$target = imagecreatetruecolor(640, 1008);
-			imagecopyresized($target, $bg, 0, 0, 0, 0, 640, 1008, $width, $height);
-			imagedestroy($bg);
-			$data = json_decode(str_replace('&quot;', '\'', $poster['data']), true);
-
-			foreach ($data as $d) {
-				$d = $this->getRealData($d);
-
-				if ($d['type'] == 'head') {
-					$avatar = '../addons/ewei_shopv2/plugin/sns/static/images/head.jpg';
-					$avatar = tomedia($avatar);
-					$target = $this->mergeImage($target, $d, $avatar);
-				}
-				else if ($d['type'] == 'time') {
-					$endtime = time();
-					$time = date('Y-m-d H:i', $endtime);
-					$target = $this->mergeText($target, $d, $time);
-				}
-				else if ($d['type'] == 'img') {
-					$src = '../addons/ewei_shopv2/plugin/postera/static/images/img.jpg';
-					$src = tomedia($src);
-					$target = $this->mergeImage($target, $d, $src);
-				}
-				else if ($d['type'] == 'qr') {
-					$qrImg = '../addons/ewei_shopv2/plugin/postera/static/images/qr.jpg';
-					$target = $this->mergeImage($target, $d, tomedia($qrImg));
-				}
-				else if ($d['type'] == 'nickname') {
-					$nickName = '昵称';
-					$target = $this->mergeText($target, $d, $nickName);
-				}
-				else {
-					if (!empty($goods)) {
-						if ($d['type'] == 'title') {
-							$target = $this->mergeText($target, $d, $goods['title']);
-						}
-						else if ($d['type'] == 'thumb') {
-							$thumb = !empty($goods['commission_thumb']) ? tomedia($goods['commission_thumb']) : tomedia($goods['thumb']);
-							$target = $this->mergeImage($target, $d, $thumb);
-						}
-						else if ($d['type'] == 'marketprice') {
-							$target = $this->mergeText($target, $d, $goods['marketprice']);
-						}
-						else {
-							if ($d['type'] == 'productprice') {
-								$target = $this->mergeText($target, $d, $goods['productprice']);
-							}
-						}
-					}
-				}
-			}
-
-			imagepng($target, $path . $file);
-			imagedestroy($target);
-		}
-
-		return tomedia($path . $file);
+	'postera' => array('text' => $this->getName(), 'isplugin' => true, 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log', 'log' => '扫描记录', 'clear' => '清除缓存-log', 'setdefault' => '设置默认海报-log')
+	);
 	}
 }
 

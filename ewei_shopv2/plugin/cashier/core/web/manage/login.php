@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 require EWEI_SHOPV2_PLUGIN . 'cashier/core/inc/page_cashier.php';
 class Login_EweiShopV2Page extends CashierWebPage
 {

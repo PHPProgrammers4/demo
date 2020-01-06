@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -16,8 +15,8 @@ return array(
 		'items'     => array(
 			array('title' => '购买页面', 'route' => 'pages'),
 			array('title' => '幻灯片设置', 'route' => 'adv')
+			)
 		)
-	)
-);
+	);
 
 ?>

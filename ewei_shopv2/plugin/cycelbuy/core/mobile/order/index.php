@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -216,7 +216,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 					$vs = iunserializer($order['verifyinfo']);
 					$verifyinfo = array(
 						array('verifycode' => $order['verifycode'], 'verified' => $order['verifytype'] == 0 || $order['verifytype'] == 3 ? $order['verified'] : $goods[0]['total'] <= count($vs))
-					);
+						);
 					if ($order['verifytype'] == 0 || $order['verifytype'] == 3) {
 						$canverify = empty($order['verified']) && $showverify;
 					}
@@ -243,7 +243,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 				if (!empty($order['dispatchtype'])) {
 					$verifyinfo = array(
 						array('verifycode' => $order['verifycode'], 'verified' => $order['status'] == 3)
-					);
+						);
 					$canverify = $order['status'] == 1 && $showverify;
 				}
 			}

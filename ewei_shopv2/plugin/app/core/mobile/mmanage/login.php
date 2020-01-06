@@ -1,17 +1,10 @@
 <?php
 
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class Login_EweiShopV2Page extends AppMobilePage {
 
@@ -28,7 +21,7 @@ class Login_EweiShopV2Page extends AppMobilePage {
             $set['mmanage'] = array();
         }
 
-        return app_json(array(
+        app_json(array(
             'logo'=>tomedia($set['mmanage']['logo']),
             'name'=>$set['mmanage']['name'],
             'close'=>!intval($set['mmanage']['open'])
@@ -39,7 +32,7 @@ class Login_EweiShopV2Page extends AppMobilePage {
         global $_W, $_GPC;
 
         if(!$_W['ispost']){
-            return app_error(AppError::$RequestError);
+            app_error(AppError::$RequestError);
         }
 
         $set = p('app')->getGlobal();
@@ -47,7 +40,7 @@ class Login_EweiShopV2Page extends AppMobilePage {
             $set['mmanage'] = array();
         }
         if(!intval($set['mmanage']['open'])){
-            return app_error(AppError::$ManageNotOpen);
+            app_error(AppError::$ManageNotOpen);
         }
 
         load()->model('user');
@@ -56,20 +49,20 @@ class Login_EweiShopV2Page extends AppMobilePage {
         if($type == 'wechat'){
             $code = trim($_GPC['code']);
             if (empty($code)) {
-                return app_error(AppError::$ParamsError);
+                app_error(AppError::$ParamsError);
             }
             if(empty($set['mmanage']['appid']) || empty($set['mmanage']['secret'])){
-                return app_error(AppError::$UserLoginFail , '微信登录参数未配置');
+                app_error(AppError::$UserLoginFail , '微信登录参数未配置');
             }
             load()->func('communication');
             $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$set['mmanage']['appid']}&secret={$set['mmanage']['secret']}&js_code={$code}&grant_type=authorization_code";
             $resp = ihttp_request($url);
             if($resp['code'] != 200){
-                return app_error(AppError::$UserLoginFail , '与微信连接失败，请稍后重试');
+                app_error(AppError::$UserLoginFail , '与微信连接失败，请稍后重试');
             }
             $arr = @json_decode($resp['content'],true);
             if(!empty($arr['errcode']) || !isset($arr['openid'])){
-                return app_error(AppError::$UserLoginFail , $arr['errmsg']);
+                app_error(AppError::$UserLoginFail , $arr['errmsg']);
             }
             $openid = $arr['openid'];
 
@@ -80,14 +73,14 @@ class Login_EweiShopV2Page extends AppMobilePage {
             ));
 
             if(empty($roleuser)){
-                return app_error(AppError::$UserLoginFail, '当前账号未绑定操作员');
+                app_error(AppError::$UserLoginFail, '当前账号未绑定操作员');
             }
             if(empty($roleuser['status'])){
-                return app_error(AppError::$UserLoginFail, '此账号暂时无法登录管理后台');
+                app_error(AppError::$UserLoginFail, '此账号暂时无法登录管理后台');
             }
             $account = user_single($roleuser['uid']);
             if(!$account){
-                return app_error(AppError::$UserLoginFail, '当前账号未绑定操作员');
+                app_error(AppError::$UserLoginFail, '当前账号未绑定操作员');
             }
 
             // 更新资料
@@ -97,25 +90,25 @@ class Login_EweiShopV2Page extends AppMobilePage {
             $username = trim($_GPC['username']);
             $password = trim($_GPC['password']);
             if(empty($username) || empty($password)){
-                return app_error(AppError::$ParamsError);
+                app_error(AppError::$ParamsError);
             }
             if (!user_check(array('username' => $username))) {
-                return app_error(AppError::$UserLoginFail, '用户不存在');
+                app_error(AppError::$UserLoginFail, '用户不存在');
             }
             if (!user_check(array('username' => $username, 'password' => $password))) {
-                return app_error(AppError::$UserLoginFail, '用户名或密码错误');
+                app_error(AppError::$UserLoginFail, '用户名或密码错误');
             }
             $account = user_single(array('username' => $username));
             $founders = explode(',', $_W['config']['setting']['founder']);
             if(!in_array($account['uid'], $founders)){
                 if($account['status'] != 2){
-                    return app_error(AppError::$UserLoginFail, '操作员已被禁用');
+                    app_error(AppError::$UserLoginFail, '操作员已被禁用');
                 }
             }
 
             $role = $this->we_role($account['uid']);
             if(empty($role)){
-                return app_error(AppError::$UserLoginFail, '此账号没有管理权限');
+                app_error(AppError::$UserLoginFail, '此账号没有管理权限');
             }
 
             if($role == 'operator'){
@@ -123,7 +116,7 @@ class Login_EweiShopV2Page extends AppMobilePage {
                     ":uid"=>$account['uid']
                 ));
                 if (empty($roleuser)) {
-                    return app_error(AppError::$UserLoginFail, '此账号没有管理权限');
+                    app_error(AppError::$UserLoginFail, '此账号没有管理权限');
                 }
                 $admin = 0;
             }else{
@@ -131,7 +124,7 @@ class Login_EweiShopV2Page extends AppMobilePage {
             }
         }
 
-        return app_json(array(
+        app_json(array(
             'account'=>array(
                 'uid'=>$account['uid'],
                 'uniacid'=>is_array($roleuser)? $roleuser['uniacid']: 0,

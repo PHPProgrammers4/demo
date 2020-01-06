@@ -1,32 +1,12 @@
 <?php
-//dezend by http://www.yunlu99.com/
 define('IN_SYS', true);
 require '../framework/bootstrap.inc.php';
 load()->web('common');
 load()->web('template');
-$uniacid = intval($_GPC['i']);
-
-if (empty($uniacid)) {
-	$uniacid = intval($_GPC['__uniacid']);
-
-	if (empty($uniacid)) {
-		$uniacid = $_COOKIE[$_W['config']['cookie']['pre'] . '__uniacid'];
-	}
-}
-
-$_W['uniacid'] = $uniacid;
 $_W['attachurl'] = $_W['attachurl_local'] = $_W['siteroot'] . $_W['config']['upload']['attachdir'] . '/';
 
 if (!empty($_W['setting']['remote'][$_W['uniacid']]['type'])) {
 	$_W['setting']['remote'] = $_W['setting']['remote'][$_W['uniacid']];
-}
-
-$info = uni_setting_load('remote', $_W['uniacid']);
-
-if (!empty($info['remote'])) {
-	if ($info['remote']['type'] != 0) {
-		$_W['setting']['remote'] = $info['remote'];
-	}
 }
 
 if (!empty($_W['setting']['remote']['type'])) {
@@ -70,7 +50,7 @@ if (!is_error($site)) {
 	$site->inMobile = false;
 
 	if (method_exists($site, $method)) {
-		$site->{$method}();
+		$site->$method();
 		exit();
 	}
 }

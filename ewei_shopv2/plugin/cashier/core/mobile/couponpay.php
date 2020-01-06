@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -64,7 +64,7 @@ class Couponpay_EweiShopV2Page extends CashierMobilePage
 		$paymoney = $money - $couponpaymoney;
 		$goods = array(
 			array('goodsid' => $couponpay['goodsids'], 'optionid' => 0, 'price' => $paymoney, 'marketprice' => $money, 'total' => 1)
-		);
+			);
 		$this->log = $this->model->goodsCalculate(array(), $goods, array('paytype' => $paytype, 'openid' => $_W['openid'] != 'alipay' ? $_W['openid'] : '', 'money' => $paymoney, 'couponpay' => $couponpaymoney, 'nosalemoney' => $no_money, 'deduction' => 0, 'mobile' => 0, 'title' => $title, 'operatorid' => intval($_GPC['operatorid'])), 1);
 
 		if (is_error($this->log)) {

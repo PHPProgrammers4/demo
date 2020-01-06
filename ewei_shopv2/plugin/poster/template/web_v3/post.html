@@ -140,18 +140,6 @@
             var type = obj.attr('type');
             var left = obj.css('left'),top = obj.css('top');
             var d= {left:left,top:top,type:obj.attr('type'),width:obj.css('width'),height:obj.css('height')};
-
-            if(type == 'productprice' || type == 'marketprice'){
-
-
-                d.top = parseInt(d.top) + 50
-
-                d.top +='px'
-
-
-            }
-
-
             if(type=='nickname' ||type=='title' || type=='marketprice' || type=='productprice'){
                 d.size = obj.attr('size');
                 d.color = obj.attr('color');
@@ -160,7 +148,6 @@
             } else if(type=='img'){
                 d.src = obj.attr('src');
             }
-
             data.push(d);
         });
         $(':input[name=data]').val( JSON.stringify(data));
@@ -314,14 +301,11 @@
                    
              } else if(type=='qr'){
                  qrset.show();
-                 var size = obj.attr('size') || "6";
+                 var size = obj.attr('size') || "3";
                  var sel = qrset.find('#qrsize');
-
                  sel.val(size);
                  sel.unbind('change').change(function(){
-                      obj.attr('size',sel.val());
-                      /*二维码尺寸大小*/
-
+                      obj.attr('size',sel.val()) 
                  });
              }  
          }
@@ -422,3 +406,4 @@
 	
     </script>
 {template '_footer'}
+

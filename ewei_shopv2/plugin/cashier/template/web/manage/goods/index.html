@@ -612,12 +612,10 @@
                 } else if (data.status == -101) {
                     ordre_status.hide();
                     tip.msgbox.err(data.result.message);
-                    $('input[type="submit"]').attr('disabled',false);
                     return false;
                 }else if(data.status == -1){
                     ordre_status.hide();
                     tip.msgbox.err(data.result.message);
-                    $('input[type="submit"]').attr('disabled',false);
                     return false;
                 }
             }, 'json')

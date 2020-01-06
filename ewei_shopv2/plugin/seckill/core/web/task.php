@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -120,9 +119,7 @@ class Task_EweiShopV2Page extends SeckillWebPage
 			$times = pdo_fetchall('select * from ' . tablename('ewei_shop_seckill_task_time') . ' where taskid=:taskid and uniacid=:uniacid', array(':taskid' => $item['id'], ':uniacid' => $_W['uniacid']), 'time');
 
 			foreach ($times as &$t) {
-				$sql = 'select tg.id,tg.goodsid, tg.price as packageprice, tg.maxbuy, g.title,g.thumb,g.hasoption,tg.commission1,tg.commission2,tg.commission3,tg.total from ' . tablename('ewei_shop_seckill_task_goods') . ' tg  
-                  left join ' . tablename('ewei_shop_goods') . ' g on tg.goodsid = g.id 
-                  where tg.taskid=:taskid and tg.timeid=:timeid and tg.uniacid=:uniacid  group by tg.goodsid order by tg.displayorder asc ';
+				$sql = 'select tg.id,tg.goodsid, tg.price as packageprice, tg.maxbuy, g.title,g.thumb,g.hasoption,tg.commission1,tg.commission2,tg.commission3,tg.total from ' . tablename('ewei_shop_seckill_task_goods') . " tg  \r\n                  left join " . tablename('ewei_shop_goods') . " g on tg.goodsid = g.id \r\n                  where tg.taskid=:taskid and tg.timeid=:timeid and tg.uniacid=:uniacid  group by tg.goodsid order by tg.displayorder asc ";
 				$goods = pdo_fetchall($sql, array(':taskid' => $item['id'], ':uniacid' => $_W['uniacid'], ':timeid' => $t['id']), 'time');
 
 				foreach ($goods as &$g) {

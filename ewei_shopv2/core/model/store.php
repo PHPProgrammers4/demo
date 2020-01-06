@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 class Store_EweiShopV2Model
 {
 	public function getStoreInfo($id)

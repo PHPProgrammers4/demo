@@ -1,120 +1,7 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
-
-/**
- * Converts to and from JSON format.
- *
- * JSON (JavaScript Object Notation) is a lightweight data-interchange
- * format. It is easy for humans to read and write. It is easy for machines
- * to parse and generate. It is based on a subset of the JavaScript
- * Programming Language, Standard ECMA-262 3rd Edition - December 1999.
- * This feature can also be found in  Python. JSON is a text format that is
- * completely language independent but uses conventions that are familiar
- * to programmers of the C-family of languages, including C, C++, C#, Java,
- * JavaScript, Perl, TCL, and many others. These properties make JSON an
- * ideal data-interchange language.
- *
- * This package provides a simple encoder and decoder for JSON notation. It
- * is intended for use with client-side Javascript applications that make
- * use of HTTPRequest to perform server communication functions - data can
- * be encoded into JSON notation for use in a client-side javascript, or
- * decoded from incoming Javascript requests. JSON format is native to
- * Javascript, and can be directly eval()'ed with no further parsing
- * overhead
- *
- * All strings should be in ASCII or UTF-8 format!
- *
- * LICENSE: Redistribution and use in source and binary forms, with or
- * without modification, are permitted provided that the following
- * conditions are met: Redistributions of source code must retain the
- * above copyright notice, this list of conditions and the following
- * disclaimer. Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
- * NO EVENT SHALL CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
- * OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
- * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
- * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @category
- * @package     Services_JSON
- * @author      Michal Migurski <mike-json@teczno.com>
- * @author      Matt Knapp <mdknapp[at]gmail[dot]com>
- * @author      Brett Stimmerman <brettstimmerman[at]gmail[dot]com>
- * @copyright   2005 Michal Migurski
- * @version     CVS: $Id: JSON.php,v 1.30 2006/03/08 16:10:20 migurski Exp $
- * @license     http://www.opensource.org/licenses/bsd-license.php
- * @link        http://pear.php.net/pepr/pepr-proposal-show.php?id=198
- */
-
-/**
- * Marker constant for Services_JSON::decode(), used to flag stack state
- */
-define('SERVICES_JSON_SLICE',   1);
-
-/**
- * Marker constant for Services_JSON::decode(), used to flag stack state
- */
-define('SERVICES_JSON_IN_STR',  2);
-
-/**
- * Marker constant for Services_JSON::decode(), used to flag stack state
- */
-define('SERVICES_JSON_IN_ARR',  3);
-
-/**
- * Marker constant for Services_JSON::decode(), used to flag stack state
- */
-define('SERVICES_JSON_IN_OBJ',  4);
-
-/**
- * Marker constant for Services_JSON::decode(), used to flag stack state
- */
-define('SERVICES_JSON_IN_CMT', 5);
-
-/**
- * Behavior switch for Services_JSON::decode()
- */
-define('SERVICES_JSON_LOOSE_TYPE', 16);
-
-/**
- * Behavior switch for Services_JSON::decode()
- */
-define('SERVICES_JSON_SUPPRESS_ERRORS', 32);
-
-/**
- * Converts to and from JSON format.
- *
- * Brief example of use:
- *
- * <code>
- * // create a new instance of Services_JSON
- * $json = new Services_JSON();
- *
- * // convert a complexe value to JSON notation, and send it to the browser
- * $value = array('foo', 'bar', array(1, 2, 'baz'), array(3, array(4)));
- * $output = $json->encode($value);
- *
- * print($output);
- * // prints: ["foo","bar",[1,2,"baz"],[3,[4]]]
- *
- * // accept incoming POST data, assumed to be in JSON notation
- * $input = file_get_contents('php://input', 1000000);
- * $value = $json->decode($input);
- * </code>
- */
 class Services_JSON
 {
-   /**
+	/**
     * constructs a new JSON instance
     *
     * @param    int     $use    object behavior flags; combine with boolean-OR
@@ -130,12 +17,12 @@ class Services_JSON
     *                                   bubble up with an error, so all return values
     *                                   from encode() should be checked with isError()
     */
-    function Services_JSON($use = 0)
-    {
-        $this->use = $use;
-    }
+	public function Services_JSON($use = 0)
+	{
+		$this->use = $use;
+	}
 
-   /**
+	/**
     * convert a string from one UTF-16 char to one UTF-8 char
     *
     * Normally should be handled by mb_convert_encoding, but
@@ -146,40 +33,27 @@ class Services_JSON
     * @return   string  UTF-8 character
     * @access   private
     */
-    function utf162utf8($utf16)
-    {
-        // oh please oh please oh please oh please oh please
-        if(function_exists('mb_convert_encoding')) {
-            return mb_convert_encoding($utf16, 'UTF-8', 'UTF-16');
-        }
+	public function utf162utf8($utf16)
+	{
+		if (function_exists('mb_convert_encoding')) {
+			return mb_convert_encoding($utf16, 'UTF-8', 'UTF-16');
+		}
 
-        $bytes = (ord($utf16{0}) << 8) | ord($utf16{1});
+		$bytes = ord($utf16[0]) << 8 | ord($utf16[1]);
 
-        switch(true) {
-            case ((0x7F & $bytes) == $bytes):
-                // this case should never be reached, because we are in ASCII range
-                // see: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                return chr(0x7F & $bytes);
+		switch (true) {
+		case (127 & $bytes) == $bytes:
+			return chr(127 & $bytes);
+		case (2047 & $bytes) == $bytes:
+			return chr(192 | $bytes >> 6 & 31) . chr(128 | $bytes & 63);
+		case (65535 & $bytes) == $bytes:
+			return chr(224 | $bytes >> 12 & 15) . chr(128 | $bytes >> 6 & 63) . chr(128 | $bytes & 63);
+		}
 
-            case (0x07FF & $bytes) == $bytes:
-                // return a 2-byte UTF-8 character
-                // see: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                return chr(0xC0 | (($bytes >> 6) & 0x1F))
-                     . chr(0x80 | ($bytes & 0x3F));
+		return '';
+	}
 
-            case (0xFFFF & $bytes) == $bytes:
-                // return a 3-byte UTF-8 character
-                // see: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                return chr(0xE0 | (($bytes >> 12) & 0x0F))
-                     . chr(0x80 | (($bytes >> 6) & 0x3F))
-                     . chr(0x80 | ($bytes & 0x3F));
-        }
-
-        // ignoring UTF-32 for now, sorry
-        return '';
-    }
-
-   /**
+	/**
     * convert a string from one UTF-8 char to one UTF-16 char
     *
     * Normally should be handled by mb_convert_encoding, but
@@ -190,40 +64,25 @@ class Services_JSON
     * @return   string  UTF-16 character
     * @access   private
     */
-    function utf82utf16($utf8)
-    {
-        // oh please oh please oh please oh please oh please
-        if(function_exists('mb_convert_encoding')) {
-            return mb_convert_encoding($utf8, 'UTF-16', 'UTF-8');
-        }
+	public function utf82utf16($utf8)
+	{
+		if (function_exists('mb_convert_encoding')) {
+			return mb_convert_encoding($utf8, 'UTF-16', 'UTF-8');
+		}
 
-        switch(strlen($utf8)) {
-            case 1:
-                // this case should never be reached, because we are in ASCII range
-                // see: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                return $utf8;
+		switch (strlen($utf8)) {
+		case 1:
+			return $utf8;
+		case 2:
+			return chr(7 & ord($utf8[0]) >> 2) . chr(192 & ord($utf8[0]) << 6 | 63 & ord($utf8[1]));
+		case 3:
+			return chr(240 & ord($utf8[0]) << 4 | 15 & ord($utf8[1]) >> 2) . chr(192 & ord($utf8[1]) << 6 | 127 & ord($utf8[2]));
+		}
 
-            case 2:
-                // return a UTF-16 character from a 2-byte UTF-8 char
-                // see: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                return chr(0x07 & (ord($utf8{0}) >> 2))
-                     . chr((0xC0 & (ord($utf8{0}) << 6))
-                         | (0x3F & ord($utf8{1})));
+		return '';
+	}
 
-            case 3:
-                // return a UTF-16 character from a 3-byte UTF-8 char
-                // see: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                return chr((0xF0 & (ord($utf8{0}) << 4))
-                         | (0x0F & (ord($utf8{1}) >> 2)))
-                     . chr((0xC0 & (ord($utf8{1}) << 6))
-                         | (0x7F & ord($utf8{2})));
-        }
-
-        // ignoring UTF-32 for now, sorry
-        return '';
-    }
-
-   /**
+	/**
     * encodes an arbitrary variable into JSON format
     *
     * @param    mixed   $var    any number, boolean, string, array, or object to be encoded.
@@ -234,195 +93,136 @@ class Services_JSON
     * @return   mixed   JSON string representation of input var or an error if a problem occurs
     * @access   public
     */
-    function encode($var)
-    {
-        switch (gettype($var)) {
-            case 'boolean':
-                return $var ? 'true' : 'false';
+	public function encode($var)
+	{
+		switch (gettype($var)) {
+		case 'boolean':
+			return $var ? 'true' : 'false';
+		case 'NULL':
+			return 'null';
+		case 'integer':
+			return (int) $var;
+		case 'double':
+		case 'float':
+			return (double) $var;
+		case 'string':
+			$ascii = '';
+			$strlen_var = strlen($var);
+			$c = 0;
 
-            case 'NULL':
-                return 'null';
+			while ($c < $strlen_var) {
+				$ord_var_c = ord($var[$c]);
 
-            case 'integer':
-                return (int) $var;
+				switch (true) {
+				case $ord_var_c == 8:
+					$ascii .= '\\b';
+					break;
 
-            case 'double':
-            case 'float':
-                return (float) $var;
+				case $ord_var_c == 9:
+					$ascii .= '\\t';
+					break;
 
-            case 'string':
-                // STRINGS ARE EXPECTED TO BE IN ASCII OR UTF-8 FORMAT
-                $ascii = '';
-                $strlen_var = strlen($var);
+				case $ord_var_c == 10:
+					$ascii .= '\\n';
+					break;
 
-               /*
-                * Iterate over every character in the string,
-                * escaping with a slash or encoding to UTF-8 where necessary
-                */
-                for ($c = 0; $c < $strlen_var; ++$c) {
+				case $ord_var_c == 12:
+					$ascii .= '\\f';
+					break;
 
-                    $ord_var_c = ord($var{$c});
+				case $ord_var_c == 13:
+					$ascii .= '\\r';
+					break;
 
-                    switch (true) {
-                        case $ord_var_c == 0x08:
-                            $ascii .= '\b';
-                            break;
-                        case $ord_var_c == 0x09:
-                            $ascii .= '\t';
-                            break;
-                        case $ord_var_c == 0x0A:
-                            $ascii .= '\n';
-                            break;
-                        case $ord_var_c == 0x0C:
-                            $ascii .= '\f';
-                            break;
-                        case $ord_var_c == 0x0D:
-                            $ascii .= '\r';
-                            break;
+				case $ord_var_c == 34:
+				case $ord_var_c == 47:
+				case $ord_var_c == 92:
+					$ascii .= '\\' . $var[$c];
+					break;
 
-                        case $ord_var_c == 0x22:
-                        case $ord_var_c == 0x2F:
-                        case $ord_var_c == 0x5C:
-                            // double quote, slash, slosh
-                            $ascii .= '\\'.$var{$c};
-                            break;
+				case 32 <= $ord_var_c && $ord_var_c <= 127:
+					$ascii .= $var[$c];
+					break;
 
-                        case (($ord_var_c >= 0x20) && ($ord_var_c <= 0x7F)):
-                            // characters U-00000000 - U-0000007F (same as ASCII)
-                            $ascii .= $var{$c};
-                            break;
+				case ($ord_var_c & 224) == 192:
+					$char = pack('C*', $ord_var_c, ord($var[$c + 1]));
+					$c += 1;
+					$utf16 = $this->utf82utf16($char);
+					$ascii .= sprintf('\\u%04s', bin2hex($utf16));
+					break;
 
-                        case (($ord_var_c & 0xE0) == 0xC0):
-                            // characters U-00000080 - U-000007FF, mask 110XXXXX
-                            // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                            $char = pack('C*', $ord_var_c, ord($var{$c + 1}));
-                            $c += 1;
-                            $utf16 = $this->utf82utf16($char);
-                            $ascii .= sprintf('\u%04s', bin2hex($utf16));
-                            break;
+				case ($ord_var_c & 240) == 224:
+					$char = pack('C*', $ord_var_c, ord($var[$c + 1]), ord($var[$c + 2]));
+					$c += 2;
+					$utf16 = $this->utf82utf16($char);
+					$ascii .= sprintf('\\u%04s', bin2hex($utf16));
+					break;
 
-                        case (($ord_var_c & 0xF0) == 0xE0):
-                            // characters U-00000800 - U-0000FFFF, mask 1110XXXX
-                            // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                            $char = pack('C*', $ord_var_c,
-                                         ord($var{$c + 1}),
-                                         ord($var{$c + 2}));
-                            $c += 2;
-                            $utf16 = $this->utf82utf16($char);
-                            $ascii .= sprintf('\u%04s', bin2hex($utf16));
-                            break;
+				case ($ord_var_c & 248) == 240:
+					$char = pack('C*', $ord_var_c, ord($var[$c + 1]), ord($var[$c + 2]), ord($var[$c + 3]));
+					$c += 3;
+					$utf16 = $this->utf82utf16($char);
+					$ascii .= sprintf('\\u%04s', bin2hex($utf16));
+					break;
 
-                        case (($ord_var_c & 0xF8) == 0xF0):
-                            // characters U-00010000 - U-001FFFFF, mask 11110XXX
-                            // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                            $char = pack('C*', $ord_var_c,
-                                         ord($var{$c + 1}),
-                                         ord($var{$c + 2}),
-                                         ord($var{$c + 3}));
-                            $c += 3;
-                            $utf16 = $this->utf82utf16($char);
-                            $ascii .= sprintf('\u%04s', bin2hex($utf16));
-                            break;
+				case ($ord_var_c & 252) == 248:
+					$char = pack('C*', $ord_var_c, ord($var[$c + 1]), ord($var[$c + 2]), ord($var[$c + 3]), ord($var[$c + 4]));
+					$c += 4;
+					$utf16 = $this->utf82utf16($char);
+					$ascii .= sprintf('\\u%04s', bin2hex($utf16));
+					break;
 
-                        case (($ord_var_c & 0xFC) == 0xF8):
-                            // characters U-00200000 - U-03FFFFFF, mask 111110XX
-                            // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                            $char = pack('C*', $ord_var_c,
-                                         ord($var{$c + 1}),
-                                         ord($var{$c + 2}),
-                                         ord($var{$c + 3}),
-                                         ord($var{$c + 4}));
-                            $c += 4;
-                            $utf16 = $this->utf82utf16($char);
-                            $ascii .= sprintf('\u%04s', bin2hex($utf16));
-                            break;
+				case ($ord_var_c & 254) == 252:
+					$char = pack('C*', $ord_var_c, ord($var[$c + 1]), ord($var[$c + 2]), ord($var[$c + 3]), ord($var[$c + 4]), ord($var[$c + 5]));
+					$c += 5;
+					$utf16 = $this->utf82utf16($char);
+					$ascii .= sprintf('\\u%04s', bin2hex($utf16));
+					break;
+				}
 
-                        case (($ord_var_c & 0xFE) == 0xFC):
-                            // characters U-04000000 - U-7FFFFFFF, mask 1111110X
-                            // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                            $char = pack('C*', $ord_var_c,
-                                         ord($var{$c + 1}),
-                                         ord($var{$c + 2}),
-                                         ord($var{$c + 3}),
-                                         ord($var{$c + 4}),
-                                         ord($var{$c + 5}));
-                            $c += 5;
-                            $utf16 = $this->utf82utf16($char);
-                            $ascii .= sprintf('\u%04s', bin2hex($utf16));
-                            break;
-                    }
-                }
+				++$c;
+			}
 
-                return '"'.$ascii.'"';
+			return '"' . $ascii . '"';
+		case 'array':
+			if (is_array($var) && count($var) && array_keys($var) !== range(0, sizeof($var) - 1)) {
+				$properties = array_map(array($this, 'name_value'), array_keys($var), array_values($var));
 
-            case 'array':
-               /*
-                * As per JSON spec if any array key is not an integer
-                * we must treat the the whole array as an object. We
-                * also try to catch a sparsely populated associative
-                * array with numeric keys here because some JS engines
-                * will create an array with empty indexes up to
-                * max_index which can cause memory issues and because
-                * the keys, which may be relevant, will be remapped
-                * otherwise.
-                *
-                * As per the ECMA and JSON specification an object may
-                * have any string as a property. Unfortunately due to
-                * a hole in the ECMA specification if the key is a
-                * ECMA reserved word or starts with a digit the
-                * parameter is only accessible using ECMAScript's
-                * bracket notation.
-                */
+				foreach ($properties as $property) {
+					if (Services_JSON::isError($property)) {
+						return $property;
+					}
+				}
 
-                // treat as a JSON object
-                if (is_array($var) && count($var) && (array_keys($var) !== range(0, sizeof($var) - 1))) {
-                    $properties = array_map(array($this, 'name_value'),
-                                            array_keys($var),
-                                            array_values($var));
+				return '{' . join(',', $properties) . '}';
+			}
 
-                    foreach($properties as $property) {
-                        if(Services_JSON::isError($property)) {
-                            return $property;
-                        }
-                    }
+			$elements = array_map(array($this, 'encode'), $var);
 
-                    return '{' . join(',', $properties) . '}';
-                }
+			foreach ($elements as $element) {
+				if (Services_JSON::isError($element)) {
+					return $element;
+				}
+			}
 
-                // treat it like a regular array
-                $elements = array_map(array($this, 'encode'), $var);
+			return '[' . join(',', $elements) . ']';
+		case 'object':
+			$vars = get_object_vars($var);
+			$properties = array_map(array($this, 'name_value'), array_keys($vars), array_values($vars));
 
-                foreach($elements as $element) {
-                    if(Services_JSON::isError($element)) {
-                        return $element;
-                    }
-                }
+			foreach ($properties as $property) {
+				if (Services_JSON::isError($property)) {
+					return $property;
+				}
+			}
 
-                return '[' . join(',', $elements) . ']';
+			return '{' . join(',', $properties) . '}';
+		default:
+			return $this->use & SERVICES_JSON_SUPPRESS_ERRORS ? 'null' : new Services_JSON_Error(gettype($var) . ' can not be encoded as JSON string');
+		}
+	}
 
-            case 'object':
-                $vars = get_object_vars($var);
-
-                $properties = array_map(array($this, 'name_value'),
-                                        array_keys($vars),
-                                        array_values($vars));
-
-                foreach($properties as $property) {
-                    if(Services_JSON::isError($property)) {
-                        return $property;
-                    }
-                }
-
-                return '{' . join(',', $properties) . '}';
-
-            default:
-                return ($this->use & SERVICES_JSON_SUPPRESS_ERRORS)
-                    ? 'null'
-                    : new Services_JSON_Error(gettype($var)." can not be encoded as JSON string");
-        }
-    }
-
-   /**
+	/**
     * array-walking function for use in generating JSON-formatted name-value pairs
     *
     * @param    string  $name   name of key to use
@@ -431,18 +231,18 @@ class Services_JSON
     * @return   string  JSON-formatted name-value pair, like '"name":value'
     * @access   private
     */
-    function name_value($name, $value)
-    {
-        $encoded_value = $this->encode($value);
+	public function name_value($name, $value)
+	{
+		$encoded_value = $this->encode($value);
 
-        if(Services_JSON::isError($encoded_value)) {
-            return $encoded_value;
-        }
+		if (Services_JSON::isError($encoded_value)) {
+			return $encoded_value;
+		}
 
-        return $this->encode(strval($name)) . ':' . $encoded_value;
-    }
+		return $this->encode(strval($name)) . ':' . $encoded_value;
+	}
 
-   /**
+	/**
     * reduce a string by removing leading and trailing comments and whitespace
     *
     * @param    $str    string      string value to strip of comments and whitespace
@@ -450,26 +250,13 @@ class Services_JSON
     * @return   string  string value stripped of comments and whitespace
     * @access   private
     */
-    function reduce_string($str)
-    {
-        $str = preg_replace(array(
+	public function reduce_string($str)
+	{
+		$str = preg_replace(array('#^\\s*//(.+)$#m', '#^\\s*/\\*(.+)\\*/#Us', '#/\\*(.+)\\*/\\s*$#Us'), '', $str);
+		return trim($str);
+	}
 
-                // eliminate single line comments in '// ...' form
-                '#^\s*//(.+)$#m',
-
-                // eliminate multi-line comments in '/* ... */' form, at start of string
-                '#^\s*/\*(.+)\*/#Us',
-
-                // eliminate multi-line comments in '/* ... */' form, at end of string
-                '#/\*(.+)\*/\s*$#Us'
-
-            ), '', $str);
-
-        // eliminate extraneous space
-        return trim($str);
-    }
-
-   /**
+	/**
     * decodes a JSON string into appropriate variable
     *
     * @param    string  $str    JSON-formatted string
@@ -481,325 +268,287 @@ class Services_JSON
     *                   in ASCII or UTF-8 format!
     * @access   public
     */
-    function decode($str)
-    {
-        $str = $this->reduce_string($str);
+	public function decode($str)
+	{
+		$str = $this->reduce_string($str);
 
-        switch (strtolower($str)) {
-            case 'true':
-                return true;
+		switch (strtolower($str)) {
+		case 'true':
+			return true;
+		case 'false':
+			return false;
+		case 'null':
+			return NULL;
+		default:
+			$m = array();
 
-            case 'false':
-                return false;
+			if (is_numeric($str)) {
+				return (double) $str == (int) $str ? (int) $str : (double) $str;
+			}
 
-            case 'null':
-                return null;
+			if (preg_match('/^("|\').*(\\1)$/s', $str, $m) && $m[1] == $m[2]) {
+				$delim = substr($str, 0, 1);
+				$chrs = substr($str, 1, -1);
+				$utf8 = '';
+				$strlen_chrs = strlen($chrs);
+				$c = 0;
 
-            default:
-                $m = array();
+				while ($c < $strlen_chrs) {
+					$substr_chrs_c_2 = substr($chrs, $c, 2);
+					$ord_chrs_c = ord($chrs[$c]);
 
-                if (is_numeric($str)) {
-                    // Lookie-loo, it's a number
+					switch (true) {
+					case $substr_chrs_c_2 == '\\b':
+						$utf8 .= chr(8);
+						++$c;
+						break;
 
-                    // This would work on its own, but I'm trying to be
-                    // good about returning integers where appropriate:
-                    // return (float)$str;
+					case $substr_chrs_c_2 == '\\t':
+						$utf8 .= chr(9);
+						++$c;
+						break;
 
-                    // Return float or int, as appropriate
-                    return ((float)$str == (integer)$str)
-                        ? (integer)$str
-                        : (float)$str;
+					case $substr_chrs_c_2 == '\\n':
+						$utf8 .= chr(10);
+						++$c;
+						break;
 
-                } elseif (preg_match('/^("|\').*(\1)$/s', $str, $m) && $m[1] == $m[2]) {
-                    // STRINGS RETURNED IN UTF-8 FORMAT
-                    $delim = substr($str, 0, 1);
-                    $chrs = substr($str, 1, -1);
-                    $utf8 = '';
-                    $strlen_chrs = strlen($chrs);
+					case $substr_chrs_c_2 == '\\f':
+						$utf8 .= chr(12);
+						++$c;
+						break;
 
-                    for ($c = 0; $c < $strlen_chrs; ++$c) {
+					case $substr_chrs_c_2 == '\\r':
+						$utf8 .= chr(13);
+						++$c;
+						break;
 
-                        $substr_chrs_c_2 = substr($chrs, $c, 2);
-                        $ord_chrs_c = ord($chrs{$c});
+					case $substr_chrs_c_2 == '\\"':
+					case $substr_chrs_c_2 == '\\\'':
+					case $substr_chrs_c_2 == '\\\\':
+					case $substr_chrs_c_2 == '\\/':
+						if ($delim == '"' && $substr_chrs_c_2 != '\\\'' || $delim == '\'' && $substr_chrs_c_2 != '\\"') {
+							$utf8 .= $chrs[++$c];
+						}
 
-                        switch (true) {
-                            case $substr_chrs_c_2 == '\b':
-                                $utf8 .= chr(0x08);
-                                ++$c;
-                                break;
-                            case $substr_chrs_c_2 == '\t':
-                                $utf8 .= chr(0x09);
-                                ++$c;
-                                break;
-                            case $substr_chrs_c_2 == '\n':
-                                $utf8 .= chr(0x0A);
-                                ++$c;
-                                break;
-                            case $substr_chrs_c_2 == '\f':
-                                $utf8 .= chr(0x0C);
-                                ++$c;
-                                break;
-                            case $substr_chrs_c_2 == '\r':
-                                $utf8 .= chr(0x0D);
-                                ++$c;
-                                break;
+						break;
 
-                            case $substr_chrs_c_2 == '\\"':
-                            case $substr_chrs_c_2 == '\\\'':
-                            case $substr_chrs_c_2 == '\\\\':
-                            case $substr_chrs_c_2 == '\\/':
-                                if (($delim == '"' && $substr_chrs_c_2 != '\\\'') ||
-                                   ($delim == "'" && $substr_chrs_c_2 != '\\"')) {
-                                    $utf8 .= $chrs{++$c};
-                                }
-                                break;
+					case preg_match('/\\\\u[0-9A-F]{4}/i', substr($chrs, $c, 6)):
+						$utf16 = chr(hexdec(substr($chrs, $c + 2, 2))) . chr(hexdec(substr($chrs, $c + 4, 2)));
+						$utf8 .= $this->utf162utf8($utf16);
+						$c += 5;
+						break;
 
-                            case preg_match('/\\\u[0-9A-F]{4}/i', substr($chrs, $c, 6)):
-                                // single, escaped unicode character
-                                $utf16 = chr(hexdec(substr($chrs, ($c + 2), 2)))
-                                       . chr(hexdec(substr($chrs, ($c + 4), 2)));
-                                $utf8 .= $this->utf162utf8($utf16);
-                                $c += 5;
-                                break;
+					case 32 <= $ord_chrs_c && $ord_chrs_c <= 127:
+						$utf8 .= $chrs[$c];
+						break;
 
-                            case ($ord_chrs_c >= 0x20) && ($ord_chrs_c <= 0x7F):
-                                $utf8 .= $chrs{$c};
-                                break;
+					case ($ord_chrs_c & 224) == 192:
+						$utf8 .= substr($chrs, $c, 2);
+						++$c;
+						break;
 
-                            case ($ord_chrs_c & 0xE0) == 0xC0:
-                                // characters U-00000080 - U-000007FF, mask 110XXXXX
-                                //see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                                $utf8 .= substr($chrs, $c, 2);
-                                ++$c;
-                                break;
+					case ($ord_chrs_c & 240) == 224:
+						$utf8 .= substr($chrs, $c, 3);
+						$c += 2;
+						break;
 
-                            case ($ord_chrs_c & 0xF0) == 0xE0:
-                                // characters U-00000800 - U-0000FFFF, mask 1110XXXX
-                                // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                                $utf8 .= substr($chrs, $c, 3);
-                                $c += 2;
-                                break;
+					case ($ord_chrs_c & 248) == 240:
+						$utf8 .= substr($chrs, $c, 4);
+						$c += 3;
+						break;
 
-                            case ($ord_chrs_c & 0xF8) == 0xF0:
-                                // characters U-00010000 - U-001FFFFF, mask 11110XXX
-                                // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                                $utf8 .= substr($chrs, $c, 4);
-                                $c += 3;
-                                break;
+					case ($ord_chrs_c & 252) == 248:
+						$utf8 .= substr($chrs, $c, 5);
+						$c += 4;
+						break;
 
-                            case ($ord_chrs_c & 0xFC) == 0xF8:
-                                // characters U-00200000 - U-03FFFFFF, mask 111110XX
-                                // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                                $utf8 .= substr($chrs, $c, 5);
-                                $c += 4;
-                                break;
+					case ($ord_chrs_c & 254) == 252:
+						$utf8 .= substr($chrs, $c, 6);
+						$c += 5;
+						break;
+					}
 
-                            case ($ord_chrs_c & 0xFE) == 0xFC:
-                                // characters U-04000000 - U-7FFFFFFF, mask 1111110X
-                                // see http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
-                                $utf8 .= substr($chrs, $c, 6);
-                                $c += 5;
-                                break;
+					++$c;
+				}
 
-                        }
+				return $utf8;
+			}
 
-                    }
+			if (preg_match('/^\\[.*\\]$/s', $str) || preg_match('/^\\{.*\\}$/s', $str)) {
+				if ($str[0] == '[') {
+					$stk = array(SERVICES_JSON_IN_ARR);
+					$arr = array();
+				}
+				else if ($this->use & SERVICES_JSON_LOOSE_TYPE) {
+					$stk = array(SERVICES_JSON_IN_OBJ);
+					$obj = array();
+				}
+				else {
+					$stk = array(SERVICES_JSON_IN_OBJ);
+					$obj = new stdClass();
+				}
 
-                    return $utf8;
+				array_push($stk, array('what' => SERVICES_JSON_SLICE, 'where' => 0, 'delim' => false));
+				$chrs = substr($str, 1, -1);
+				$chrs = $this->reduce_string($chrs);
 
-                } elseif (preg_match('/^\[.*\]$/s', $str) || preg_match('/^\{.*\}$/s', $str)) {
-                    // array, or object notation
+				if ($chrs == '') {
+					if (reset($stk) == SERVICES_JSON_IN_ARR) {
+						return $arr;
+					}
 
-                    if ($str{0} == '[') {
-                        $stk = array(SERVICES_JSON_IN_ARR);
-                        $arr = array();
-                    } else {
-                        if ($this->use & SERVICES_JSON_LOOSE_TYPE) {
-                            $stk = array(SERVICES_JSON_IN_OBJ);
-                            $obj = array();
-                        } else {
-                            $stk = array(SERVICES_JSON_IN_OBJ);
-                            $obj = new stdClass();
-                        }
-                    }
+					return $obj;
+				}
 
-                    array_push($stk, array('what'  => SERVICES_JSON_SLICE,
-                                           'where' => 0,
-                                           'delim' => false));
+				$strlen_chrs = strlen($chrs);
+				$c = 0;
 
-                    $chrs = substr($str, 1, -1);
-                    $chrs = $this->reduce_string($chrs);
+				while ($c <= $strlen_chrs) {
+					$top = end($stk);
+					$substr_chrs_c_2 = substr($chrs, $c, 2);
+					if ($c == $strlen_chrs || $chrs[$c] == ',' && $top['what'] == SERVICES_JSON_SLICE) {
+						$slice = substr($chrs, $top['where'], $c - $top['where']);
+						array_push($stk, array('what' => SERVICES_JSON_SLICE, 'where' => $c + 1, 'delim' => false));
 
-                    if ($chrs == '') {
-                        if (reset($stk) == SERVICES_JSON_IN_ARR) {
-                            return $arr;
+						if (reset($stk) == SERVICES_JSON_IN_ARR) {
+							array_push($arr, $this->decode($slice));
+						}
+						else {
+							if (reset($stk) == SERVICES_JSON_IN_OBJ) {
+								$parts = array();
 
-                        } else {
-                            return $obj;
+								if (preg_match('/^\\s*(["\'].*[^\\\\]["\'])\\s*:\\s*(\\S.*),?$/Uis', $slice, $parts)) {
+									$key = $this->decode($parts[1]);
+									$val = $this->decode($parts[2]);
 
-                        }
-                    }
+									if ($this->use & SERVICES_JSON_LOOSE_TYPE) {
+										$obj[$key] = $val;
+									}
+									else {
+										$obj->$key = $val;
+									}
+								}
+								else {
+									if (preg_match('/^\\s*(\\w+)\\s*:\\s*(\\S.*),?$/Uis', $slice, $parts)) {
+										$key = $parts[1];
+										$val = $this->decode($parts[2]);
 
-                    //print("\nparsing {$chrs}\n");
+										if ($this->use & SERVICES_JSON_LOOSE_TYPE) {
+											$obj[$key] = $val;
+										}
+										else {
+											$obj->$key = $val;
+										}
+									}
+								}
+							}
+						}
+					}
+					else {
+						if (($chrs[$c] == '"' || $chrs[$c] == '\'') && $top['what'] != SERVICES_JSON_IN_STR) {
+							array_push($stk, array('what' => SERVICES_JSON_IN_STR, 'where' => $c, 'delim' => $chrs[$c]));
+						}
+						else {
+							if ($chrs[$c] == $top['delim'] && $top['what'] == SERVICES_JSON_IN_STR && ($chrs[$c - 1] != '\\' || $chrs[$c - 1] == '\\' && $chrs[$c - 2] == '\\')) {
+								array_pop($stk);
+							}
+							else {
+								if ($chrs[$c] == '[' && in_array($top['what'], array(SERVICES_JSON_SLICE, SERVICES_JSON_IN_ARR, SERVICES_JSON_IN_OBJ))) {
+									array_push($stk, array('what' => SERVICES_JSON_IN_ARR, 'where' => $c, 'delim' => false));
+								}
+								else {
+									if ($chrs[$c] == ']' && $top['what'] == SERVICES_JSON_IN_ARR) {
+										array_pop($stk);
+									}
+									else {
+										if ($chrs[$c] == '{' && in_array($top['what'], array(SERVICES_JSON_SLICE, SERVICES_JSON_IN_ARR, SERVICES_JSON_IN_OBJ))) {
+											array_push($stk, array('what' => SERVICES_JSON_IN_OBJ, 'where' => $c, 'delim' => false));
+										}
+										else {
+											if ($chrs[$c] == '}' && $top['what'] == SERVICES_JSON_IN_OBJ) {
+												array_pop($stk);
+											}
+											else {
+												if ($substr_chrs_c_2 == '/*' && in_array($top['what'], array(SERVICES_JSON_SLICE, SERVICES_JSON_IN_ARR, SERVICES_JSON_IN_OBJ))) {
+													array_push($stk, array('what' => SERVICES_JSON_IN_CMT, 'where' => $c, 'delim' => false));
+													++$c;
+												}
+												else {
+													if ($substr_chrs_c_2 == '*/' && $top['what'] == SERVICES_JSON_IN_CMT) {
+														array_pop($stk);
+														++$c;
+														$i = $top['where'];
 
-                    $strlen_chrs = strlen($chrs);
+														while ($i <= $c) {
+															$chrs = substr_replace($chrs, ' ', $i, 1);
+															++$i;
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 
-                    for ($c = 0; $c <= $strlen_chrs; ++$c) {
+					++$c;
+				}
 
-                        $top = end($stk);
-                        $substr_chrs_c_2 = substr($chrs, $c, 2);
+				if (reset($stk) == SERVICES_JSON_IN_ARR) {
+					return $arr;
+				}
 
-                        if (($c == $strlen_chrs) || (($chrs{$c} == ',') && ($top['what'] == SERVICES_JSON_SLICE))) {
-                            // found a comma that is not inside a string, array, etc.,
-                            // OR we've reached the end of the character list
-                            $slice = substr($chrs, $top['where'], ($c - $top['where']));
-                            array_push($stk, array('what' => SERVICES_JSON_SLICE, 'where' => ($c + 1), 'delim' => false));
-                            //print("Found split at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
+				if (reset($stk) == SERVICES_JSON_IN_OBJ) {
+					return $obj;
+				}
+			}
+		}
+	}
 
-                            if (reset($stk) == SERVICES_JSON_IN_ARR) {
-                                // we are in an array, so just push an element onto the stack
-                                array_push($arr, $this->decode($slice));
-
-                            } elseif (reset($stk) == SERVICES_JSON_IN_OBJ) {
-                                // we are in an object, so figure
-                                // out the property name and set an
-                                // element in an associative array,
-                                // for now
-                                $parts = array();
-                                
-                                if (preg_match('/^\s*(["\'].*[^\\\]["\'])\s*:\s*(\S.*),?$/Uis', $slice, $parts)) {
-                                    // "name":value pair
-                                    $key = $this->decode($parts[1]);
-                                    $val = $this->decode($parts[2]);
-
-                                    if ($this->use & SERVICES_JSON_LOOSE_TYPE) {
-                                        $obj[$key] = $val;
-                                    } else {
-                                        $obj->$key = $val;
-                                    }
-                                } elseif (preg_match('/^\s*(\w+)\s*:\s*(\S.*),?$/Uis', $slice, $parts)) {
-                                    // name:value pair, where name is unquoted
-                                    $key = $parts[1];
-                                    $val = $this->decode($parts[2]);
-
-                                    if ($this->use & SERVICES_JSON_LOOSE_TYPE) {
-                                        $obj[$key] = $val;
-                                    } else {
-                                        $obj->$key = $val;
-                                    }
-                                }
-
-                            }
-
-                        } elseif ((($chrs{$c} == '"') || ($chrs{$c} == "'")) && ($top['what'] != SERVICES_JSON_IN_STR)) {
-                            // found a quote, and we are not inside a string
-                            array_push($stk, array('what' => SERVICES_JSON_IN_STR, 'where' => $c, 'delim' => $chrs{$c}));
-                            //print("Found start of string at {$c}\n");
-
-                        } elseif (($chrs{$c} == $top['delim']) &&
-                                 ($top['what'] == SERVICES_JSON_IN_STR) &&
-                                 (($chrs{$c - 1} != '\\') ||
-                                 ($chrs{$c - 1} == '\\' && $chrs{$c - 2} == '\\'))) {
-                            // found a quote, we're in a string, and it's not escaped
-                            array_pop($stk);
-                            //print("Found end of string at {$c}: ".substr($chrs, $top['where'], (1 + 1 + $c - $top['where']))."\n");
-
-                        } elseif (($chrs{$c} == '[') &&
-                                 in_array($top['what'], array(SERVICES_JSON_SLICE, SERVICES_JSON_IN_ARR, SERVICES_JSON_IN_OBJ))) {
-                            // found a left-bracket, and we are in an array, object, or slice
-                            array_push($stk, array('what' => SERVICES_JSON_IN_ARR, 'where' => $c, 'delim' => false));
-                            //print("Found start of array at {$c}\n");
-
-                        } elseif (($chrs{$c} == ']') && ($top['what'] == SERVICES_JSON_IN_ARR)) {
-                            // found a right-bracket, and we're in an array
-                            array_pop($stk);
-                            //print("Found end of array at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
-
-                        } elseif (($chrs{$c} == '{') &&
-                                 in_array($top['what'], array(SERVICES_JSON_SLICE, SERVICES_JSON_IN_ARR, SERVICES_JSON_IN_OBJ))) {
-                            // found a left-brace, and we are in an array, object, or slice
-                            array_push($stk, array('what' => SERVICES_JSON_IN_OBJ, 'where' => $c, 'delim' => false));
-                            //print("Found start of object at {$c}\n");
-
-                        } elseif (($chrs{$c} == '}') && ($top['what'] == SERVICES_JSON_IN_OBJ)) {
-                            // found a right-brace, and we're in an object
-                            array_pop($stk);
-                            //print("Found end of object at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
-
-                        } elseif (($substr_chrs_c_2 == '/*') &&
-                                 in_array($top['what'], array(SERVICES_JSON_SLICE, SERVICES_JSON_IN_ARR, SERVICES_JSON_IN_OBJ))) {
-                            // found a comment start, and we are in an array, object, or slice
-                            array_push($stk, array('what' => SERVICES_JSON_IN_CMT, 'where' => $c, 'delim' => false));
-                            $c++;
-                            //print("Found start of comment at {$c}\n");
-
-                        } elseif (($substr_chrs_c_2 == '*/') && ($top['what'] == SERVICES_JSON_IN_CMT)) {
-                            // found a comment end, and we're in one now
-                            array_pop($stk);
-                            $c++;
-
-                            for ($i = $top['where']; $i <= $c; ++$i)
-                                $chrs = substr_replace($chrs, ' ', $i, 1);
-
-                            //print("Found end of comment at {$c}: ".substr($chrs, $top['where'], (1 + $c - $top['where']))."\n");
-
-                        }
-
-                    }
-
-                    if (reset($stk) == SERVICES_JSON_IN_ARR) {
-                        return $arr;
-
-                    } elseif (reset($stk) == SERVICES_JSON_IN_OBJ) {
-                        return $obj;
-
-                    }
-
-                }
-        }
-    }
-
-    /**
+	/**
      * @todo Ultimately, this should just call PEAR::isError()
      */
-    function isError($data, $code = null)
-    {
-        if (class_exists('pear')) {
-            return PEAR::isError($data, $code);
-        } elseif (is_object($data) && (get_class($data) == 'services_json_error' ||
-                                 is_subclass_of($data, 'services_json_error'))) {
-            return true;
-        }
+	public function isError($data, $code = NULL)
+	{
+		if (class_exists('pear')) {
+			return PEAR::isError($data, $code);
+		}
 
-        return false;
-    }
+		if (is_object($data) && (get_class($data) == 'services_json_error' || is_subclass_of($data, 'services_json_error'))) {
+			return true;
+		}
+
+		return false;
+	}
 }
+
+define('SERVICES_JSON_SLICE', 1);
+define('SERVICES_JSON_IN_STR', 2);
+define('SERVICES_JSON_IN_ARR', 3);
+define('SERVICES_JSON_IN_OBJ', 4);
+define('SERVICES_JSON_IN_CMT', 5);
+define('SERVICES_JSON_LOOSE_TYPE', 16);
+define('SERVICES_JSON_SUPPRESS_ERRORS', 32);
 
 if (class_exists('PEAR_Error')) {
-
-    class Services_JSON_Error extends PEAR_Error
-    {
-        function Services_JSON_Error($message = 'unknown error', $code = null,
-                                     $mode = null, $options = null, $userinfo = null)
-        {
-            parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
-        }
-    }
-
-} else {
-
-    /**
-     * @todo Ultimately, this class shall be descended from PEAR_Error
-     */
-    class Services_JSON_Error
-    {
-        function Services_JSON_Error($message = 'unknown error', $code = null,
-                                     $mode = null, $options = null, $userinfo = null)
-        {
-
-        }
-    }
-
+	class Services_JSON_Error extends PEAR_Error
+	{
+		public function Services_JSON_Error($message = 'unknown error', $code = NULL, $mode = NULL, $options = NULL, $userinfo = NULL)
+		{
+			parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
+		}
+	}
+	return 1;
 }
-    
+
+class Services_JSON_Error
+{
+	public function Services_JSON_Error($message = 'unknown error', $code = NULL, $mode = NULL, $options = NULL, $userinfo = NULL)
+	{
+	}
+}
+
 ?>

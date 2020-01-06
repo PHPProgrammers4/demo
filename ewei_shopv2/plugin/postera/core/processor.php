@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -42,7 +42,6 @@ class PosteraProcessor extends PluginProcessor
 		$timeout = 4;
 		load()->func('communication');
 		$url = mobileUrl('postera/build', array('openid' => $obj->message['from'], 'content' => urlencode($obj->message['content']), 'timestamp' => TIMESTAMP), true);
-		file_put_contents(__DIR__ . '/url.json', $url, 8);
 		$resp = ihttp_request($url, array(), array(), $timeout);
 		return $this->responseEmpty();
 	}
@@ -100,10 +99,10 @@ class PosteraProcessor extends PluginProcessor
 		}
 
 		if ($poster['resptype'] == '0') {
-			if (!empty($poster['resptitle'])) {
+			if (!empty($poster['resptitle']) && $poster['type'] != 3) {
 				$news = array(
 					array('title' => $poster['resptitle'], 'description' => $poster['respdesc'], 'picurl' => tomedia($poster['respthumb']), 'url' => $url)
-				);
+					);
 				return $obj->respNews($news);
 			}
 
@@ -112,16 +111,25 @@ class PosteraProcessor extends PluginProcessor
 
 				if (!empty($goods)) {
 					$url = mobileUrl('goods/detail', array('id' => $goods['id'], 'mid' => $qrmember['id']));
-					$news = array(
-						array('title' => $goods['title'], 'description' => $goods['description'], 'picurl' => tomedia($goods['thumb']), 'url' => $url)
-					);
+
+					if (!empty($poster['resptitle'])) {
+						$news = array(
+							array('title' => $poster['resptitle'], 'description' => $poster['respdesc'], 'picurl' => tomedia($poster['respthumb']), 'url' => $url)
+							);
+					}
+					else {
+						$news = array(
+							array('title' => $goods['title'], 'description' => $goods['description'], 'picurl' => tomedia($goods['thumb']), 'url' => $url)
+							);
+					}
+
 					return $obj->respNews($news);
 				}
 			}
 		}
 
 		if ($poster['resptype'] == '1') {
-			if (!empty($poster['resptext'])) {
+			if (!empty($poster['resptitle']) && $poster['type'] != 3) {
 				return $obj->respText($poster['resptext']);
 			}
 
@@ -130,6 +138,11 @@ class PosteraProcessor extends PluginProcessor
 
 				if (!empty($goods)) {
 					$url = mobileUrl('goods/detail', array('id' => $goods['id'], 'mid' => $qrmember['id']));
+
+					if (!empty($poster['resptitle'])) {
+						return $obj->respText($poster['resptext']);
+					}
+
 					return $obj->respText('<a href="' . $url . '">' . $goods['title'] . '</a>
 ' . $goods['description']);
 				}
@@ -262,13 +275,13 @@ class PosteraProcessor extends PluginProcessor
 
 				if (!empty($poster['templateid'])) {
 					m('message')->sendTplNotice($qr['openid'], $poster['templateid'], array(
-						'first'    => array('value' => '推荐关注奖励到账通知', 'color' => '#4a5077'),
-						'keyword1' => array('value' => '推荐奖励', 'color' => '#4a5077'),
-						'keyword2' => array('value' => $subtext, 'color' => '#4a5077'),
-						'keyword3' => array('value' => date('Y-m-d H:i:s'), 'color' => '#4a5077'),
-						'remark'   => array('value' => '
+	'first'    => array('value' => '推荐关注奖励到账通知', 'color' => '#4a5077'),
+	'keyword1' => array('value' => '推荐奖励', 'color' => '#4a5077'),
+	'keyword2' => array('value' => $subtext, 'color' => '#4a5077'),
+	'keyword3' => array('value' => date('Y-m-d H:i:s'), 'color' => '#4a5077'),
+	'remark'   => array('value' => '
 谢谢您对我们的支持！', 'color' => '#4a5077')
-					), '');
+	), '');
 				}
 				else {
 					m('message')->sendCustomNotice($qr['openid'], $subtext);
@@ -288,13 +301,13 @@ class PosteraProcessor extends PluginProcessor
 
 				if (!empty($poster['templateid'])) {
 					m('message')->sendTplNotice($openid, $poster['templateid'], array(
-						'first'    => array('value' => '关注奖励到账通知', 'color' => '#4a5077'),
-						'keyword1' => array('value' => '关注奖励', 'color' => '#4a5077'),
-						'keyword2' => array('value' => $entrytext, 'color' => '#4a5077'),
-						'keyword3' => array('value' => date('Y-m-d H:i:s'), 'color' => '#4a5077'),
-						'remark'   => array('value' => '
+	'first'    => array('value' => '关注奖励到账通知', 'color' => '#4a5077'),
+	'keyword1' => array('value' => '关注奖励', 'color' => '#4a5077'),
+	'keyword2' => array('value' => $entrytext, 'color' => '#4a5077'),
+	'keyword3' => array('value' => date('Y-m-d H:i:s'), 'color' => '#4a5077'),
+	'remark'   => array('value' => '
 谢谢您对我们的支持！', 'color' => '#4a5077')
-					), '');
+	), '');
 				}
 				else {
 					m('message')->sendCustomNotice($openid, $entrytext);
@@ -333,10 +346,10 @@ class PosteraProcessor extends PluginProcessor
 		}
 
 		if ($poster['resptype'] == '0') {
-			if (!empty($poster['resptitle'])) {
+			if (!empty($poster['resptitle']) && $poster['type'] != 3) {
 				$news = array(
 					array('title' => $poster['resptitle'], 'description' => $poster['respdesc'], 'picurl' => tomedia($poster['respthumb']), 'url' => $url)
-				);
+					);
 				return $obj->respNews($news);
 			}
 
@@ -347,7 +360,7 @@ class PosteraProcessor extends PluginProcessor
 					$url = mobileUrl('goods/detail', array('id' => $goods['id'], 'mid' => $qrmember['id']));
 					$news = array(
 						array('title' => $goods['title'], 'description' => $goods['description'], 'picurl' => tomedia($goods['thumb']), 'url' => $url)
-					);
+						);
 					return $obj->respNews($news);
 				}
 			}

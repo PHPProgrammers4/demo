@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -11,8 +10,7 @@ class Category_EweiShopV2Page extends MerchWebPage
 	{
 		global $_W;
 		global $_GPC;
-		$list = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_creditshop_category') . ('
-		WHERE uniacid = \'' . $_W['uniacid'] . '\' ORDER BY displayorder,id DESC'));
+		$list = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_creditshop_category') . ("\r\n\t\tWHERE uniacid = '" . $_W['uniacid'] . '\' ORDER BY displayorder,id DESC'));
 		$merch_category = $this->getSet('merch_creditshop_category');
 
 		if (!empty($merch_category)) {

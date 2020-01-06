@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -360,7 +359,7 @@ class Data_EweiShopV2Page extends MerchWebPage
 				'uniacid' => $_W['uniacid'],
 				'merchid' => $_W['merchid'],
 				'status'  => $col['status']
-			);
+				);
 			unset($col['status']);
 			$data['fields'] = iserializer($col);
 			$datas[] = $data;

@@ -1,56 +1,39 @@
 <?php
-//dezend by http://www.yunlu99.com/
-class Sale_EweiShopV2Model
+if (!(defined('IN_IA'))) 
 {
-	/**
-     * 全返的自定文字
-     * @param bool $echo 是否直接输出
-     * @return string|void 不直接输出时返回文字
-     * @author cunx
-     */
-	public function getFullBackText($echo = false)
+	exit('Access Denied');
+}
+class Sale_EweiShopV2Model 
+{
+	public function getFullBackText($echo = false) 
 	{
 		$text = '全返';
 		$set = m('common')->getSysset('fullback');
-
-		if (!empty($set['text'])) {
+		if (!(empty($set['text']))) 
+		{
 			$text = $set['text'];
 		}
-
-		if ($echo) {
+		if ($echo) 
+		{
 			echo $text;
-			return NULL;
+			return;
 		}
-
 		return $text;
 	}
-
-	/**
-     * 解析发票抬头
-     * @param $invoice_name
-     * @param bool $include_title
-     * @return array
-     * @author cunx
-     */
-	public function parseInvoiceInfo($invoice_name)
+	public function parseInvoiceInfo($invoice_name) 
 	{
 		$invoice_name = (string) $invoice_name;
 		$invoice_arr = array('entity' => false, 'company' => false, 'title' => false, 'number' => false);
 		$invoice_name = str_replace(array('[', ']', '（', '）', ':'), '', $invoice_name);
 		$invoice_info = explode(' ', $invoice_name);
-		if (!empty($invoice_info) && ($invoice_info[0] === '电子' || $invoice_info[0] === '纸质')) {
-			$invoice_arr['entity'] = $invoice_info[0] === '电子' ? false : true;
+		if (!(empty($invoice_info)) && (($invoice_info[0] === '电子') || ($invoice_info[0] === '纸质'))) 
+		{
+			$invoice_arr['entity'] = (($invoice_info[0] === '电子' ? false : true));
 			$invoice_arr['title'] = $invoice_info[1];
-			$invoice_arr['company'] = $invoice_info[2] === '个人' ? false : true;
-			$invoice_arr['number'] = $invoice_info[3] ? $invoice_info[3] : false;
+			$invoice_arr['company'] = (($invoice_info[2] === '个人' ? false : true));
+			$invoice_arr['number'] = (($invoice_info[3] ? $invoice_info[3] : false));
 		}
-
 		return $invoice_arr;
 	}
 }
-
-if (!defined('IN_IA')) {
-	exit('Access Denied');
-}
-
 ?>

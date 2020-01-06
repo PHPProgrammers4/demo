@@ -61,7 +61,7 @@
 
 <!--参数已完成-->
     {if count($params)>0}
-    <div class="fui-content param-block  {if !$goods['canbuy']}notbuy{/if}" >
+    <div class="fui-content param-block  {if !$goods['canbuy']}notbuy{/if}" style="bottom: 0;">
         <div class="fui-cell-group notop">
             {if !empty($params)}
             {loop $params $p}
@@ -193,9 +193,6 @@
         $('.fui-swipe.goods-swipe').css('height', height );
         $('.fui-swipe.goods-swipe .fui-swipe-wrapper .fui-swipe-item img').css('height', height);
     }
-    function getImg (obj) {
-        $('.fui-swipe.goods-swipe .fui-swipe-wrapper .fui-swip-item img').css('transfrom','scale(2,2)')
-    }
 </script>
 <!--轮播已完成-->
 <div class='fui-swipe goods-swipe' style="height: 0;">
@@ -204,17 +201,20 @@
     {/if}
 
     <div class='fui-swipe-wrapper'>
+
         {loop $thumbs  $index $thumb}
         <div class='fui-swipe-item'>
+
+
                 {if $index == "0" }
-                <img src="{php echo tomedia($thumb)}" onload='getHeight(this)' touchstart='getImg(this)'/>
+                <img src="{php echo tomedia($thumb)}" onload='getHeight(this)'/>
                 {else}
                 <img src="{php echo tomedia($thumb)}"/>
                 {/if}
         </div>
         {/loop}
     </div>
-    <div class='fui-swipe-page' style="text-align: center"></div>
+    <div class='fui-swipe-page'></div>
     {if $goods['total']<=0 && !empty($_W['shopset']['shop']['saleout'])}
     <div class="salez">
         <img src="{php echo tomedia($_W['shopset']['shop']['saleout'])}">
@@ -342,11 +342,9 @@
                 {else}
 
                 <!--最正常价格-->
-                &yen;{if $goods['ispresell']>0 && ($goods['preselltimeend'] == 0 || $goods['preselltimeend'] > time()) && $goods['hasoption']==1}
+                &yen;{if $goods['ispresell']>0 && ($goods['preselltimeend'] == 0 || $goods['preselltimeend'] > time())}
                         <!--预售-->
-                            {$goods['minpresellprice']}~{$goods['maxpresellprice']}
-                    {else if $goods['ispresell']>0 && $goods['hasoption']==0}
-                            {$goods['presellprice']}
+                        {$goods['presellprice']}
                     {else}
                         <!--基础价格-->
                         {if $goods['minprice']==$goods['maxprice']}
@@ -380,7 +378,7 @@
 
 
     <!--促销倒计时-->
-    {if $goods['isdiscount'] && $goods['isdiscount_time']>=time() && $goods['isdiscount_time_start'] < time()}
+    {if $goods['isdiscount'] && $goods['isdiscount_time']>=time()}
     <div class="row row-time">
         <div id='discount-container' class='fui-labeltext fui-labeltext-danger'
              data-now="{php echo date('Y-m-d H:i:s')}"
@@ -686,7 +684,7 @@
 {/if}
 
 <!--配送区域完成-->
-{if $has_city && $goods['type']!=5 && $goods['isverify']!=2 }
+{if $has_city && $goods['type']!=5 }
 <div class='fui-cell-group fui-cell-click fui-sale-group noborder'  id="city-picker">
     <div class='fui-cell'>
         <div class='fui-cell-text' style="font-size: 0.7rem;line-height: 0.8rem">{if empty($onlysent)}不{else}只{/if}配送区域:

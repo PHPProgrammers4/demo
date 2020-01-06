@@ -55,16 +55,10 @@
                     <option value="2" {if $refund['rtype']=='2'}selected{/if}>换货</option>
                     {else}
                         {if $order['status']==2 || $order['status']==3 || $order['sendtime']>0}
-                            {if ($refundgoods['returngoods'] && $order['cannotrefund']) || !$order['cannotrefund']}
-                                <option value="1" {if $refund['rtype']=='1'}selected{/if}>退货退款</option>
-                            {/if}
-                            {if ($refundgoods['exchange'] && $order['cannotrefund']) || !$order['cannotrefund']}
-                                <option value="2" {if $refund['rtype']=='2'}selected{/if}>换货</option>
-                            {/if}
+                        <option value="1" {if $refund['rtype']=='1'}selected{/if}>退货退款</option>
+                        <option value="2" {if $refund['rtype']=='2'}selected{/if}>换货</option>
                         {/if}
-                        {if ($refundgoods['refund'] && $order['cannotrefund']) || !$order['cannotrefund']}
-                            <option value="0" {if $refund['rtype']=='0'}selected{/if}>退款(仅退款不退货)</option>
-                        {/if}
+                        <option value="0" {if $refund['rtype']=='0'}selected{/if}>退款(仅退款不退货)</option>
                     {/if}
                 </select>
             </div>

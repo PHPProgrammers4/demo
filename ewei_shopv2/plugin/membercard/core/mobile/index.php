@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -41,7 +41,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 			$list[$key] = $value;
 		}
 
-		$results_my = $this->model->get_Mycard('', 0, 100, 'all');
+		$results_my = $this->model->get_Mycard('', 0, 100);
 
 		if (empty($results_my['list']) != true) {
 			$cate = 'my';
@@ -59,9 +59,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 	{
 		global $_W;
 		global $_GPC;
-		$goodsids = '';
-		$goodsids_arr = array_column($_GPC['goods'], 'goodsid');
-		$list = $this->model->get_Mycard('', 0, 100, $goodsids_arr);
+		$list = $this->model->get_Mycard('', 0, 100);
 
 		foreach ($list['list'] as $key => $value) {
 			$list['list'][$key]['expire_time'] = date('Y-m-d H:i', $value['expire_time']);
@@ -87,7 +85,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 		global $_W;
 		global $_GPC;
 		$all_lists = $this->model->get_Allcard(1, 100);
-		$my_lists = $this->model->get_Mycard('', 0, 100, 'all');
+		$my_lists = $this->model->get_Mycard('', 0, 100);
 		show_json(1, array('all_counts' => count($all_lists['list']), 'my_counts' => count($my_lists['list'])));
 	}
 }

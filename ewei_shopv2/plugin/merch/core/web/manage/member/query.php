@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -22,12 +21,6 @@ class Query_EweiShopV2Page extends MerchWebPage
 		}
 
 		$ds = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_member') . (' WHERE 1 ' . $condition . ' order by id asc'), $params);
-		if (!empty($ds) && is_array($ds)) {
-			foreach ($ds as &$value) {
-				$value['nickname'] = htmlspecialchars($value['nickname'], ENT_QUOTES);
-				$value['nickname_wechat'] = htmlspecialchars($value['nickname_wechat'], ENT_QUOTES);
-			}
-		}
 
 		if ($_GPC['suggest']) {
 			exit(json_encode(array('value' => $ds)));

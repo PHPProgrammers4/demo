@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -16,8 +15,8 @@ class Notice_EweiShopV2Page extends PluginWebPage
 			$data['openid'] = is_array($_GPC['openids']) ? $_GPC['openids'] : array();
 			$data['applyopenid'] = is_array($_GPC['applyopenids']) ? $_GPC['applyopenids'] : array();
 			m('common')->updatePluginset(array(
-				'merch' => array('tm' => $data)
-			));
+	'merch' => array('tm' => $data)
+	));
 			plog('merch.notice.edit', '修改通知设置');
 			show_json(1);
 		}

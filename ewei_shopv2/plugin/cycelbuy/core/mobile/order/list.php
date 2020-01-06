@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -230,7 +230,7 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
 						$vs = iunserializer($row['verifyinfo']);
 						$verifyinfo = array(
 							array('verifycode' => $row['verifycode'], 'verified' => $row['verifytype'] == 0 ? $row['verified'] : $row['goods'][0]['goods']['total'] <= count($vs))
-						);
+							);
 						if ($row['verifytype'] == 0 || $row['verifytype'] == 3) {
 							$canverify = empty($row['verified']) && $showverify;
 						}

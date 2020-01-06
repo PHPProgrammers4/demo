@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -107,13 +106,13 @@ class Sale_EweiShopV2Page extends MerchWebPage
 			$list[] = array('data' => '最高' . $typename, 'count' => $maxcount);
 			$list[] = array('data' => '发生在', 'count' => $maxcount_date);
 			m('excel')->export($list, array(
-				'title'   => '交易报告-' . (!empty($year) && !empty($month) ? $year . '年' . $month . '月' : $year . '年'),
-				'columns' => array(
-					array('title' => $dataname, 'field' => 'data', 'width' => 12),
-					array('title' => $typename, 'field' => 'count', 'width' => 12),
-					array('title' => '所占比例(%)', 'field' => 'percent', 'width' => 24)
-				)
-			));
+	'title'   => '交易报告-' . (!empty($year) && !empty($month) ? $year . '年' . $month . '月' : $year . '年'),
+	'columns' => array(
+		array('title' => $dataname, 'field' => 'data', 'width' => 12),
+		array('title' => $typename, 'field' => 'count', 'width' => 12),
+		array('title' => '所占比例(%)', 'field' => 'percent', 'width' => 24)
+		)
+	));
 			mplog('statistics.sale.export', '导出销售统计');
 		}
 

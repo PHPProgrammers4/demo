@@ -1,12 +1,4 @@
 <?php
-
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -19,7 +11,7 @@ class Refund_EweiShopV2Page extends MobileLoginPage {
         $openid = $_W['openid'];
         $orderid = intval($_GPC['id']);
 
-        $order = pdo_fetch("select id,status,price,refundid,goodsprice,dispatchprice,deductprice,deductcredit2,finishtime,isverify,`virtual`,refundstate,merchid,random_code,iscycelbuy,paytype from " . tablename('ewei_shop_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1'
+        $order = pdo_fetch("select id,status,1688_orderId,1688_totalSuccessAmount,1688_postFee,price,refundid,goodsprice,dispatchprice,deductprice,deductcredit2,finishtime,isverify,`virtual`,refundstate,merchid,random_code,iscycelbuy,paytype from " . tablename('ewei_shop_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1'
             , array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
         $orderprice = $order['price'];
 
@@ -30,10 +22,7 @@ class Refund_EweiShopV2Page extends MobileLoginPage {
                 show_json( 0 , '订单已经开始，无法进行退款' );
             }
         }
-        $refund = pdo_fetch("select id.orderid from ".tablename('ewei_shop_order_refund')." where uniacid = :uniacid and orderid = :orderid and status > 0 limit 1 ",array(':uniacid'=>$uniacid,':orderid'=>$orderid));
-        if(!empty($refund)){
-            show_json(0, '此订单已完成维权，不能申请退款');
-        }
+
 
         if (empty($order)) {
             if (!$_W['isajax']) {
@@ -45,8 +34,8 @@ class Refund_EweiShopV2Page extends MobileLoginPage {
         }
 
         $_err = '';
-        if ($order['status'] <= 0) {
-            $_err = '订单未付款或已关闭，不能申请退款!';
+        if ($order['status'] == 0) {
+            $_err = '订单未付款，不能申请退款!';
         } else {
             if ($order['status'] == 3) {
                 if (!empty($order['virtual']) || $order['isverify'] == 1) {
@@ -81,80 +70,36 @@ class Refund_EweiShopV2Page extends MobileLoginPage {
         //订单不能退货商品
 
         /*********************************************************************/
-        $order['cannotrefund'] = true;
-        $refundgoods = array(
-            'refund' => true,
-            'returngoods' => true,
-            'exchange' => true,
-        );
+        $order['cannotrefund'] = false;
 
-        if($order['status'] >= 1){
-            $goods = pdo_fetchall("select og.goodsid, og.price, og.total, og.optionname, g.cannotrefund,g.refund,g.returngoods,g.exchange,g.type, g.thumb, g.title,g.isfullback from".tablename("ewei_shop_order_goods") ." og left join ".tablename("ewei_shop_goods")." g on g.id=og.goodsid where og.orderid=".$order['id']);
+        if($order['status']==2){
+            $goods = pdo_fetchall("select og.goodsid, og.price, og.total, og.optionname, g.cannotrefund, g.thumb, g.title,g.isfullback from".tablename("ewei_shop_order_goods") ." og left join ".tablename("ewei_shop_goods")." g on g.id=og.goodsid where og.orderid=".$order['id']);
             if(!empty($goods)){
                 foreach ($goods as $g){
-                    /*
-                     * 退款优化V1.10
-                     * 张洪利2019-09-16
-                     * */
-                    if(empty($g['cannotrefund'])){
-                        $g['refund'] =  true ;
-                        $g['returngoods'] = true;
-                        $g['exchange'] = true;
+                    if($g['cannotrefund']==1){
+                        $order['cannotrefund'] = true;
+                        break;
                     }
-                    if($order['status']>=2){
-                        /*
-                         * 退款优化V1.10
-                         * 张洪利2019-09-16
-                         * */
-                        if(!empty($g['cannotrefund']) && empty($g['refund']) && empty($g['returngoods']) && empty($g['exchange'])){
-                            $order['cannotrefund'] =  false ;
-                        }
-                    }
-                    if($order['status']==1){
-                        /*
-                         * 退款优化V1.10
-                         * 张洪利2019-09-16
-                         * */
-                        if(!empty($g['cannotrefund']) && empty($g['refund'])){
-                            $order['cannotrefund'] =  false ;
-                        }
-                    }
-                    //虚拟商品完成订单
-                    if($order['status']>=3 && $g['type']==2 ){
-                        $g['returngoods'] = false;
-                        $g['exchange'] = false;
-                    }
-                    $refundgoods['refund'] = empty($refundgoods['refund']) ? false :$g['refund'];
-                    $refundgoods['returngoods'] = empty($refundgoods['returngoods']) ? false :$g['returngoods'];
-                    $refundgoods['exchange'] = empty($refundgoods['exchange']) ? false :$g['exchange'];
                 }
             }
         }
-        if($order['cannotrefund'] && empty($refundgoods['refund']) && empty($refundgoods['returngoods']) && empty($refundgoods['exchange'])){
+        if($order['cannotrefund']){
             $this->message("此订单不可退换货");
         }
 
         //是否全返商品，并检测是否允许退款
-        $fullback_log = pdo_fetchall("select * from ".tablename('ewei_shop_fullback_log')." where orderid = ".$orderid." and uniacid = ".$uniacid." ");
-        $fullbackkprice = 0;
-        if($fullback_log&&is_array($fullback_log)){
-            foreach ($fullback_log as $key=>$value){
-                $fullbackgoods = pdo_fetch("select refund from ".tablename('ewei_shop_fullback_goods')." where goodsid = ".$value['goodsid']." and uniacid = ".$uniacid." ");
-                if($fullbackgoods['refund'] ==0){
-                    $this->message("此订单包含全返产品不允许退款");
-                }
-            }
-            foreach ($fullback_log as $k=>$val){
-                if($val['fullbackday']>0){
-                    if($val['fullbackday']<$val['day']){
-                        $fullbackkprice += $val['priceevery'] * $val['fullbackday'];
-                    }else{
-                        $fullbackkprice += $val['price'];
-                    }
+        $fullback_log = pdo_fetch("select * from ".tablename('ewei_shop_fullback_log')." where orderid = ".$orderid." and uniacid = ".$uniacid." ");
+        if($fullback_log){
+            $fullbackgoods = pdo_fetch("select refund from ".tablename('ewei_shop_fullback_goods')." where goodsid = ".$fullback_log['goodsid']." and uniacid = ".$uniacid." ");
+            if($fullback_log['fullbackday']>0){
+                if($fullback_log['fullbackday']<$fullback_log['day']){
+                    $order['price'] = $order['price'] - $fullback_log['priceevery'] * $fullback_log['fullbackday'];
+                }else{
+                    $order['price'] = $order['price'] - $fullback_log['price'];
                 }
             }
         }
-        $order['price'] = $order['price'] - $fullbackkprice;
+
 
         //应该退的钱 在线支付的+积分抵扣的+余额抵扣的(运费包含在在线支付或余额里）
         $order['refundprice'] = $order['price'] + $order['deductcredit2'];
@@ -166,7 +111,6 @@ class Refund_EweiShopV2Page extends MobileLoginPage {
 
         return array(
             'uniacid' => $uniacid,
-            'refundgoods' => $refundgoods,
             'openid' => $_W['openid'],
             'orderid' => $orderid,
             'order' => $order,
@@ -181,6 +125,7 @@ class Refund_EweiShopV2Page extends MobileLoginPage {
 
         global $_W, $_GPC;
         extract($this->globalData());
+
         if($order['status'] == 2 && $order['price'] == $order['dispatchprice']) {
             $canreturns = 1;
         }
@@ -253,6 +198,43 @@ class Refund_EweiShopV2Page extends MobileLoginPage {
             'content' => trim($_GPC['content']),
             'imgs' => iserializer($_GPC['images'])
         );
+
+        $data = [];
+        $data['imageData'] = $_GPC['images'];
+
+
+
+        if($order['1688_orderId']){
+
+            $data = [];
+            $data['orderId'] = $order['1688_orderId'];
+            $data['webSite'] = '1688';
+            $url =  m('common')->post_alibaba_api($this->access_token, $this->appSecret, 'param2/1/com.alibaba.trade/alibaba.trade.get.buyerView/', $data);
+            $buyerView = m('common')->curl_post($data,$url);
+
+
+            $data = [];
+            $data['orderId'] = $order['1688_orderId'];
+            $data['orderEntryIds'] =json_encode(array($order['1688_orderId']) );
+            $data['disputeRequest'] = 'refund';
+            $data['applyPayment'] = ($buyerView['result']['baseInfo']['sumProductPayment']) * 100;
+            $data['applyCarriage'] = ($buyerView['result']['baseInfo']['sumProductPayment']) * 100;
+            $data['applyReasonId'] = $Reason['result']['result']['reasons'][0]['id'];
+            $data['description'] = '不想要了';
+            $data['goodsStatus'] = 'refundWaitSellerSend';
+
+
+            $url =  m('common')->post_alibaba_api($this->access_token, $this->appSecret, 'param2/1/com.alibaba.trade/alibaba.trade.createRefund/', $data);
+
+            $adata = m('common')->curl_post($data,$url);
+
+            var_dump($data);
+            var_dump($adata);die;
+        }
+
+
+
+
 
         if ($refund['rtype'] == 2) {
             $refundstate = 2;

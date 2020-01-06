@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -240,8 +239,7 @@ class Index_EweiShopV2Page extends MobilePage
 				show_json(0, '请输入图形验证码');
 			}
 
-			$key = function_exists('complex_authkey') ? complex_authkey() : $_W['config']['setting']['authkey'];
-			$imgcodehash = md5(strtolower($imgcode) . $key);
+			$imgcodehash = md5(strtolower($imgcode) . $_W['config']['setting']['authkey']);
 
 			if ($imgcodehash != trim($_GPC['__code'])) {
 				show_json(-1, '请输入正确的图形验证码');
@@ -280,15 +278,6 @@ class Index_EweiShopV2Page extends MobilePage
 		}
 
 		show_json(0, $ret['message']);
-	}
-
-	public function agr()
-	{
-		global $_W;
-		$wapset = $_W['shopset']['wap'];
-		$agr = $wapset['agr'];
-		$agr_content = htmlspecialchars_decode($wapset['content']);
-		include $this->template('agr', NULL, true);
 	}
 }
 

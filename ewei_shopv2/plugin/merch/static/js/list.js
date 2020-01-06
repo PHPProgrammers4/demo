@@ -1,1 +1,178 @@
-define(["core","tpl"],function(i,t){var n={page:1,keyword:"",cateid:0,init:function(t){n.keyword=t.keyword?t.keyword:"",n.cateid=t.cateid?t.cateid:0,n.page=1,n.lat="",n.lng="",n.range=2e3,(n.sorttype=0)<n.cateid&&$(".sortmenu_cate ul li").each(function(){$(this).attr("cateid")==n.cateid&&$("#sortmenu_cate_text").html($(this).attr("text"))}),$(".sortMenu > li").off("click").on("click",function(){var t=$(this).attr("data-class");"none"==$("."+t).css("display")?($(".sortMenu > div").hide(),$("."+t).show(),$(".sort-mask").show()):($("."+t).hide(),$(".sort-mask").hide())}),$(".sort-mask").off("click").on("click",function(){$(this).hide(),$(".sortMenu > div").hide()}),$(".sortmenu_rule ul li").click(function(){n.range=$(this).attr("range");var t=$(this).attr("text");$("#sortmenu_rule_text").html(t),$(".sortmenu_rule").hide(),n.page=1,$(".container").empty(),$(".sort-mask").hide(),$(".sortMenu > div").hide(),n.getList()}),$(".sortmenu_cate ul li").click(function(){n.cateid=$(this).attr("cateid");var t=$(this).attr("text");$("#sortmenu_cate_text").html(t),$(".sortmenu_cate").hide(),n.page=1,$(".container").empty(),$(".sort-mask").hide(),$(".sortMenu > div").hide(),n.getList()}),$(".sortmenu_sort ul li").click(function(){n.sorttype=$(this).attr("sorttype");var t=$(this).attr("text");$("#sortmenu_sort_text").html(t),$(".sortmenu_sort").hide(),n.page=1,$(".container").empty(),$(".sort-mask").hide(),$(".sortMenu > div").hide(),n.getList()}),$(".fui-content").infinite({onLoading:function(){1!=n.page&&n.getList()}}),1==n.page&&n.getList()},getList:function(){n.getCookie("lat"),n.getCookie("lng");var e=new AMap.Map("amap-container");window.modal=n,e.plugin("AMap.Geolocation",function(){var t=new AMap.Geolocation({enableHighAccuracy:!0,timeout:5e3,maximumAge:0});e.addControl(t),t.getCurrentPosition(function(t,e){if("complete"==t)n.setCookie("lat",e.position.lat,.1),n.setCookie("lng",e.position.lng,.1),n.lat=e.position.lat,n.lng=e.position.lng,n.getMerch();else{var i=new BMap.Geolocation;window.modal=n,i.getCurrentPosition(function(t){this.getStatus()==BMAP_STATUS_SUCCESS?(n.setCookie("lat",t.point.lat,.1),n.setCookie("lng",t.point.lng,.1),n.lat=t.point.lat,n.lng=t.point.lng,n.getMerch()):FoxUI.toast.show("位置获取失败!")},{enableHighAccuracy:!0})}})})},getMerch:function(){i.json("merch/list/ajaxmerchuser",{page:n.page,keyword:n.keyword,cateid:n.cateid,lat:n.lat,lng:n.lng,range:n.range,sorttype:n.sorttype},function(t){var e=t.result;e.total<=0?($(".content-empty").show(),$(".fui-content").infinite("stop")):($(".content-empty").hide(),$(".container").show(),$(".fui-content").infinite("init"),(e.list.length<=0||e.list.length<e.pagesize)&&$(".fui-content").infinite("stop")),n.page++,i.tpl(".container","tpl_merch_list_user",e,2<n.page)},!0,!0)},getCookie:function(t){for(var e=t+"=",i=document.cookie.split(";"),n=0;n<i.length;n++){for(var o=i[n];" "==o.charAt(0);)o=o.substring(1);if(-1!=o.indexOf(e))return o.substring(e.length,o.length)}return""},setCookie:function(t,e,i){var n=t+"="+escape(e);if(0<i){var o=new Date;o.setTime(o.getTime()+3600*i*1e3),n=n+"; expires="+o.toGMTString()}document.cookie=n},delCookie:function(t){var e=new Date;e.setTime(e.getTime()-1e4),document.cookie=t+"=v; expires="+e.toGMTString()}};return n});
+define(['core', 'tpl'], function (core, tpl) {
+    var modal = {page: 1, keyword: '',cateid: 0};
+    modal.init = function (params) {
+        modal.keyword = params.keyword ? params.keyword : '' ;
+        modal.cateid = params.cateid ? params.cateid : 0 ;
+        modal.page = 1;
+        modal.lat = '';
+        modal.lng = '';
+        modal.range = 2000;
+        modal.sorttype = 0;
+
+        if (modal.cateid > 0) {
+            $('.sortmenu_cate ul li').each(function(){
+                if ($(this).attr('cateid') == modal.cateid) {
+                    $('#sortmenu_cate_text').html($(this).attr('text'));
+                }
+            });
+        }
+
+
+        $(".sortMenu > li").off("click").on("click",function(){
+            var menuclass = $(this).attr("data-class");
+            if($("."+menuclass+"").css("display")=="none"){
+                $(".sortMenu > div").hide();
+                $("."+menuclass+"").show();
+                $(".sort-mask").show();
+            }else{
+                $("."+menuclass+"").hide();
+                $(".sort-mask").hide();
+            }
+
+        });
+
+        $(".sort-mask").off("click").on("click",function(){
+            $(this).hide();
+            $(".sortMenu > div").hide();
+        });
+
+        $('.sortmenu_rule ul li').click(function () {
+            modal.range = $(this).attr('range');
+            var text = $(this).attr('text');
+            $('#sortmenu_rule_text').html(text);
+            $('.sortmenu_rule').hide();
+            modal.page = 1;
+            $(".container").empty();
+            $(".sort-mask").hide();
+            $(".sortMenu > div").hide();
+            modal.getList()
+        });
+
+        $('.sortmenu_cate ul li').click(function () {
+            modal.cateid = $(this).attr('cateid');
+            var text = $(this).attr('text');
+            $('#sortmenu_cate_text').html(text);
+            $('.sortmenu_cate').hide();
+            modal.page = 1;
+            $(".container").empty();
+            $(".sort-mask").hide();
+            $(".sortMenu > div").hide();
+            modal.getList()
+        });
+
+        $('.sortmenu_sort ul li').click(function () {
+            modal.sorttype = $(this).attr('sorttype');
+            var text = $(this).attr('text');
+            $('#sortmenu_sort_text').html(text);
+            $('.sortmenu_sort').hide();
+            modal.page = 1;
+            $(".container").empty();
+            $(".sort-mask").hide();
+            $(".sortMenu > div").hide();
+            modal.getList()
+        });
+
+
+        $('.fui-content').infinite({
+            onLoading: function () {
+                modal.getList()
+            }
+        });
+        if (modal.page == 1) {
+            modal.getList()
+        }
+    };
+    modal.getList = function () {
+        var lat=modal.getCookie("lat");
+        var lng=modal.getCookie("lng");
+        if(lat!="" && lng!=""){
+            modal.lat = lat;
+            modal.lng = lng;
+            modal.getMerch();
+        }else{
+            /*高德地图定位*/
+            var map = new AMap.Map('amap-container');
+            window.modal = modal;
+            map.plugin('AMap.Geolocation', function() {
+                var geolocation = new AMap.Geolocation({
+                    enableHighAccuracy: true,//是否使用高精度定位，默认:true
+                    timeout: 10000,          //超过10秒后停止定位，默认：5s
+                    maximumAge: 0,        //定位结果缓存0毫秒，默认：0(10min)
+                });
+                map.addControl(geolocation);
+                geolocation.getCurrentPosition(function(status,result){
+                    if(status=='complete'){
+                        modal.setCookie('lat',result.position.lat,0.1);
+                        modal.setCookie('lng',result.position.lng,0.1);
+                        modal.lat = result.position.lat;
+                        modal.lng = result.position.lng;
+                        modal.getMerch()
+                    }else{
+                        /*FoxUI.toast.show("位置获取失败!"+result.message);
+                        return*/
+                        /*百度地图定位*/
+                        var geoLocation = new BMap.Geolocation();
+                        window.modal = modal;
+                        geoLocation.getCurrentPosition(function (result) {
+                            if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                                modal.setCookie('lat',result.point.lat,0.1);
+                                modal.setCookie('lng',result.point.lng,0.1);
+                                modal.lat = result.point.lat;
+                                modal.lng = result.point.lng;
+                                modal.getMerch()
+                            } else {
+                                FoxUI.toast.show("位置获取失败!");
+                                return
+                            }
+                        }, {enableHighAccuracy: true});
+                    }
+                });
+            });
+        }
+    };
+    modal.getMerch = function (){
+        core.json('merch/list/ajaxmerchuser', {page: modal.page, keyword: modal.keyword, cateid: modal.cateid, lat: modal.lat, lng: modal.lng, range: modal.range, sorttype: modal.sorttype}, function (ret) {
+            var result = ret.result;
+            if (result.total <= 0) {
+                $('.content-empty').show();
+                $('.fui-content').infinite('stop')
+            } else {
+                $('.content-empty').hide();
+                $('.container').show();
+                $('.fui-content').infinite('init');
+                if (result.list.length <= 0 || result.list.length < result.pagesize) {
+                    $('.fui-content').infinite('stop')
+                }
+            }
+            modal.page++;
+            core.tpl('.container', 'tpl_merch_list_user', result, modal.page > 2);
+        }, true, true)
+    };
+    modal.getCookie = function (cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1);
+            if (c.indexOf(name) != -1) {
+                return c.substring(name.length, c.length)
+            }
+        }
+        return "";
+    };
+    modal.setCookie = function(name,value,expireHours){
+        var cookieString=name+"="+escape(value);
+        if(expireHours>0){
+            var date = new Date();
+            date.setTime(date.getTime()+(expireHours*3600*1000));
+            cookieString=cookieString+"; expires="+date.toGMTString();
+        }
+        document.cookie=cookieString;
+    };
+    modal.delCookie = function (name) {
+        var date = new Date();
+        date.setTime(date.getTime()-10000);
+        document.cookie=name+"=v; expires="+date.toGMTString();
+    };
+    return modal
+});

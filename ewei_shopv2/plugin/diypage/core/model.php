@@ -1,12 +1,4 @@
 <?php
-
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if(!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -91,6 +83,7 @@ class DiypageModel extends PluginModel {
             $params[':merchid'] = intval($_W['merchid']);
         }
         $page = pdo_fetch('select * from ' . tablename('ewei_shop_diypage') . $where . ' limit 1 ', $params);
+
         if(!empty($page)) {
             $page['data'] = base64_decode($page['data']);
 
@@ -128,10 +121,8 @@ class DiypageModel extends PluginModel {
                                     $newgoodsids = implode(',', $goodsids);
                                     if($creditshop) {
                                         $goods = pdo_fetchall("select id, title, thumb, price as productprice, money as minprice, credit, total, showgroups, `type`, goodstype from " . tablename('ewei_shop_creditshop_goods') . " where id in( $newgoodsids ) and status=1 and deleted=0 and uniacid=:uniacid order by displayorder desc ", array(':uniacid' => $_W['uniacid']));
-
                                     } else {
-                                        $goods = pdo_fetchall("select id,hasoption,`presellend`,`preselltimeend`,isdiscount, isdiscount_time, title, subtitle, thumb, productprice, minprice, total,`type`,showlevels, showgroups,hascommission,nocommission,commission,commission1_rate,marketprice,commission1_pay,maxprice, bargain, merchid, sales, salesreal,ispresell,presellprice from " . tablename('ewei_shop_goods') . " where id in( $newgoodsids ) and status=1 and deleted=0 and checked=0 and uniacid=:uniacid order by displayorder desc ", array(':uniacid' => $_W['uniacid']));
-
+                                        $goods = pdo_fetchall("select id,`presellend`,`preselltimeend`,isdiscount, isdiscount_time, title, subtitle, thumb, productprice, minprice, total,`type`,showlevels, showgroups,hascommission,nocommission,commission,commission1_rate,marketprice,commission1_pay,maxprice, bargain, merchid, sales, salesreal,ispresell,presellprice from " . tablename('ewei_shop_goods') . " where id in( $newgoodsids ) and status=1 and deleted=0 and checked=0 and uniacid=:uniacid order by displayorder desc ", array(':uniacid' => $_W['uniacid']));
                                         //获取商品预售价格
                                         if(!empty($goods) && is_array($goods)) {
                                             foreach ($goods as $key => $value) {
@@ -158,16 +149,7 @@ class DiypageModel extends PluginModel {
                                                     //        bargain 砍价
                                                     continue;
                                                 }
-                                                if($value['hasoption']==1) {
-                                                    $pricemax = array();
-                                                    $options = pdo_fetchall('select * from ' . tablename('ewei_shop_goods_option') . ' where goodsid=:goodsid and uniacid=:uniacid order by displayorder asc', array(':goodsid' => $value['id'], ':uniacid' => $_W['uniacid']));
-                                                    foreach($options as $k=>$v){
-                                                        array_push($pricemax, $v['marketprice']);
-                                                    }
-                                                    $value['marketprice'] = empty($pricemax) ? 0 : max($pricemax); // 如果导致商品价格显示错误 开启此块注释
-                                                }
                                                 $goods[$key]['seecommission'] = $this->getCommission($value, $level, $set);
-                                                // TODO获取佣金
                                                 if($goods[$key]['seecommission']>0){
                                                     $goods[$key]['seecommission'] = round($goods[$key]['seecommission'],2);
                                                 }
@@ -278,12 +260,9 @@ class DiypageModel extends PluginModel {
                             unset($page['data']['items'][$itemid]);
                         }
 
-                    } else if ($item['id'] == 'groupsgoods' && p('groups')) {
-                    
-                    
-                    
                     } elseif($item['id'] == 'merchgroup' && p('merch')) {
                         if($item['params']['merchdata'] == '0') {
+//                            dump($item['data']);exit;
                             // 更新商户信息
                             if(!empty($item['data']) && is_array($item['data'])) {
                                 $merchids = array();
@@ -579,7 +558,7 @@ class DiypageModel extends PluginModel {
                                     if($creditshop) {
                                         $goods = pdo_fetchall("select id, showlevels, showgroups from " . tablename('ewei_shop_creditshop_goods') . " where id in( $newgoodsids ) and status=1 and deleted=0 and uniacid=:uniacid order by displayorder desc ", array(':uniacid' => $_W['uniacid']));
                                     } else {
-                                        $goods = pdo_fetchall("select id,hasoption, showlevels,hascommission,nocommission,commission,commission1_rate,marketprice,commission1_pay,maxprice,showgroups from " . tablename('ewei_shop_goods') . " where id in( $newgoodsids ) and status=1 and deleted=0 and checked=0 and uniacid=:uniacid order by displayorder desc ", array(':uniacid' => $_W['uniacid']));
+                                        $goods = pdo_fetchall("select id, showlevels,hascommission,nocommission,commission,commission1_rate,marketprice,commission1_pay,maxprice,showgroups from " . tablename('ewei_shop_goods') . " where id in( $newgoodsids ) and status=1 and deleted=0 and checked=0 and uniacid=:uniacid order by displayorder desc ", array(':uniacid' => $_W['uniacid']));
                                     }
                                     if(!empty($goods) && is_array($goods)) {
                                         foreach ($item['data'] as $childid => $childgoods) {
@@ -642,14 +621,6 @@ class DiypageModel extends PluginModel {
                                                 //        bargain 砍价
                                                 continue;
                                             }
-                                            if($value['hasoption']==1) {
-                                                $pricemax = array();
-                                                $options = pdo_fetchall('select * from ' . tablename('ewei_shop_goods_option') . ' where goodsid=:goodsid and uniacid=:uniacid order by displayorder asc', array(':goodsid' => $value['id'], ':uniacid' => $_W['uniacid']));
-                                                foreach($options as $k=>$v){
-                                                    array_push($pricemax, $v['marketprice']);
-                                                }
-                                                $value['marketprice'] = empty($pricemax) ? 0 : max($pricemax); // 如果导致商品价格显示错误 开启此块注释
-                                            }
                                             $goods[$key]['seecommission'] = $this->getCommission($value, $level, $set);
                                             if($goods[$key]['seecommission']>0){
                                                 $goods[$key]['seecommission'] = round($goods[$key]['seecommission'],2);
@@ -690,7 +661,6 @@ class DiypageModel extends PluginModel {
                             } else {
                                 $item['data'] = array();
                             }
-                            
                         } elseif($item['params']['goodsdata'] == '2' && empty($item['params']['goodstype'])) {
                             // 根据条件读取商品分组里的商品 并进行临时赋值
                             $limit = $item['params']['goodsnum'];
@@ -717,6 +687,7 @@ class DiypageModel extends PluginModel {
                                 $goodsids = $group['goodsids'];
 
                                 $goods = pdo_fetchall("select id, title, subtitle, thumb, `type`, minprice, sales, salesreal, total, showlevels, showgroups,hascommission,nocommission,commission,commission1_rate,marketprice,commission1_pay,maxprice,bargain,productprice,ispresell,presellprice from " . tablename('ewei_shop_goods') . " where id in( $goodsids ) and status=1 and `deleted`=0 and `status`=1 and uniacid=:uniacid " . $orderby . " limit {$limit}", array(':uniacid' => $_W['uniacid']));
+
                                 if(!empty($goods) && is_array($goods)) {
 //                                    获取商品的预售价格
                                     if($value['ispresell']==1){
@@ -736,14 +707,6 @@ class DiypageModel extends PluginModel {
                                             if($value['bargain']>0){
                                                 //        bargain 砍价
                                                 continue;
-                                            }
-                                            if($value['hasoption']==1) {
-                                                $pricemax = array();
-                                                $options = pdo_fetchall('select * from ' . tablename('ewei_shop_goods_option') . ' where goodsid=:goodsid and uniacid=:uniacid order by displayorder asc', array(':goodsid' => $value['id'], ':uniacid' => $_W['uniacid']));
-                                                foreach($options as $k=>$v){
-                                                    array_push($pricemax, $v['marketprice']);
-                                                }
-                                                $value['marketprice'] = empty($pricemax) ? 0 : max($pricemax); // 如果导致商品价格显示错误 开启此块注释
                                             }
                                             $goods[$key]['seecommission'] = $this->getCommission($value, $level, $set);
                                             if($goods[$key]['seecommission']>0){
@@ -850,14 +813,6 @@ class DiypageModel extends PluginModel {
                                             //        bargain 砍价
                                             continue;
                                         }
-                                        if($value['hasoption']==1) {
-                                            $pricemax = array();
-                                            $options = pdo_fetchall('select * from ' . tablename('ewei_shop_goods_option') . ' where goodsid=:goodsid and uniacid=:uniacid order by displayorder asc', array(':goodsid' => $value['id'], ':uniacid' => $_W['uniacid']));
-                                            foreach($options as $k=>$v){
-                                                array_push($pricemax, $v['marketprice']);
-                                            }
-                                            $value['marketprice'] = empty($pricemax) ? 0 : max($pricemax); // 如果导致商品价格显示错误 开启此块注释
-                                        }
                                         $goods[$key]['seecommission'] = $this->getCommission($value, $level, $set);
                                         if($goods[$key]['seecommission']>0){
                                             $goods[$key]['seecommission'] = round($goods[$key]['seecommission'],2);
@@ -894,39 +849,6 @@ class DiypageModel extends PluginModel {
                                         );
                                     }
                                 }
-                            }
-                        }
-                    } else if ($item['id'] == 'groupsgoods') {
-    
-                        $item['data'] = array();
-                        $limit = $item['params']['goodsnum'];
-                        $condition = ' g.uniacid = :uniacid ';
-                        $condition .= " and g.deleted = 0 and g.stock > 0 and g.status = 1 ";
-                        $params = array(':uniacid' => $_W['uniacid']);
-                        
-                        $sql = 'SELECT c.*,g.* FROM ' . tablename('ewei_shop_groups_goods') . " AS g
-                                LEFT JOIN ". tablename('ewei_shop_groups_category') ." AS c ON g.category = c.id
-                                where  1 = 1 and {$condition} ORDER BY g.displayorder DESC,g.id DESC LIMIT " .$limit;
-                        $list = pdo_fetchall($sql, $params);
-                        foreach ($list as $index => $goods) {
-                            $showgoods = m('goods')->visit($goods, $this->member);
-                            if(!empty($showgoods)) {
-                                $childid = rand(1000000000, 9999999999);
-                                $childid = 'C' . $childid;
-                                $item['data'][$childid] = array(
-                                    'thumb' => $goods['thumb'],
-                                    'title' => $goods['title'],
-                                    'subtitle' => $goods['subtitle'],
-                                    'price' => $goods['groupsprice'],
-                                    'gid' => $goods['id'],
-                                    'total' => $goods['stock'],
-                                    'seecommission' => $goods['seecommission'],
-                                    'cansee' => $goods['cansee'],
-                                    'seetitle' => $goods['seetitle'],
-                                    'productprice' => $goods['price'],
-                                    'is_ladder' => $goods['is_ladder'],
-                                    'groupnum' => $goods['groupnum']
-                                );
                             }
                         }
                     } elseif($item['id'] == 'notice') {
@@ -975,7 +897,6 @@ class DiypageModel extends PluginModel {
                             if(!empty($child['linkurl'])) {
                                 $linkurl = $this->judge('url', $child['linkurl']);
                                 if(!$linkurl) {
-                                    //如果此入口链接链接到的应用是未开启的,则不显示
                                     unset($item['data'][$childid]);
                                 }
                                 $child['dotnum'] = $this->judge('dot', $child['linkurl']);
@@ -986,7 +907,7 @@ class DiypageModel extends PluginModel {
                         $member = $this->member;
                         if(p('membercard'))
                         {
-                            $list_membercard= p('membercard')->get_Mycard('',0,100, 'all');
+                            $list_membercard= p('membercard')->get_Mycard('',0,100);
                         }
                         $level = m('member')->getLevel($_W['openid']);
                         $item['info'] = array(
@@ -1202,7 +1123,6 @@ class DiypageModel extends PluginModel {
                 }
                 unset($item);
             }
-            
             if($mobile && !empty($page['data'])) {
                 $page['data'] = json_encode($page['data']);
                 $page['data'] = $this->url($page['data']);
@@ -1214,71 +1134,37 @@ class DiypageModel extends PluginModel {
         return $page;
     }
 
-
     public function getCommission($goods,$level,$set)
     {
 
         global $_W;
         $commission = 0;
-
-        if ($level == 'false') {
+        if($level == 'false'){
             return $commission;
         }
-        //商品规格
-        if (!empty($goods) && $goods['hasoption']) {
-            $option = pdo_fetchall('select * from ' . tablename('ewei_shop_goods_option') . ' where goodsid=:goodsid and uniacid=:uniacid order by displayorder asc', array(':goodsid' => $goods['id'], ':uniacid' => $_W['uniacid']));
-        }
         if ($goods['hascommission'] == 1) {
-
             $price = $goods['maxprice'];
             $levelid = 'default';
-
             if ($level) {
                 $levelid = 'level' . $level['id'];
             }
+
             $goods_commission = !empty($goods['commission']) ? json_decode($goods['commission'], true) : array();
-
-
             if ($goods_commission['type'] == 0) {
                 $commission = $set['level'] >= 1 ? ($goods['commission1_rate'] > 0 ? ($goods['commission1_rate'] * $goods['marketprice'] / 100) : $goods['commission1_pay']) : 0;
-
-            }else if(!empty($option)) {
-
-                $price_all = array();
-                foreach ($goods_commission[$levelid] as $key => $value) {
-                    foreach ($option as $k => $v) {
-                        $optioncommission=0;
-                        if (('option' . $v['id']) == $key) {
-                            if (strexists($value[0], '%')) {
-                                $optioncommission = (floatval(str_replace('%', '', $value[0]) / 100) * $v['marketprice']);
-
-                            } else {
-                                $optioncommission = $value[0];
-
-                            }
-                            array_push($price_all, $optioncommission);
-                        }
-                    }
-                }
-                if($price_all){
-                    $commission = max($price_all);
-                }else{
-                    $commission = 0;
-                }
-
             } else {
-
                 $price_all = array();
-                foreach ($goods_commission[$levelid] as $key => $value) {
-                    foreach ($value as $k => $v) {
-                        if (strexists($v, '%')) {
-                            array_push($price_all, floatval(str_replace('%', '', $v) / 100) * $price);
-                            continue;
+                unset($goods_commission['type']);
+                if($goods_commission[$levelid] && is_array($goods_commission[$levelid])){
+                    foreach ($goods_commission[$levelid] as $key => $value) {
+                        foreach ($value as  $vl) {
+                            if(strexists($vl, '%')) {
+                                array_push($price_all, floatval(str_replace('%', '', $vl) / 100) * $price);
+                                continue;
+                            }
+                            array_push($price_all, $vl);
                         }
-                        array_push($price_all, $v);
                     }
-                }
-                if($price_all){
                     $commission = max($price_all);
                 }else{
                     $commission = 0;
@@ -1286,17 +1172,12 @@ class DiypageModel extends PluginModel {
             }
         } else {
             if ($level!='false' && !empty($level)) {
-                if( $goods['marketprice'] <= 0){
-                    $goods['marketprice'] = $goods['maxprice'];
-                }
                 $commission = $set['level'] >= 1 ? round($level['commission1'] * $goods['marketprice'] / 100, 2) : 0;
             } else {
-                if( $goods['marketprice'] <= 0){
-                    $goods['marketprice'] = $goods['maxprice'];
-                }
                 $commission = $set['level'] >= 1 ? round($set['commission1'] * $goods['marketprice'] / 100, 2) : 0;
             }
         }
+
         return $commission;
     }
 //获取分销商等级
@@ -1673,6 +1554,7 @@ class DiypageModel extends PluginModel {
             return;
         }
         // 定义分享数据
+
         $urlpage = 'diypage';
         $urlparm = array('id' => $page['id']);
 
@@ -1692,9 +1574,6 @@ class DiypageModel extends PluginModel {
             $_W['shopshare']['title'] =  empty($goods['share_title']) ? $goods['title']:$goods['share_title'] ;
             $_W['shopshare']['imgUrl'] = empty($goods['share_icon']) ? tomedia($goods['thumb']) : tomedia($goods['share_icon']) ;
             $_W['shopshare']['desc'] =   empty($goods['description']) ? $goods['subtitle'] :$goods['description'];
-            if ( empty($_W['shopshare']['desc'])){
-                $_W['shopshare']['desc'] =  $_W['shopset']['shop']['name'];
-            }
         }elseif($page['type'] == 3){
             $_W['shopshare']['title'] =  empty($page['data']['page']['title']) ? $_W['shopset']['shop']['name']:$page['data']['page']['title'] ;
             $_W['shopshare']['imgUrl'] = empty($page['data']['page']['icon']) ? tomedia($_W['shopset']['shop']['logo']) :  tomedia($page['data']['page']['icon']) ;
@@ -1988,7 +1867,7 @@ class DiypageModel extends PluginModel {
     }
 
     /**
-     * 处理手机端订单数和入口链接等
+     * 处理手机端订单数等
      * @param null $type
      * @param null $str
      * @return bool|int|string|void

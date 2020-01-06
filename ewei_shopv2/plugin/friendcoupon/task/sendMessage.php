@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 error_reporting(0);
 require '../../../../../framework/bootstrap.inc.php';
 require '../../../../../addons/ewei_shopv2/defines.php';
@@ -40,17 +40,17 @@ foreach ($ret as $currentActivityInfo) {
 
 	if ($tm['friendcoupon_launch_close_advanced']) {
 		$sendResult = $noticeModel->sendNotice(array(
-			'openid' => $currentActivityInfo['openid'],
-			'tag'    => 'friendcoupon_launch',
-			'datas'  => array(
-				array('name' => '活动名称', 'value' => $currentActivityInfo['title']),
-				array('name' => '活动开始时间', 'value' => date('Y-m-d H:i:s', $currentActivityInfo['receive_time'])),
-				array('name' => '活动结束时间', 'value' => date('Y-m-d H:i:s', $currentActivityInfo['deadline'])),
-				array('name' => '瓜分券领取时间', 'value' => date('Y-m-d H:i:s', time())),
-				array('name' => '瓜分券名称', 'value' => $couponName)
-			),
-			'url'    => $resultUrl
-		));
+	'openid' => $currentActivityInfo['openid'],
+	'tag'    => 'friendcoupon_launch',
+	'datas'  => array(
+		array('name' => '活动名称', 'value' => $currentActivityInfo['title']),
+		array('name' => '活动开始时间', 'value' => date('Y-m-d H:i:s', $currentActivityInfo['receive_time'])),
+		array('name' => '活动结束时间', 'value' => date('Y-m-d H:i:s', $currentActivityInfo['deadline'])),
+		array('name' => '瓜分券领取时间', 'value' => date('Y-m-d H:i:s', time())),
+		array('name' => '瓜分券名称', 'value' => $couponName)
+		),
+	'url'    => $resultUrl
+	));
 
 		if (!is_error($sendResult)) {
 			pdo_update('ewei_shop_friendcoupon_data', array('send_failed_message' => 1), array('id' => $currentActivityInfo['id']));

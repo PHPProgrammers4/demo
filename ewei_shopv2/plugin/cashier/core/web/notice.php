@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -19,8 +19,8 @@ class Notice_EweiShopV2Page extends PluginWebPage
 			}
 
 			m('common')->updatePluginset(array(
-				'cashier' => array('notice' => $data)
-			));
+	'cashier' => array('notice' => $data)
+	));
 			plog('cashier.notice.edit', '修改收银台通知设置');
 			show_json(1);
 		}

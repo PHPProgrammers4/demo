@@ -32,10 +32,13 @@
 {/if}
 
 <div id="amap-container" style="display: none;"></div>
-<div class="fui-content {if $page['diymenu']>-1}navbar{/if}" id="container" style="background-color: {$page['data']['page']['background']}; {if $page['diymenu']>-1}padding-bottom: 0;{/if} {if !empty($diyitem_search) && empty($diy_topmenu)}margin-top: 44px;{/if}">
+<div class="fui-content {if $page['diymenu']>-1}navbar{/if}" id="container" style="background-color: {$page['data']['page']['background']}; {if $page['diymenu']>-1}padding-bottom: 0;{/if}">
     {if $diy_topmenu}
     {template 'diypage/template/tpl_topmenu_data'}
     {/if}
+    <div class="fui-topmenu-height">
+        <!--为了撑起topmenu的高度-->
+    </div>
     <div class="default-items">
         {if !empty($diyitems)}
         {loop $diyitems $diyitemid $diyitem}

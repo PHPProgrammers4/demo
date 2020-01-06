@@ -1,5 +1,8 @@
 {template '_header'}
 <style>
+	.dn{
+		display: none
+	}
     tbody tr td{
         position: relative;
     }
@@ -106,6 +109,11 @@
                     {/if}
                 {/if}
 
+                <!--<a class='btn btn-sm btn-primary' href="{php echo webUrl('goods/batch_update')}"><i class='fa fa-plus'></i>批量核对</a>-->
+                <!--aa-->
+                 <a class='btn btn-sm btn-primary'id="batch_update"  href="javascript:(0)"><i class='fa fa-plus'></i>批量核对</a>
+                <!--<a class='btn btn-sm btn-primary' id="onekey_stock" href="{php echo webUrl('goods/onekey_stock')}"><i class='fa fa-plus'></i>一键核对库存</a>-->
+                <a class='btn btn-sm btn-primary' id="onekey_stock" href="javascript:(0)"><i class='fa fa-plus'></i>一键核对库存</a>
             </span>
             <div class="input-group col-sm-6 pull-right">
                 <span class="input-group-select">
@@ -130,8 +138,7 @@
                 </span>
                 <input type="text" class="input-sm form-control" name='keyword' value="{$_GPC['keyword']}" placeholder="ID/名称/编号/条码{if $merch_plugin}/商户名称{/if}">
                 <span class="input-group-btn">
-                    <button class="btn btn-primary" type="submit"> 搜索</button>&nbsp;
-                    <button type="submit" value="1" name="export" class="btn btn-sm btn-success">导出商品</button>
+                    <button class="btn btn-primary" type="submit"> 搜索</button>
                 </span>
             </div>
         </div>
@@ -187,6 +194,7 @@
                     <th style="width:80px;text-align:center;">排序</th>
                     <th style="width:80px;">商品</th>
                     <th style="">&nbsp;</th>
+                    <th style="width: 100px;">货源</th>
                     <th style="width: 100px;">价格</th>
                     <th style="width: 80px;">库存</th>
                     <th style="width: 80px;">销量</th>
@@ -200,10 +208,11 @@
 
                 </thead>
                 <tbody>
+                <!--aa-->
                 {loop $list $item}
                 <tr>
                     <td>
-                        <input type='checkbox'  value="{$item['id']}"/>
+                        <input type='checkbox' name="goods_id[]"  value="{$item['id']}"/>
                     </td>
                     <td style='text-align:center;'>
                         {ifp 'goods.edit'}
@@ -260,7 +269,15 @@
                         {/if}
                         </span>
                     </td>
-
+                    <td>
+                        {if $item['goods_type'] == 1 || $item['goods_type'] == NULL}
+                        其他货源
+                        {else if $item['goods_type'] == 2}
+                        阿里采购
+                        {else if $item['goods_type'] == 3}
+                        阿里社交
+                        {/if}
+                    </td>
                     <td>&yen;
                         {if $item['hasoption']==1}
                         {ifp 'goods.edit'}
@@ -512,8 +529,26 @@
     </div>
     {/if}
 </div>
+
+<div  class="page-loading-inner dn"  style="    position: absolute;
+    background: rgba(255,255,255,0.8);
+    left: 20px;
+    top: 65px;
+    right: 20px;
+    bottom: 0;
+    z-index: 99;">
+            <div class="sk-three-bounce">
+                <div class="sk-child sk-bounce1"></div>
+                <div class="sk-child sk-bounce2"></div>
+                <div class="sk-child sk-bounce3"></div>
+            </div>
+        </div>
+
 {template 'goods/batchcates'}
+
 {template '_footer'}
+
+
 <script>
     //获得分类标签
     // var length = $('#catetag').children().length;
@@ -629,4 +664,42 @@
             });
 
         })
+</script>
+
+<script>
+    $(function(){
+
+        $('#onekey_stock').click(function(){
+            alert('该功能正在开发中');
+            return false;
+        });
+
+        $('#batch_update').click(function(){
+        	 $('.page-loading-inner').removeClass('dn');
+            var id_array= [];
+            $('input[name="goods_id[]"]:checked').each(function(){
+                id_array.push($(this).val());
+            });
+
+            if(id_array.length == 0){
+                alert('核对信息为空');
+                return false;
+            }
+            console.log(id_array);
+            $.ajax({
+                type:'POST',
+                url:"{php echo webUrl('goods/batch_update')}",
+                dataType:'json',
+                data:{ids:id_array},
+                success:function(data){
+                    if(data ==1){
+                        alert('所选商品核对成功');
+                        window.location.href = location.href;
+                    }
+                },
+            })
+
+        });
+
+    });
 </script>

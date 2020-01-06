@@ -105,7 +105,8 @@
     <street name="白清街道" code="210111017" />
     <street name="佟沟街道" code="210111018" />
 </county>
-<county name="浑南区" code="210112">
+<county name="浑南新区" code="210112">
+    <street name="英达街道" code="210112007" />
     <street name="东湖街道" code="210112009" />
     <street name="五三街道" code="210112010" />
     <street name="浑河站东街道" code="210112012" />
@@ -119,10 +120,8 @@
     <street name="营城子街道" code="210112021" />
     <street name="汪家街道" code="210112022" />
     <street name="王滨街道" code="210112023" />
-    <street name="望滨街道" code="210112024" />
-    <street name="永胜街道" code="210112025" />
 </county>
-<county name="沈北新区" code="210113">
+<county name="新城子区" code="210113">
     <street name="新城子街道" code="210113001" />
     <street name="清水台街道" code="210113002" />
     <street name="辉山街道" code="210113003" />
@@ -253,6 +252,8 @@
     <street name="姚堡乡" code="210181207" />
     <street name="于家窝堡乡" code="210181209" />
     <street name="新农乡" code="210181210" />
+</county>
+<county name="沈北新区" code="210184">
 </county>
 </city>
 </address>

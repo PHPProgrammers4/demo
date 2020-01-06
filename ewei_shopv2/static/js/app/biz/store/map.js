@@ -1,1 +1,67 @@
-eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--){d[e(c)]=k[c]||e(c)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('1N([\'G\',\'H\'],b(G,H){f 2={4:1p};2.1o=b(A){2.4=A.4;R.V.1n(\'1m\');k(2.4.e==L||2.4.d==L||2.4.e==""||2.4.d==""){2.4.e=0;2.4.d=0}k(2.4.g==""||2.4.g==D){2.4.g="未填写"}k(2.4.h==""||2.4.h==D){2.4.h="未填写"}f 9=$(y.1l).9()-$(\'.m-1k\').9()-$(\'.m-U .m-1j:1i-1h\').9()-20;k(A.1f){9=9-20}$(\'#p-8\').9(9+\'1d\');13(b(){f 8=q c.1b("p-8",{W:F,X:[2.4.e,2.4.d],Y:15});s=q c.Z({10:"Q://v.t.i/12/14.3/17/n/18.P",K:[2.4.e,2.4.d]});s.19(8);c.B.C(s,\'x\',b(){j.z(8,s.1a())});f 7=\'<5 6="7"><5 6="7-w" o="N: M"><I u="O://v.t.i/E/1s.1t"></5><5 6="7-1u" o="1D-1Q: 1T;"><5 6="7-1Y"> \'+2.4.g+\'</5><5 6="7-S"><5 6="h">\'+2.4.h+\'</5><5 6="r" ><a 6="1O">到这里去</a><5 6="p-r-l r-l" o="N: M"></5></5></5></5><5 6="7-1U" o="K: 1P; w: J; 1X: J 1M;"><I u="O://v.t.i/E/1z.P"></5></5>\';f j=q c.1C({1E:F,1F:7,1G:q c.1I(16,-1J)});c.B.C(j,\'z\',b(){$(y).T(\'x\',\'.7-w\',b(){8.11()});$(y).T(\'x\',\'.p-r-l\',b(){S.1K.1H=\'Q://1v.t.i/1B?l=\'+2.4.e+\',\'+2.4.d+\',\'+2.4.g+\'&1y&1x=1w&1L=1&u=1R&1S=1V&1W=0\'})});j.z(8,8.1Z());$(\'.m-U\').1e(\'1c\',\'1g\');R.V.1q()},1r)};1A 2});',62,125,'||modal||store|div|class|info|map|height||function|AMap|lat|lng|var|storename|address|com|infoWindow|if|to|fui||style|js|new|navi|marker|amap|src|webapi|top|click|document|open|params|event|addListener|undefined|images|true|core|tpl|img|0px|position|null|pointer|cursor|https|png|http|FoxUI|window|on|footer|loader|resizeEnable|center|zoom|Marker|icon|clearInfoWindow|theme|setTimeout|v1|||markers|mark_b|setMap|getPosition|Map|visibility|px|css|isios|visible|child|first|list|header|body|mini|show|init|false|hide|250|close2|gif|middle|uri|car|mode|midwaypoint|sharp|return|navigation|InfoWindow|background|isCustom|content|offset|href|Pixel|50|location|policy|auto|define|tag|relative|color|mypage|coordinate|white|bottom|gaode|callnative|margin|title|getCenter|'.split('|'),0,{}))
+define(['core', 'tpl'], function (core, tpl) {
+    var modal = {store: false};
+      modal.init = function (params) {
+        modal.store = params.store;
+        FoxUI.loader.show('mini');
+
+        if(modal.store.lng==null||modal.store.lat==null||modal.store.lng==""||modal.store.lat==""){
+            modal.store.lng=0;
+            modal.store.lat=0;
+        }
+
+        if(modal.store.storename=="" || modal.store.storename==undefined){
+            modal.store.storename="未填写";
+        }
+
+        if(modal.store.address=="" || modal.store.address==undefined){
+            modal.store.address="未填写";
+        }
+
+        var height = $(document.body).height() - $('.fui-header').height() - $('.fui-footer .fui-list:first-child').height() - 20;
+        if (params.isios) {
+            height = height - 20;
+        }
+        $('#js-map').height(height + 'px');
+          setTimeout(function () {
+              var map = new AMap.Map("js-map", {
+                  resizeEnable: true,
+                  center: [modal.store.lng,modal.store.lat],
+                  zoom: 15
+              });
+
+        marker = new AMap.Marker({
+            icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+            position: [modal.store.lng, modal.store.lat]
+        });
+        marker.setMap(map);
+
+        AMap.event.addListener(marker, 'click', function() {
+            infoWindow.open(map, marker.getPosition());
+        });
+
+        var info='<div class="info"><div class="info-top" style="cursor: pointer"><img src="https://webapi.amap.com/images/close2.gif"></div><div class="info-middle" style="background-color: white;"><div class="info-title"> '+modal.store.storename+'</div><div class="info-window"><div class="address">' + modal.store.address + '</div><div class="navi" ><a class="tag">到这里去</a><div class="js-navi-to navi-to" style="cursor: pointer"></div></div></div></div><div class="info-bottom" style="position: relative; top: 0px; margin: 0px auto;"><img src="https://webapi.amap.com/images/sharp.png"></div></div>';
+        var infoWindow= new AMap.InfoWindow({
+            isCustom: true,  //使用自定义窗体
+            content:  info,
+            offset: new AMap.Pixel(16, -50)//-113, -140
+        });
+
+        AMap.event.addListener(infoWindow, 'open', function() {
+
+            $(document).on('click', '.info-top',function () {
+                map.clearInfoWindow();
+            });
+
+            $(document).on('click', '.js-navi-to',function () {
+                window.location.href = 'http://uri.amap.com/navigation?to='+modal.store.lng+','+modal.store.lat+','+modal.store.storename+'&midwaypoint&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0';
+            });
+        });
+
+        infoWindow.open(map, map.getCenter());
+
+        $('.fui-footer').css('visibility', 'visible');
+        FoxUI.loader.hide();
+          }, 250);
+    };
+    return modal;
+});

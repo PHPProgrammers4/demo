@@ -125,9 +125,8 @@ class Recharge_EweiShopV2Page extends MobileLoginPage {
         if (empty($money)) {
             show_json(0, '请填写充值金额!');
         }
-    
-        $sql = "DELETE FROM " . tablename('ewei_shop_member_log') . " WHERE openid= '{$_W['openid']}' AND status = 0 AND uniacid = {$_W['uniacid']} AND createtime < (unix_timestamp()-86400)";
-        pdo_fetch($sql);
+
+        pdo_delete('ewei_shop_member_log', array('openid' => $_W['openid'], 'status' => 0, 'type' => 0, 'uniacid' => $_W['uniacid']));
         $logno = m('common')->createNO('member_log', 'logno', 'RC');
         //日志
         $log = array(

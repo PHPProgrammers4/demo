@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 function cashierUrl($do = '', $query = NULL, $full = false)
 {
 	global $_W;

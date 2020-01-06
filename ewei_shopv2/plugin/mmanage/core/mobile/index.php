@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -39,7 +39,7 @@ class Index_EweiShopV2Page extends MmanageMobilePage
 
 		if ($open_redis) {
 			$redis_key = 'ewei_' . $_W['uniacid'] . '_member_mmanage_index1';
-			$member_count = m('member')->memberRadisCount($redis_key, false);
+			$member_count = m('member')->memberRadisCount($redis_key);
 
 			if (!$member_count) {
 				$member_count = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
@@ -108,7 +108,7 @@ class Index_EweiShopV2Page extends MmanageMobilePage
 
 		if ($open_redis) {
 			$redis_key = 'ewei_' . $_W['uniacid'] . '_member_mmanage_index2';
-			$member_count = m('member')->memberRadisCount($redis_key, false);
+			$member_count = m('member')->memberRadisCount($redis_key);
 
 			if (!$member_count) {
 				$member_count = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where uniacid=:uniacid', $param);

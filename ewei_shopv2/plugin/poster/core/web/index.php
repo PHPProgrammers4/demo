@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -59,22 +58,12 @@ class Index_EweiShopV2Page extends PluginWebPage
 
 		if (!empty($item)) {
 			$data = json_decode(str_replace('&quot;', '\'', $item['data']), true);
-
-			foreach ($data as &$v) {
-				if ($v['type'] == 'productprice' || $v['type'] == 'marketprice') {
-					$v['top'] = intval(substr($v['top'], 0, -2)) - 50 . 'px';
-				}
-			}
 		}
 
 		if ($_W['ispost']) {
 			load()->model('account');
 			$acid = pdo_fetchcolumn('select acid from ' . tablename('account_wechats') . ' where uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
 			$data = array('uniacid' => $_W['uniacid'], 'title' => trim($_GPC['title']), 'type' => intval($_GPC['type']), 'keyword2' => trim($_GPC['keyword2']), 'bg' => save_media($_GPC['bg']), 'data' => htmlspecialchars_decode($_GPC['data']), 'resptype' => trim($_GPC['resptype']), 'resptext' => trim($_GPC['resptext']), 'resptitle' => trim($_GPC['resptitle']), 'respthumb' => trim($_GPC['respthumb']), 'respdesc' => trim($_GPC['respdesc']), 'respurl' => trim($_GPC['respurl']), 'isdefault' => intval($_GPC['isdefault']), 'createtime' => time(), 'oktext' => trim($_GPC['oktext']), 'waittext' => trim($_GPC['waittext']), 'subcredit' => intval($_GPC['subcredit']), 'submoney' => $_GPC['submoney'], 'reccredit' => intval($_GPC['reccredit']), 'recmoney' => $_GPC['recmoney'], 'subtext' => trim($_GPC['subtext']), 'bedown' => intval($_GPC['bedown']), 'beagent' => intval($_GPC['beagent']), 'isopen' => intval($_GPC['isopen']), 'opentext' => trim($_GPC['opentext']), 'openurl' => trim($_GPC['openurl']), 'paytype' => intval($_GPC['paytype']), 'subpaycontent' => trim($_GPC['subpaycontent']), 'recpaycontent' => trim($_GPC['recpaycontent']), 'templateid' => trim($_GPC['templateid']), 'entrytext' => trim($_GPC['entrytext']), 'ismembergroup' => intval($_GPC['ismembergroup']));
-
-			if (empty($data['type'])) {
-				show_json(0, '请选择海报类型!');
-			}
 
 			if ($data['type'] == 4) {
 				$data['membergroupid'] = intval($_GPC['membergroupid']);
@@ -125,12 +114,8 @@ class Index_EweiShopV2Page extends PluginWebPage
 				pdo_insert('rule_keyword', $keyword_data);
 			}
 			else {
-				$isDefault = pdo_fetchcolumn('select `isdefault` from ' . tablename('ewei_shop_poster') . ' where uniacid = :uniacid and id=:id', array(':uniacid' => $_W['uniacid'], ':id' => $id));
-
-				if ($isDefault) {
-					$content = $data['type'] == 3 ? '^' . trim($data['keyword2']) . '\\+*[0-9]{1,}$' : trim($data['keyword2']);
-					pdo_update('rule_keyword', array('content' => $content), array('rid' => $rule['id']));
-				}
+				$content = $data['type'] == 3 ? '^' . trim($data['keyword2']) . '\\+*[0-9]{1,}$' : trim($data['keyword2']);
+				pdo_update('rule_keyword', array('content' => $content), array('rid' => $rule['id']));
 			}
 
 			$ruleauto = pdo_fetch('select * from ' . tablename('rule') . ' where uniacid=:uniacid and module=:module and name=:name  limit 1', array(':uniacid' => $_W['uniacid'], ':module' => 'ewei_shopv2', ':name' => 'ewei_shopv2:poster:auto'));
@@ -228,10 +213,8 @@ class Index_EweiShopV2Page extends PluginWebPage
 			show_json(0, '抱歉，海报不存在或是已经被删除！');
 		}
 
-		$rule = pdo_fetch('select * from ' . tablename('rule') . ' where uniacid=:uniacid and module=:module and name=:name  limit 1', array(':uniacid' => $_W['uniacid'], ':module' => 'ewei_shopv2', ':name' => 'ewei_shopv2:poster:' . $poster['type']));
 		pdo_update('ewei_shop_poster', array('isdefault' => 0), array('uniacid' => $_W['uniacid'], 'isdefault' => 1, 'type' => $poster['type']));
 		pdo_update('ewei_shop_poster', array('isdefault' => 1), array('uniacid' => $_W['uniacid'], 'id' => $poster['id']));
-		pdo_update('rule_keyword', array('content' => $poster['keyword2']), array('rid' => $rule['id']));
 		plog('poster.setdefault', '设置默认超级海报 ID: ' . $id . ' 海报名称: ' . $poster['title']);
 		show_json(1);
 	}

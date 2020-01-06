@@ -1,16 +1,7 @@
 <?php
-/**
- * 对微信小程序用户加密数据的解密示例代码.
- *
- * @copyright Copyright (c) 1998-2014 Tencent Inc.
- */
-
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/wxapp/pkcs7Encoder.php';
-
-
 class WXBizDataCrypt
 {
-    private $appid;
+	private $appid;
 	private $sessionKey;
 
 	/**
@@ -18,7 +9,7 @@ class WXBizDataCrypt
 	 * @param $sessionKey string 用户在小程序登录后获取的会话密钥
 	 * @param $appid string 小程序的appid
 	 */
-	public function WXBizDataCrypt( $appid, $sessionKey)
+	public function WXBizDataCrypt($appid, $sessionKey)
 	{
 		$this->sessionKey = $sessionKey;
 		$this->appid = $appid;
@@ -32,40 +23,42 @@ class WXBizDataCrypt
      *
 	 * @return int 成功0，失败返回对应的错误码
 	 */
-	public function decryptData( $encryptedData, $iv, &$data )
+	public function decryptData($encryptedData, $iv, &$data)
 	{
 		if (strlen($this->sessionKey) != 24) {
 			return ErrorCode::$IllegalAesKey;
 		}
-		$aesKey=base64_decode($this->sessionKey);
 
-        
+		$aesKey = base64_decode($this->sessionKey);
+
 		if (strlen($iv) != 24) {
 			return ErrorCode::$IllegalIv;
 		}
-		$aesIV=base64_decode($iv);
 
-		$aesCipher=base64_decode($encryptedData);
-
+		$aesIV = base64_decode($iv);
+		$aesCipher = base64_decode($encryptedData);
 		$pc = new Prpcrypt($aesKey);
-		$result = $pc->decrypt($aesCipher,$aesIV);
-        
+		$result = $pc->decrypt($aesCipher, $aesIV);
+
 		if ($result[0] != 0) {
 			return $result[0];
 		}
-     
-        $dataObj=json_decode( $result[1] );
-        if( $dataObj  == NULL )
-        {
-            return ErrorCode::$IllegalBuffer;
-        }
-        if( $dataObj->watermark->appid != $this->appid )
-        {
-            return ErrorCode::$IllegalBuffer;
-        }
+
+		$dataObj = json_decode($result[1]);
+
+		if ($dataObj == NULL) {
+			return ErrorCode::$IllegalBuffer;
+		}
+
+		if ($dataObj->watermark->appid != $this->appid) {
+			return ErrorCode::$IllegalBuffer;
+		}
+
 		$data = $result[1];
 		return ErrorCode::$OK;
 	}
-
 }
 
+require_once EWEI_SHOPV2_PLUGIN . 'app/core/wxapp/pkcs7Encoder.php';
+
+?>

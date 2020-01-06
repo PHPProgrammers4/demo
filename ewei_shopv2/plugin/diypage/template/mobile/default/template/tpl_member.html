@@ -5,10 +5,8 @@
         <a class="setbtn" style="color: {$diyitem['style']['textcolor']};" href="{php echo empty($diyitem['params']['setlink'])?mobileUrl('member/info'):$diyitem['params']['setlink'];}" data-nocache="true"><i class="icon {$diyitem['params']['seticon']}"></i></a>
         {/if}
         <div class="child">
-            <a href="./index.php?i={php echo $_W['uniacid']}&c=entry&m=ewei_shopv2&do=mobile&r=member.log">
             <div class="title" style="color: {$diyitem['style']['textcolor']};">{$diyitem['info']['textmoney']}</div>
             <div class="num" style="color: {$diyitem['style']['textlight']};">{$diyitem['info']['money']}</div>
-            </a>
             {if !empty($diyitem['params']['leftnav'])}
             <a class="btn" style="color: {$diyitem['style']['textcolor']}; border-color: {$diyitem['style']['textcolor']};" href="{php echo empty($diyitem['params']['leftnavlink'])?mobileUrl('member/recharge'):$diyitem['params']['leftnavlink'];}" data-nocache="true">{$diyitem['params']['leftnav']}</a>
             {/if}
@@ -25,10 +23,8 @@
             {/if}
         </div>
         <div class="child">
-            <a href="./index.php?i={php echo $_W['uniacid']}&c=entry&m=ewei_shopv2&do=mobile&r=creditshop.creditlog">
             <div class="title" style="color: {$diyitem['style']['textcolor']};">{$diyitem['info']['textcredit']}</div>
             <div class="num" style="color: {$diyitem['style']['textlight']};">{$diyitem['info']['credit']}</div>
-            </a>
             {if !empty($diyitem['params']['rightnav'])}
             <a class="btn" style="color: {$diyitem['style']['textcolor']}; border-color: {$diyitem['style']['textcolor']};" href="{php echo empty($diyitem['params']['rightnavlink'])?mobileUrl('creditshop'):$diyitem['params']['rightnavlink'];}" data-nocache="true">{$diyitem['params']['rightnav']}</a>
             {/if}

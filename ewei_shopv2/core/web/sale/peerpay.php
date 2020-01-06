@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -25,8 +24,8 @@ class Peerpay_EweiShopV2Page extends WebPage
 			$data['enough1'] = $enough1;
 			$data['enough2'] = $enough2;
 			m('common')->updatePluginset(array(
-				'sale' => array('peerpay' => $data)
-			));
+	'sale' => array('peerpay' => $data)
+	));
 			plog('sale.peerpay.edit', '修改找人代付配置');
 			show_json(1, array('url' => webUrl('sale/peerpay', array('tab' => str_replace('#tab_', '', $_GPC['tab'])))));
 		}

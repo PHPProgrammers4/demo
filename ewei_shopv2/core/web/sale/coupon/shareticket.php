@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -35,8 +34,7 @@ class Shareticket_EweiShopV2Page extends WebPage
 			$params[':title'] = '%' . trim($_GPC['keyword']) . '%';
 		}
 
-		$gifts = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_sendticket_share') . '
-                    WHERE 1 ' . $condition . ' ORDER BY `order` DESC,id DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize, $params);
+		$gifts = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_sendticket_share') . "\r\n                    WHERE 1 " . $condition . ' ORDER BY `order` DESC,id DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize, $params);
 
 		foreach ($gifts as $gk => $gv) {
 			if ($gv['expiration'] == 0) {

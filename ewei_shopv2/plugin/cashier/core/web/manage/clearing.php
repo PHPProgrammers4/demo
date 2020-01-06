@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -79,23 +79,23 @@ class Clearing_EweiShopV2Page extends CashierWebPage
 
 			unset($row);
 			m('excel')->export($list, array(
-				'title'   => '商户结算数据',
-				'columns' => array(
-					array('title' => '商城信息', 'field' => 'merchname', 'width' => 12),
-					array('title' => '姓名', 'field' => 'realname', 'width' => 12),
-					array('title' => '手机号', 'field' => 'mobile', 'width' => 12),
-					array('title' => '订单应收', 'field' => 'realprice', 'width' => 12),
-					array('title' => '积分抵扣', 'field' => 'deductprice', 'width' => 12),
-					array('title' => '余额抵扣', 'field' => 'deductcredit2', 'width' => 12),
-					array('title' => '会员抵扣', 'field' => 'discountprice', 'width' => 12),
-					array('title' => '促销优惠', 'field' => 'isdiscountprice', 'width' => 12),
-					array('title' => '订单实收', 'field' => 'price', 'width' => 12),
-					array('title' => '订单开始时间', 'field' => 'starttime', 'width' => 16),
-					array('title' => '订单结束时间', 'field' => 'endtime', 'width' => 16),
-					array('title' => '结算生成时间', 'field' => 'createtime', 'width' => 16),
-					array('title' => '结算状态', 'field' => 'status', 'width' => 12)
-				)
-			));
+	'title'   => '商户结算数据',
+	'columns' => array(
+		array('title' => '商城信息', 'field' => 'merchname', 'width' => 12),
+		array('title' => '姓名', 'field' => 'realname', 'width' => 12),
+		array('title' => '手机号', 'field' => 'mobile', 'width' => 12),
+		array('title' => '订单应收', 'field' => 'realprice', 'width' => 12),
+		array('title' => '积分抵扣', 'field' => 'deductprice', 'width' => 12),
+		array('title' => '余额抵扣', 'field' => 'deductcredit2', 'width' => 12),
+		array('title' => '会员抵扣', 'field' => 'discountprice', 'width' => 12),
+		array('title' => '促销优惠', 'field' => 'isdiscountprice', 'width' => 12),
+		array('title' => '订单实收', 'field' => 'price', 'width' => 12),
+		array('title' => '订单开始时间', 'field' => 'starttime', 'width' => 16),
+		array('title' => '订单结束时间', 'field' => 'endtime', 'width' => 16),
+		array('title' => '结算生成时间', 'field' => 'createtime', 'width' => 16),
+		array('title' => '结算状态', 'field' => 'status', 'width' => 12)
+		)
+	));
 		}
 
 		include $this->template();

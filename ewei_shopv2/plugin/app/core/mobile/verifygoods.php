@@ -11,7 +11,7 @@ if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
 
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class verifygoods_EweiShopV2Page extends AppMobilePage {
 
@@ -101,7 +101,7 @@ class verifygoods_EweiShopV2Page extends AppMobilePage {
 
         unset($row);
 
-        return app_json(array('list'=>$verifygoods,'total'=>$total,'pagesize'=>$psize,'page'=>$pindex));
+        app_json(array('list'=>$verifygoods,'total'=>$total,'pagesize'=>$psize,'page'=>$pindex));
 
     }
     function get_detail(){
@@ -219,7 +219,7 @@ class verifygoods_EweiShopV2Page extends AppMobilePage {
         }
 
 
-        return app_json(array('item'=>$item,'store'=>$store, 'canverify'=>$canverify,'canverify_message'=>$canverify_message, 'qrcode'=>$qrurl,'verifycode'=>$verifycode,'verifygoodlogs'=>$verifygoodlogs,'verifynum'=>$verifynum,'limitdatestr'=>$limitdatestr));
+        app_json(array('item'=>$item,'store'=>$store, 'canverify'=>$canverify,'canverify_message'=>$canverify_message, 'qrcode'=>$qrurl,'verifycode'=>$verifycode,'verifygoodlogs'=>$verifygoodlogs,'verifynum'=>$verifynum,'limitdatestr'=>$limitdatestr));
 
     }
 

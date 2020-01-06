@@ -1,16 +1,9 @@
 <?php
 
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class My_EweiShopV2Page extends AppMobilePage
 {
@@ -132,7 +125,7 @@ class My_EweiShopV2Page extends AppMobilePage
 
         $set = m('common')->getPluginset('coupon');
 
-        return app_json(array('list' => $coupons, 'pagesize' => $psize, 'total' => $total, 'closecenter' => intval($set['closecenter'])));
+        app_json(array('list' => $coupons, 'pagesize' => $psize, 'total' => $total, 'closecenter' => intval($set['closecenter'])));
     }
 
     // 获取优惠券详情
@@ -142,18 +135,18 @@ class My_EweiShopV2Page extends AppMobilePage
 
         $id = intval($_GPC['id']);
         if (empty($id)) {
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
 
         $data = pdo_fetch('select * from ' . tablename('ewei_shop_coupon_data') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $id, ':uniacid' => $_W['uniacid']));
         if (empty($data)) {
             if (empty($coupon)) {
-                return app_error(AppError::$CouponRecordNotFound);
+                app_error(AppError::$CouponRecordNotFound);
             }
         }
         $coupon = pdo_fetch('select * from ' . tablename('ewei_shop_coupon') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $data['couponid'], ':uniacid' => $_W['uniacid']));
         if (empty($coupon)) {
-            return app_error(AppError::$CouponNotFound);
+            app_error(AppError::$CouponNotFound);
         }
         $coupon['gettime'] = $data['gettime'];
         $coupon['back'] = $data['back'];
@@ -302,7 +295,7 @@ class My_EweiShopV2Page extends AppMobilePage
             $detail['desc'] = $coupon['desc'];
         }
 
-        return app_json(array('detail' => $detail));
+        app_json(array('detail' => $detail));
 
     }
 
@@ -462,7 +455,7 @@ class My_EweiShopV2Page extends AppMobilePage
 
         unset($row);
 
-        return app_json(array('couponnum'=>count($new), 'coupons'=>$new));
+        app_json(array('couponnum'=>count($new), 'coupons'=>$new));
     }
 
 
@@ -476,12 +469,12 @@ class My_EweiShopV2Page extends AppMobilePage
 
         $id = intval($_GPC['id']);
         if(empty($id)){
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
         $data = pdo_fetch('select c.*  from ' . tablename('ewei_shop_coupon_data') . '  cd inner join  ' . tablename('ewei_shop_coupon') . ' c on cd.couponid = c.id  where cd.id=:id and cd.uniacid=:uniacid and coupontype =0  limit 1', array(':id' => $id, ':uniacid' => $_W['uniacid']));
         if (empty($data)) {
             if (empty($coupon)) {
-                return app_error(AppError::$CouponRecordNotFound);
+                app_error(AppError::$CouponRecordNotFound);
             }
         }
         if (mb_strlen($data['couponname'], 'utf-8') > 7) {
@@ -559,7 +552,7 @@ class My_EweiShopV2Page extends AppMobilePage
         unset($row);
         $goods = set_medias($goods, 'thumb');
 
-        return app_json(array('detail'=>$data, 'goods'=>$goods));
+        app_json(array('detail'=>$data, 'goods'=>$goods));
     }
 
 
@@ -757,7 +750,7 @@ class My_EweiShopV2Page extends AppMobilePage
 
         }
 
-        return app_json(array('couponnum'=>count($new), 'coupons'=>$new));
+        app_json(array('couponnum'=>count($new), 'coupons'=>$new));
         include $this->template();
     }
 
@@ -768,12 +761,12 @@ class My_EweiShopV2Page extends AppMobilePage
 
         $id = intval($_GPC['id']);
         if(empty($id)){
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
         $data = pdo_fetch('select c.*  from ' . tablename('ewei_shop_coupon_data') . '  cd inner join  ' . tablename('ewei_shop_coupon') . ' c on cd.couponid = c.id  where cd.id=:id and cd.uniacid=:uniacid and coupontype =0  limit 1', array(':id' => $id, ':uniacid' => $_W['uniacid']));
         if (empty($data)) {
             if (empty($coupon)) {
-                return app_error(AppError::$CouponRecordNotFound);
+                app_error(AppError::$CouponRecordNotFound);
             }
         }
         $merchid=0;
@@ -784,7 +777,7 @@ class My_EweiShopV2Page extends AppMobilePage
             $data['couponname']=mb_substr( $data['couponname'], 0, 8, 'utf-8' ).'..';
         }
 
-        return app_json(array('detail'=>array('couponname'=>$data['couponname'])));
+        app_json(array('detail'=>array('couponname'=>$data['couponname'])));
     }
 
 
@@ -837,7 +830,7 @@ class My_EweiShopV2Page extends AppMobilePage
 
         $goods = m('goods')->getListbyCoupon($args);
 
-        return app_json( array('list' => $goods['list'], 'total' => $goods['total'], 'pagesize' => $args['pagesize']));
+        app_json( array('list' => $goods['list'], 'total' => $goods['total'], 'pagesize' => $args['pagesize']));
     }
 
 }

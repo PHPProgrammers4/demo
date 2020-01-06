@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('ES_PATH')) {
 	exit('Access Denied');
 }
@@ -22,9 +21,7 @@ class CaseController extends Controller
 			$params[':cate'] = $cateid;
 		}
 
-		$articles = pdo_fetchall('SELECT a.* ,c.id as cid,c.name FROM ' . tablename('ewei_shop_system_case') . ' AS a
-                    LEFT JOIN ' . tablename('ewei_shop_system_casecategory') . (' AS c ON a.cate = c.id and c.status = 1
-                    WHERE 1 ' . $condition . '  ORDER BY a.displayorder DESC LIMIT ') . ($pindex - 1) * $psize . ',' . $psize, $params);
+		$articles = pdo_fetchall('SELECT a.* ,c.id as cid,c.name FROM ' . tablename('ewei_shop_system_case') . " AS a\r\n                    LEFT JOIN " . tablename('ewei_shop_system_casecategory') . (" AS c ON a.cate = c.id and c.status = 1\r\n                    WHERE 1 " . $condition . '  ORDER BY a.displayorder DESC LIMIT ') . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('SELECT count(1) FROM ' . tablename('ewei_shop_system_case') . ' WHERE status = 1 ', $params);
 		$category = pdo_fetchall('select id,name from ' . tablename('ewei_shop_system_casecategory') . ' where status = 1 order by displayorder asc ');
 		$pager = $this->pagination($total, $pindex, $psize);
@@ -50,9 +47,7 @@ class CaseController extends Controller
 		global $_W;
 		global $_GPC;
 		$id = intval($_GPC['id']);
-		$article = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_system_case') . ' AS a
-                    LEFT JOIN ' . tablename('ewei_shop_system_casecategory') . ' AS c ON a.cate = c.id
-                    WHERE a.id = ' . $id);
+		$article = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_system_case') . " AS a\r\n                    LEFT JOIN " . tablename('ewei_shop_system_casecategory') . " AS c ON a.cate = c.id\r\n                    WHERE a.id = " . $id);
 		$basicset = $this->basicset();
 		$title = $article['title'];
 		include $this->template('news/detail');

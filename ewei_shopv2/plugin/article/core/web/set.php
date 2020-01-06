@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -26,8 +25,8 @@ class Set_EweiShopV2Page extends PluginWebPage
 			$arr = array('article_message' => $article_message, 'article_title' => $article_title, 'article_image' => $article_image, 'article_shownum' => $article_shownum, 'article_keyword' => $article_keyword, 'article_temp' => $article_temp, 'article_source' => $article_source, 'article_close_advanced' => $article_close_advanced);
 			$data = array('article_advanced' => $article_message, 'article_close_advanced' => $article_close_advanced);
 			m('common')->updatePluginset(array(
-				'article' => array('tm' => $data)
-			));
+	'article' => array('tm' => $data)
+	));
 
 			if (empty($article_keyword)) {
 				show_json(0, '关键词不能为空!');

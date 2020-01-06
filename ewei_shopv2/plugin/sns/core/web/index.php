@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -99,8 +98,8 @@ class Index_EweiShopV2Page extends PluginWebPage
 			ca('sns.notice.edit');
 			$data = is_array($_GPC['tm']) ? $_GPC['tm'] : array();
 			m('common')->updatePluginset(array(
-				'sns' => array('tm' => $data)
-			));
+	'sns' => array('tm' => $data)
+	));
 			plog('sns.notice.edit', '修改通知设置');
 			show_json(1);
 		}

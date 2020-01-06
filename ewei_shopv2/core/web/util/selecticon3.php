@@ -1,24 +1,20 @@
-<?php
-//dezend by http://www.yunlu99.com/
-if (!defined('IN_IA')) {
-	exit('Access Denied');
-}
-
-class Selecticon3_EweiShopV2Page extends WebPage
+<?php  if( !defined("IN_IA") ) 
 {
-	public function main()
+	exit( "Access Denied" );
+}
+class Selecticon3_EweiShopV2Page extends WebPage 
+{
+	public function main() 
 	{
-		$csspath = dirname(__DIR__) . '/../../static/fonts/wxiconx/iconfont.css';
-		$list = array();
+		$csspath = dirname(__DIR__) . "/../../static/fonts/wxiconx/iconfont.css";
+		$list = array( );
 		$content = file_get_contents($csspath);
-
-		if (!empty($content)) {
-			preg_match_all('/.(.*?):before/', $content, $matchs);
+		if( !empty($content) ) 
+		{
+			preg_match_all("/.(.*?):before/", $content, $matchs);
 			$list = $matchs[1];
 		}
-
-		include $this->template();
+		include($this->template());
 	}
 }
-
 ?>

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -35,8 +34,7 @@ class Index_EweiShopV2Page extends WebPage
 			$params[':title'] = '%' . trim($_GPC['keyword']) . '%';
 		}
 
-		$gifts = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_gift') . '
-                    WHERE 1 ' . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize, $params);
+		$gifts = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_gift') . "\r\n                    WHERE 1 " . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('ewei_shop_gift') . ' WHERE 1 ' . $condition . ' ', $params);
 		$pager = pagination2($total, $pindex, $psize);
 		include $this->template();
@@ -285,9 +283,7 @@ class Index_EweiShopV2Page extends WebPage
 			$params[':keywords'] = '%' . $kwd . '%';
 		}
 
-		$ds = pdo_fetchall('SELECT id,title,thumb,marketprice,total,goodssn,productsn,`type`,isdiscount,istime,isverify,share_title,share_icon,description,hasoption,nocommission,groupstype
-            FROM ' . tablename('ewei_shop_goods') . ('
-            WHERE 1 ' . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ') . ($pindex - 1) * $psize . ',' . $psize, $params);
+		$ds = pdo_fetchall("SELECT id,title,thumb,marketprice,total,goodssn,productsn,`type`,isdiscount,istime,isverify,share_title,share_icon,description,hasoption,nocommission,groupstype\r\n            FROM " . tablename('ewei_shop_goods') . ("\r\n            WHERE 1 " . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ') . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('ewei_shop_goods') . ' WHERE 1 ' . $condition . ' ', $params);
 		$pager = pagination($total, $pindex, $psize, '', array('before' => 5, 'after' => 4, 'ajaxcallback' => 'select_page', 'callbackfuncname' => 'select_page'));
 		$ds = set_medias($ds, array('thumb'));
@@ -311,9 +307,7 @@ class Index_EweiShopV2Page extends WebPage
 			$params[':keywords'] = '%' . $kwd . '%';
 		}
 
-		$ds = pdo_fetchall('SELECT id,title,thumb,marketprice,total
-            FROM ' . tablename('ewei_shop_goods') . ('
-            WHERE 1 ' . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ') . ($pindex - 1) * $psize . ',' . $psize, $params);
+		$ds = pdo_fetchall("SELECT id,title,thumb,marketprice,total\r\n            FROM " . tablename('ewei_shop_goods') . ("\r\n            WHERE 1 " . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ') . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('ewei_shop_goods') . ' WHERE 1 ' . $condition . ' ', $params);
 		$pager = pagination($total, $pindex, $psize, '', array('before' => 5, 'after' => 4, 'ajaxcallback' => 'select_page', 'callbackfuncname' => 'select_page'));
 		$ds = set_medias($ds, array('thumb'));

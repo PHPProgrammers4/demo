@@ -1,17 +1,10 @@
 <?php
 
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class Index_EweiShopV2Page extends AppMobilePage {
 
@@ -60,7 +53,7 @@ class Index_EweiShopV2Page extends AppMobilePage {
             }
         }
 
-        return app_json($arr);
+        app_json($arr);
     }
 
     public function getareas(){
@@ -127,7 +120,7 @@ class Index_EweiShopV2Page extends AppMobilePage {
         $citycode = intval($_GPC['city']);
         $areacode = intval($_GPC['area']);
         if(empty($citycode)||empty($areacode)){
-            return app_error(AppError::$ParamsError, "城市代码或区代码为空");
+            app_error(AppError::$ParamsError, "城市代码或区代码为空");
         }
         $newArr = array();
         if(!empty($citycode) && !empty($areacode)){
@@ -165,7 +158,7 @@ class Index_EweiShopV2Page extends AppMobilePage {
             }
         }
 
-        return app_json(array('street'=>$newArr));
+        app_json(array('street'=>$newArr));
     }
 
     public function black(){
@@ -181,7 +174,7 @@ class Index_EweiShopV2Page extends AppMobilePage {
             $isblack = false;
         }
 
-        return app_json(array(
+        app_json(array(
             'isblack'=>$isblack,
         ));
     }
@@ -199,38 +192,5 @@ class Index_EweiShopV2Page extends AppMobilePage {
 
         return  $data;
     }
-
-    public function wxAppSetting()
-    {
-
-        global $_W,$_GPC;
-
-        $ret['sysset'] = array(
-            'shopname' => $_W['shopset']['shop']['name'],
-            'shoplogo' => tomedia($_W['shopset']['shop']['logo']),
-            'description' => $_W['shopset']['shop']['description'],
-            'saleout_icon'  => isset($_W['shopset']['shop']['saleout']) ? tomedia($_W['shopset']['shop']['saleout']) : '',
-            'share' => $_W['shopset']['share'],
-            'texts' => array(
-                'credit' => $_W['shopset']['trade']['credittext'],
-                'money' => $_W['shopset']['trade']['moneytext']
-            ),
-            'isclose' => $_W['shopset']['app']['isclose'],
-            'force_auth' => isset($_W['shopset']['app']['force_auth']) ? $_W['shopset']['app']['force_auth'] : 0
-        );
-
-        $ret['sysset']['share']['logo'] = tomedia($ret['sysset']['share']['logo']);
-        $ret['sysset']['share']['icon'] = tomedia($ret['sysset']['share']['icon']);
-        $ret['sysset']['share']['followqrcode'] = tomedia($ret['sysset']['share']['followqrcode']);
-        if (!empty($_W['shopset']['app']['isclose'])) {
-            $ret['sysset']['closetext'] = $_W['shopset']['app']['closetext'];
-        }
-
-
-
-
-        echo json_encode($ret);
-    }
-
 }
 

@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -32,7 +32,7 @@ class ExchangeModel extends PluginModel
 				$msg = array(
 					'keyword1' => array('value' => $title, 'color' => '#73a68d'),
 					'keyword2' => array('value' => $desc, 'color' => '#73a68d')
-				);
+					);
 				$ret = m('message')->sendCustomNotice($member['openid'], $msg, $url, $account);
 
 				if (is_error($ret)) {
@@ -44,7 +44,7 @@ class ExchangeModel extends PluginModel
 						'keyword2' => array('title' => '处理进度', 'value' => $coupon['resptitle'], 'color' => '#000000'),
 						'keyword3' => array('title' => '处理内容', 'value' => $coupon['respdesc'], 'color' => '#4b9528'),
 						'remark'   => array('value' => '点击查看详情', 'color' => '#000000')
-					);
+						);
 
 					if (!empty($templateid)) {
 						m('message')->sendTplNotice($member['openid'], $templateid, $msg, $url);
@@ -85,7 +85,7 @@ class ExchangeModel extends PluginModel
 				'keyword4' => array('title' => '当前' . $credittext, 'value' => (double) $member['credit1'] . $credittext, 'color' => '#ff0000'),
 				'remark'   => array('value' => '
 ' . $_W['shopset']['shop']['name'] . '感谢您的支持，如有疑问请联系在线客服。', 'color' => '#000000')
-			);
+				);
 		}
 		else if ($type == 1) {
 			$tag = 'exchange_balance';
@@ -104,7 +104,7 @@ class ExchangeModel extends PluginModel
 				'keyword3' => array('title' => '账户余额', 'value' => (double) $member['credit2'] . '元', 'color' => '#ff0000'),
 				'remark'   => array('value' => '获得原因：余额兑换
 ' . $_W['shopset']['shop']['name'] . '感谢您的支持，如有疑问请联系在线客服。', 'color' => '#000000')
-			);
+				);
 		}
 		else {
 			$tag = 'exchange_recharge';
@@ -123,7 +123,7 @@ class ExchangeModel extends PluginModel
 				'keyword4' => array('title' => '账户余额', 'value' => (double) $member['credit2'] . '元', 'color' => '#ff0000'),
 				'remark'   => array('value' => '充值方式：卡密充值
 ' . $_W['shopset']['shop']['name'] . '感谢您的支持，如有疑问请联系在线客服。', 'color' => '#000000')
-			);
+				);
 		}
 
 		m('notice')->sendNotice(array('openid' => $openid, 'tag' => $tag, 'default' => $message, 'cusdefault' => $text, 'url' => $url, 'datas' => $datas));

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 class Index_EweiShopV2Page extends WebPage
 {
 	/**

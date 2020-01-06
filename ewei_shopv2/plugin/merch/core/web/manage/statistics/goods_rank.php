@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -63,13 +62,13 @@ class Goods_rank_EweiShopV2Page extends MerchWebPage
 
 			unset($row);
 			m('excel')->export($list, array(
-				'title'   => '商品销售报告-' . date('Y-m-d-H-i', time()),
-				'columns' => array(
-					array('title' => '商品名称', 'field' => 'title', 'width' => 36),
-					array('title' => '数量', 'field' => 'count', 'width' => 12),
-					array('title' => '价格', 'field' => 'money', 'width' => 12)
-				)
-			));
+	'title'   => '商品销售报告-' . date('Y-m-d-H-i', time()),
+	'columns' => array(
+		array('title' => '商品名称', 'field' => 'title', 'width' => 36),
+		array('title' => '数量', 'field' => 'count', 'width' => 12),
+		array('title' => '价格', 'field' => 'money', 'width' => 12)
+		)
+	));
 			mplog('statistics.goods_rank.export', '导出商品销售排行');
 		}
 

@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -91,7 +91,7 @@ class LiveModel extends PluginModel
 				'keyword2' => array('title' => '通知类型', 'value' => '已订阅', 'color' => '#000000'),
 				'remark'   => array('value' => $text . '
 感谢您的支持', 'color' => '#000000')
-			);
+				);
 		}
 		else {
 			if ($type == 'liveroom') {
@@ -110,7 +110,7 @@ class LiveModel extends PluginModel
 					'keyword2' => array('title' => '通知类型', 'value' => '已订阅', 'color' => '#000000'),
 					'remark'   => array('value' => $text . '
 感谢您的支持', 'color' => '#000000')
-				);
+					);
 			}
 		}
 

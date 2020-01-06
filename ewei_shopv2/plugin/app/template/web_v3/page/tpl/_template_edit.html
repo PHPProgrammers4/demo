@@ -4,9 +4,6 @@
         <!--<div class="btn-del">删除</div>-->
     <!--</div>-->
 </script>
-<style>
-    .pull-right.btn-uploader{float:left!important;width:100%;}
-</style>
 
 <script type="text/html" id="tpl_navs">
 
@@ -28,162 +25,6 @@
         </div>
     </div>
 </script>
-
-
-<script type="text/html" id="tpl_edit_merchgroup">
-    <div class="form-group">
-        <div class="col-sm-2 control-label">顶部边距</div>
-        <div class="col-sm-10">
-            <div class="form-group">
-                <div class="slider col-sm-8" data-value="<%style.margintop%>" data-min="0" data-max="50"></div>
-                <div class="col-sm-4 control-labe count"><span><%style.margintop%></span>px(像素)</div>
-                <input class="diy-bind input" data-bind-child="style" data-bind="margintop" value="<%style.margintop%>" type="hidden" />
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-2 control-label">背景颜色</div>
-        <div class="col-sm-4">
-            <div class="input-group input-group-sm">
-                <input class="form-control input-sm diy-bind color" data-bind-child="style" data-bind="background" value="<%style.background%>" type="color" />
-                <span class="input-group-addon btn btn-default" onclick="$(this).prev().val('#ffffff').trigger('propertychange')">重置</span>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-2 control-label">名称颜色</div>
-        <div class="col-sm-4">
-            <div class="input-group input-group-sm">
-                <input class="form-control input-sm diy-bind color" data-bind-child="style" data-bind="titlecolor" value="<%style.titlecolor%>" type="color" />
-                <span class="input-group-addon btn btn-default" onclick="$(this).prev().val('#333333').trigger('propertychange')">重置</span>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-2 control-label">介绍颜色</div>
-        <div class="col-sm-4">
-            <div class="input-group input-group-sm">
-                <input class="form-control input-sm diy-bind color" data-bind-child="style" data-bind="textcolor" value="<%style.textcolor%>" type="color" />
-                <span class="input-group-addon btn btn-default" onclick="$(this).prev().val('#666666').trigger('propertychange')">重置</span>
-            </div>
-        </div>
-    </div>
-    <div class="form-group" style="display:none;">
-        <div class="col-sm-2 control-label" >距离颜色</div>
-        <div class="col-sm-4">
-            <div class="input-group input-group-sm">
-                <input class="form-control input-sm diy-bind color" data-bind-child="style" data-bind="rangecolor" value="<%style.rangecolor%>" type="color" />
-                <span class="input-group-addon btn btn-default" onclick="$(this).prev().val('#ff5555').trigger('propertychange')">重置</span>
-            </div>
-        </div>
-    </div>
-    <div class="form-group" style="display:none;">
-        <div class="col-sm-2 control-label">定位颜色</div>
-        <div class="col-sm-4">
-            <div class="input-group input-group-sm">
-                <input class="form-control input-sm diy-bind color" data-bind-child="style" data-bind="locationcolor" value="<%style.locationcolor%>" type="color" />
-                <span class="input-group-addon btn btn-default" onclick="$(this).prev().val('#ff5555').trigger('propertychange')">重置</span>
-            </div>
-        </div>
-    </div>
-    <div class="form-group" style="display:none;">
-        <div class="col-sm-2 control-label">开启定位</div>
-        <div class="col-sm-10">
-            <label class="radio-inline"><input type="radio" name="openlocation" value="0" class="diy-bind" data-bind-child="params" data-bind="openlocation" data-bind-init="true" <%if params.openlocation=='0' || !params.openlocation%>checked="checked"<%/if%> > 否</label>
-            <label class="radio-inline"><input type="radio" name="openlocation" value="1" class="diy-bind" data-bind-child="params" data-bind="openlocation" data-bind-init="true" <%if params.openlocation=='1'%>checked="checked"<%/if%>> 是</label>
-            <div class="help-block">注意：开启后用户进入页面会弹出“是否允许获取位置”字样的提示</div>
-        </div>
-    </div>
-    <div class="line"></div>
-    <div class="form-group">
-        <div class="col-sm-2 control-label">选择商户</div>
-        <div class="col-sm-10">
-            <label class="radio-inline"><input type="radio" name="merchdata" value="0" class="diy-bind" data-bind-child="params" data-bind="merchdata" data-bind-init="true" <%if params.merchdata=='0' || !params.merchdata%>checked="checked"<%/if%> > 手动选择</label>
-            <label class="radio-inline"><input type="radio" name="merchdata" value="1" class="diy-bind" data-bind-child="params" data-bind="merchdata" data-bind-init="true" <%if params.merchdata=='1'%>checked="checked"<%/if%>> 选择分类</label>
-            <label class="radio-inline"><input type="radio" name="merchdata" value="2" class="diy-bind" data-bind-child="params" data-bind="merchdata" data-bind-init="true" <%if params.merchdata=='2'%>checked="checked"<%/if%>> 选择分组</label>
-            <label class="radio-inline"><input type="radio" name="merchdata" value="3" class="diy-bind" data-bind-child="params" data-bind="merchdata" data-bind-init="true" <%if params.merchdata=='3'%>checked="checked"<%/if%>> 推荐商户</label>
-        </div>
-    </div>
-
-    <%if params.merchdata=='0' || !params.merchdata%>
-    <div class="form-items indent" data-min="1">
-        <div class="inner" id="form-items">
-            <%each data as child itemid %>
-            <div class="item" data-id="<%itemid%>">
-                <span class="btn-del" title="删除"></span>
-                <div class="item-image square">
-                    <div class="text merch-selector" data-goodstype="<%params.goodstype%>">选择商户</div>
-                    <img src="<%imgsrc child.thumb%>" onerror="this.src='../addons/ewei_shopv2/static/images/nopic.jpg';" id="pimg-<%itemid%>" />
-                    <input type="hidden" class="diy-bind" data-bind-parent="data" data-bind-child="<%itemid%>" data-bind="imgurl"  id="cimg-<%itemid%>" value="<%child.imgurl%>" />
-                </div>
-                <div class="item-form">
-                    <div class="input-group" style="margin-bottom:0px; ">
-                        <span class="input-group-addon">商户名称</span>
-                        <input class="form-control input-sm" value="<%child.name||'未设置'%>" readonly="readonly" />
-                    </div>
-                    <div class="input-group" style="margin-top:10px; margin-bottom:0px; ">
-                        <span class="input-group-addon">商户介绍</span>
-                        <input class="form-control input-sm" value="<%child.desc%>" readonly="readonly" />
-                    </div>
-                </div>
-            </div>
-            <%/each%>
-        </div>
-        <div class="btn btn-w-m btn-block btn-default btn-outline" id="addChild"><i class="fa fa-plus"></i> 添加一个</div>
-    </div>
-    <%/if%>
-
-    <%if params.merchdata=='1'%>
-    <div class="form-group">
-        <div class="col-sm-2 control-label">选择分类</div>
-        <div class="col-sm-10">
-            <div class="input-group">
-                <input type="text" class="form-control input-sm" placeholder="请点击选择分类" value="<%params.catename%>" readonly="readonly"/>
-                <span class="input-group-addon btn btn-default merch-category-selector" data-goodstype="<%params.goodstype%>">选择分类</span>
-            </div>
-        </div>
-    </div>
-    <%/if%>
-
-    <%if params.merchdata=='2'%>
-    <div class="form-group">
-        <div class="col-sm-2 control-label">选择分组</div>
-        <div class="col-sm-10">
-            <div class="input-group">
-                <input type="text" class="form-control input-sm" placeholder="请点击选择分组" value="<%params.groupname%>" readonly="readonly"/>
-                <span class="input-group-addon btn btn-default merch-group-selector">选择分组</span>
-            </div>
-        </div>
-    </div>
-    <%/if%>
-
-    <%if params.merchdata>0%>
-    <div class="form-group">
-        <div class="col-sm-2 control-label">显示数量</div>
-        <div class="col-sm-10">
-            <div class="form-group">
-                <div class="slider col-sm-8" data-value="<%params.merchnum%>" data-min="1" data-max="20"></div>
-                <div class="col-sm-4 control-labe count"><span><%params.merchnum%></span>个</div>
-                <input class="diy-bind input" data-bind-child="params" data-bind="merchnum" value="<%params.merchnum%>" type="hidden" />
-            </div>
-        </div>
-    </div>
-    <%/if%>
-
-    <%if params.openlocation==1%>
-    <div class="form-group">
-        <div class="col-sm-2 control-label">商品排序</div>
-        <div class="col-sm-10">
-            <label class="radio-inline"><input type="radio" name="merchsort" value="0" class="diy-bind" data-bind-child="params" data-bind="merchsort" <%if params.merchsort=='0'||!params.merchsort%>checked="checked"<%/if%>> 综合</label>
-            <label class="radio-inline"><input type="radio" name="merchsort" value="1" class="diy-bind" data-bind-child="params" data-bind="merchsort" <%if params.merchsort=='1'%>checked="checked"<%/if%> > 距离降序</label>
-            <label class="radio-inline"><input type="radio" name="merchsort" value="2" class="diy-bind" data-bind-child="params" data-bind="merchsort" <%if params.merchsort=='2'%>checked="checked"<%/if%> > 距离升序</label>
-        </div>
-    </div>
-    <%/if%>
-
-</script>
-
-
 
 <script type="text/html" id="tpl_edit_page">
     <div class="form-group">
@@ -2101,78 +1942,6 @@
     </div>
 </script>
 
-<script type="text/html" id="tpl_edit_groupsgoods">
-
-    <div class="form-group">
-        <div class="col-sm-2 control-label">样式</div>
-        <div class="col-sm-10">
-            <label class="radio-inline"><input type="radio" name="liststyle" value="block" class="diy-bind" data-bind-child="style" data-bind="liststyle" data-bind-init="true" <%if style.liststyle=='block'%>checked="checked"<%/if%> > 样式一</label>
-            <label class="radio-inline"><input type="radio" name="liststyle" value="" class="diy-bind" data-bind-child="style" data-bind="liststyle" data-bind-init="true" <%if style.liststyle==''%>checked="checked"<%/if%>> 样式二</label>
-        </div>
-    </div>
-
-    <div class="line"></div>
-
-    <div class="form-group">
-        <div class="col-sm-2 control-label">商品原价颜色</div>
-        <div class="col-sm-4">
-            <div class="input-group">
-                <input class="form-control input-sm diy-bind color" data-bind-child="style" data-bind="productpricecolor" value="<%style.productpricecolor%>" type="color" />
-                <span class="input-group-addon btn btn-default" data-toggle="resetColor" data-color="#999999">重置</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="line"></div>
-
-    <div class="form-group">
-        <div class="col-sm-2 control-label">拼团价格颜色</div>
-        <div class="col-sm-4">
-            <div class="input-group">
-                <input class="form-control input-sm diy-bind color" data-bind-child="style" data-bind="pricecolor" value="<%style.pricecolor%>" type="color" />
-                <span class="input-group-addon btn btn-default" data-toggle="resetColor" data-color="#ff5555">重置</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="line"></div>
-
-    <div class="form-group">
-        <div class="col-sm-2 control-label">拼团标签颜色</div>
-        <div class="col-sm-4">
-            <div class="input-group" >
-                <input class="form-control input-sm diy-bind color" data-bind-child="style" data-bind="buybtncolor" value="<%style.buybtncolor%>" type="color" />
-                <span class="input-group-addon btn btn-default" data-toggle="resetColor" data-color="#ff5555">重置</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="line"></div>
-
-    <div class="form-group">
-        <div class="col-sm-2 control-label">拼团角标颜色</div>
-        <div class="col-sm-4">
-            <div class="input-group" >
-                <input class="form-control input-sm diy-bind color" data-bind-child="style" data-bind="groupscorner" value="<%style.groupscorner%>" type="color" />
-                <span class="input-group-addon btn btn-default" data-toggle="resetColor" data-color="#ff5555">重置</span>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="form-group form-group-sm">
-        <div class="col-sm-2 control-label">显示数量</div>
-        <div class="col-sm-10">
-            <div class="form-control-static">
-                <div class="slider col-sm-8" data-value="<%params.goodsnum%>" data-min="1" data-max="20"></div>
-                <div class="col-sm-4 control-labe count"><span><%params.goodsnum%></span>个</div>
-                <input class="diy-bind input" data-bind-child="params" data-bind="goodsnum" value="<%params.goodsnum%>" type="hidden" />
-            </div>
-        </div>
-    </div>
-
-</script>
-
 <script type="text/html" id="tpl_edit_video">
     <div class="form-group">
         <div class="col-sm-2 control-label">视频样式</div>
@@ -2214,7 +1983,6 @@
                     </div>
                 </div>
             <%/if%>
-            <div class="form-control-static">可上传视频或输入视频地址,不支持提取网络视频</div>
         </div>
     </div>
 </script>

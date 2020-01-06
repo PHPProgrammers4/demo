@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -244,12 +244,6 @@ class FriendcouponModel extends PluginModel
 	{
 		global $_W;
 		return pdo_fetch('select * from ' . tablename('ewei_shop_member') . ' where uniacid = :uniacid and openid = :openid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
-	}
-
-	public function getmemberwx($openid_wx)
-	{
-		global $_W;
-		return pdo_fetch('select * from ' . tablename('ewei_shop_member') . ' where uniacid = :uniacid and openid_wa = :openid_wa', array(':uniacid' => $_W['uniacid'], ':openid_wa' => $openid_wx));
 	}
 
 	public function getTakePartInPeopleData($activity_id, $headerid)

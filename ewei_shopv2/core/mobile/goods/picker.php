@@ -1,12 +1,4 @@
 <?php
-
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -15,7 +7,6 @@ class Picker_EweiShopV2Page extends MobilePage {
 
     function main()
     {
-
         global $_W, $_GPC;
         $id = intval($_GPC['id']);
         $action = trim($_GPC['action']);
@@ -55,8 +46,8 @@ class Picker_EweiShopV2Page extends MobilePage {
 
 
         //商品
-        $goods = pdo_fetch('select id,thumb,title,marketprice,total,maxbuy,minbuy,unit,hasoption,showtotal,diyformid,diyformtype,diyfields,isdiscount,presellprice,isdiscount_time,isdiscount_time_start,isdiscount_discounts,discounts,hascommission,nocommission,commission,commission1_rate,marketprice,commission1_pay,needfollow, followtip, followurl, `type`, isverify, maxprice, minprice, merchsale,ispresell,preselltimeend,unite_total,
-                threen,preselltimestart,presellovertime,presellover,islive,liveprice,minliveprice,maxliveprice,isnodiscount
+        $goods = pdo_fetch('select id,thumb,title,marketprice,total,maxbuy,minbuy,unit,hasoption,showtotal,diyformid,diyformtype,diyfields,isdiscount,presellprice,isdiscount_time,isdiscount_discounts,hascommission,nocommission,commission,commission1_rate,marketprice,commission1_pay,needfollow, followtip, followurl, `type`, isverify, maxprice, minprice, merchsale,ispresell,preselltimeend,unite_total,
+                threen,preselltimestart,presellovertime,presellover,islive,liveprice,minliveprice,maxliveprice
                 from ' . tablename('ewei_shop_goods') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $id, ':uniacid' => $_W['uniacid']));
         if (empty($goods)) {
             show_json(0);
@@ -86,16 +77,15 @@ class Picker_EweiShopV2Page extends MobilePage {
             $follow = m("user")->followed($openid);
             if (!empty($goods['needfollow']) && !$follow) {
                 $followtip = empty($goods['followtip']) ? "如果您想要购买此商品，需要您关注我们的公众号，点击【确定】关注后再来购买吧~" : $goods['followtip'];
-                $followqrcode = $_W['shopset']['share']['followqrcode'];
-                $followqrcode = tomedia($followqrcode);
                 $followurl = empty($goods['followurl']) ? $_W['shopset']['share']['followurl'] : $goods['followurl'];
-                show_json(2, array('followtip' => $followtip, 'followurl' => $followurl, 'followqrcode' => $followqrcode));
+                show_json(2, array('followtip' => $followtip, 'followurl' => $followurl));
             }
         }
 
 
         $openid =$_W['openid'];
         $member = m('member')->getMember($openid);
+
         //  验证是否登录
         if(empty($openid)){
             $sendtime = $_SESSION['verifycodesendtime'];
@@ -145,7 +135,7 @@ class Picker_EweiShopV2Page extends MobilePage {
         }
 
 
-        if($goods['isdiscount'] && $goods['isdiscount_time']>=time() && $goods['isdiscount_time_start'] < time() ){
+        if($goods['isdiscount'] && $goods['isdiscount_time']>=time()){
             //有促销
             $isdiscount = true;
             $isdiscount_discounts = json_decode($goods['isdiscount_discounts'],true);
@@ -246,7 +236,7 @@ class Picker_EweiShopV2Page extends MobilePage {
             }
 
         } else {
-            if($goods['isdiscount'] && $goods['isdiscount_time']>=time() && $goods['isdiscount_time_start'] < time() ){
+            if($goods['isdiscount'] && $goods['isdiscount_time']>=time()){
                 $goods['oldmaxprice'] = $maxprice;
                 $isdiscount_discounts = json_decode($goods['isdiscount_discounts'],true);
                 $prices = array();
@@ -256,8 +246,6 @@ class Picker_EweiShopV2Page extends MobilePage {
                     $level = m('member')->getLevel($openid);
                     $prices_array = m('order')->getGoodsDiscountPrice($goods, $level, 1);
                     $prices[] = $prices_array['price'];
-
-
                 } else {
                     //详细促销
                     $goods_discounts = m('order')->getGoodsDiscounts($goods, $isdiscount_discounts, $levelid, $options);
@@ -270,129 +258,7 @@ class Picker_EweiShopV2Page extends MobilePage {
             }
         }
 
-
-        //取出后台设置会员折扣的额度,如果商品没有设置就走后台的额度
-        $leveldiscount = pdo_fetch('SELECT * FROM' . tablename('ewei_shop_member_level') . 'where id=:id and uniacid=:uniacid limit 1 ',array(':id' =>$member['level'], ':uniacid' => $_W['uniacid']));
-
-        $leveldis = $leveldiscount['discount'];
-
-        //        获取商品的会员价
-        if($goods['isnodiscount'] ==0){
-//                获取会员等级
-
-        $member_levelid = intval($member['level']);
-
-        if(!empty($member_levelid)){
-            $member_level = pdo_fetch('select * from ' . tablename('ewei_shop_member_level') . ' where id=:id and uniacid=:uniacid and enabled=1 limit 1', array(':id' =>$member_levelid, ':uniacid' => $_W['uniacid']));
-            $member_level = empty($member_level)? array(): $member_level;
-
-
-
-        }
-        $discounts = json_decode($goods['discounts'], true);
-
-
-        //判断是否开启折扣状态
-        if (empty($leveldiscount['enabled'])){
-            $discounts = json_decode($goods['discounts'], true);
-        }else{
-            //将会员折扣赋值给商品折扣中
-            if ($discounts['default'] == 0){
-                $discounts['default'] = $leveldis;
-            }
-        }
-
-       /* if (empty($discounts['default'])){
-
-        }*/
-        if (is_array($discounts)) {
-            $key = !empty($member_level['id']) ? 'level' . $member_level['id'] : 'default';
-
-            if (!isset($discounts['type']) || empty($discounts['type'])) {
-                $memberprice_dis = 0;
-                if (!empty($discounts[$key])){
-                    $dd = floatval($discounts[$key]); //设置的会员折扣
-                    if ($dd > 0 && $dd < 10) {
-                        $memberprice_dis = round($dd / 10 * $goods['minprice'], 2);
-                    }
-
-                }else{
-                    $dd = floatval($discounts[$key.'_pay']); //设置的会员折扣
-                    $md = floatval($member_level['discount']); //会员等级折扣
-                    if (!empty($dd)){
-                        $memberprice_dis = round($dd, 2);
-                    }else if ($md > 0 && $md < 10) {
-                        $memberprice_dis = round($md / 10 * $goods['minprice'], 2);
-                    }
-
-                }
-                $goods['show'] =0;
-                $goods['member_discount'] =  number_format($memberprice_dis,2,'.','');
-
-            }
-            if($goods['hasoption'] ==1&$discounts['type']==1) {
-                //详细折扣
-                $options = m('goods')->getOptions($goods);
-                foreach ($options as &$option){
-                    $discount = trim($discounts[$key]['option' . $option['id']]);
-                    if($discount==''){
-                        $discount = round(floatval($member_level['discount'])*10,2).'%';
-                    }
-                    if (!empty($discount)) {
-                        if (strexists($discount, '%')) {
-                            //促销折扣
-                            $dd = floatval(str_replace('%', '', $discount));
-
-                            if ($dd > 0 && $dd < 100) {
-                                $price = round($dd / 100 * $option['marketprice'], 2);
-                            }
-                        } else if (floatval($discount) > 0) {
-                            //促销价格
-                            $price = round(floatval($discount), 2);
-                        }
-                    }
-                    if($price>0){
-                        $option['member_discount'] = number_format($price,2,'.','');
-                    }else{
-                        $option['member_discount'] = 0;
-                    }
-                    $price = 0;
-                }
-                unset($goods['member_discount']);
-                $goods['show'] =1;
-                unset($option);
-            }elseif($goods['hasoption'] ==1&$discounts['type']==0){
-                $options = m('goods')->getOptions($goods);
-                foreach ($options as &$option){
-                    if (!empty($discounts[$key])){
-                        $dd = floatval($discounts[$key]); //设置的会员折扣
-                        if ($dd > 0 && $dd < 10) {
-                            $memberprice = round($dd / 10 * $option['marketprice'], 2);
-                        }
-                    }else{
-                        $dd = floatval($discounts[$key.'_pay']); //设置的会员折扣
-                        $md = floatval($member_level['discount']); //会员等级折扣
-                        if (!empty($dd)){
-                            $memberprice = round($dd, 2);
-                        }else if ($md > 0 && $md < 10) {
-                            $memberprice = round($md / 10 * $option['marketprice'], 2);
-                        }
-                    }
-                    if($memberprice>0){
-                        $option['member_discount'] = number_format($memberprice,2,'.','');
-                    }else{
-                        $option['member_discount'] = 0;
-                    }
-                }
-                unset($option);
-                unset($goods['member_discount']);
-                $goods['show'] =1;
-            }
-        }
-        }
-
-
-        //        获取不同规格的不同佣金
+//        获取不同规格的不同佣金
         $clevel = $this->getcLevel($_W['openid']);
         $set = array();
         if(p('commission')) {
@@ -406,61 +272,63 @@ class Picker_EweiShopV2Page extends MobilePage {
         if(p('seckill')){
             if(!p('seckill')->getSeckill($goods['id'])){
 //                    秒杀
-                if($goods['nocommission'] ==1){
-                    $seecommission = 0;
-                }else if($goods['hascommission'] == 1 && $goods['nocommission'] ==0){
 
-                    $price = $goods['maxprice'];
-                    $levelid = 'default';
-                    if($clevel == 'false'){
-                        $seecommission = 0;
-                    }else {
-                        if($clevel) {
-                            $levelid = 'level' . $clevel['id'];
+
+        if($goods['nocommission'] ==1){
+            $seecommission = 0;
+        }else if($goods['hascommission'] == 1 && $goods['nocommission'] ==0){
+
+            $price = $goods['maxprice'];
+            $levelid = 'default';
+            if($clevel == 'false'){
+                $seecommission = 0;
+            }else {
+                if($clevel) {
+                    $levelid = 'level' . $clevel['id'];
+                }
+                $goods_commission = !empty($goods['commission']) ? json_decode($goods['commission'], true) : array();
+                if($goods_commission['type'] == 0) {
+                    $seecommission = $set['level'] >= 1 ? ($goods['commission1_rate'] > 0 ? ($goods['commission1_rate'] * $goods['marketprice'] / 100) : $goods['commission1_pay']) : 0;
+                    if(is_array($options) && !empty($options)){
+                        foreach ($options as $k => $v) {
+                            $seecommission = $set['level'] >= 1 ? ($goods['commission1_rate'] > 0 ? ($goods['commission1_rate'] * $v['marketprice'] / 100) : $v['commission1_pay']) : 0;
+                            $options[$k]['seecommission'] = $seecommission;
                         }
-                        $goods_commission = !empty($goods['commission']) ? json_decode($goods['commission'], true) : array();
-                        if($goods_commission['type'] == 0) {
-                            $seecommission = $set['level'] >= 1 ? ($goods['commission1_rate'] > 0 ? ($goods['commission1_rate'] * $goods['marketprice'] / 100) : $goods['commission1_pay']) : 0;
-                            if(is_array($options) && !empty($options)){
-                                foreach ($options as $k => $v) {
-                                    $seecommission = $set['level'] >= 1 ? ($goods['commission1_rate'] > 0 ? ($goods['commission1_rate'] * $v['marketprice'] / 100) : $v['commission1_pay']) : 0;
-                                    $options[$k]['seecommission'] = $seecommission;
-                                }
-                            }
-                        } else {
-                            //获取每个规格的佣金
-                            if(is_array($options)) {
-                                foreach ($goods_commission[$levelid] as $key => $value) {
-                                    foreach ($options as $k => $v) {
-                                        if(('option' . $v['id']) == $key) {
-                                            if(strexists($value[0], '%')) {
-                                                $options[$k]['seecommission'] = (floatval(str_replace('%', '', $value[0]) / 100) * $v['marketprice']);
-                                                continue;
-                                            } else {
-                                                $options[$k]['seecommission'] = $value[0];
-                                                continue;
-                                            }
-                                        }
+                    }
+                } else {
+                    //获取每个规格的佣金
+                    if(is_array($options)) {
+                        foreach ($goods_commission[$levelid] as $key => $value) {
+                            foreach ($options as $k => $v) {
+                                if(('option' . $v['id']) == $key) {
+                                    if(strexists($value[0], '%')) {
+                                        $options[$k]['seecommission'] = (floatval(str_replace('%', '', $value[0]) / 100) * $v['marketprice']);
+                                        continue;
+                                    } else {
+                                        $options[$k]['seecommission'] = $value[0];
+                                        continue;
                                     }
                                 }
                             }
                         }
                     }
-                }elseif($goods['hasoption'] ==1&&$goods['hascommission'] == 0 && $goods['nocommission'] ==0){
-                    foreach($options as $ke=>$vl){
-                        if ($clevel!='false' && $clevel) {
-                            $options[$ke]['seecommission'] = $set['level'] >= 1 ? round($clevel['commission1'] * $vl['marketprice'] / 100, 2) : 0;
-                        } else {
-                            $options[$ke]['seecommission'] = $set['level'] >= 1 ? round($set['commission1'] * $vl['marketprice'] / 100, 2) : 0;
-                        }
-                    }
-                }else{
-                    if ($clevel!='false' && $clevel) {
-                        $seecommission = $set['level'] >= 1 ? round($clevel['commission1'] * $goods['marketprice'] / 100, 2) : 0;
-                    } else {
-                        $seecommission = $set['level'] >= 1 ? round($set['commission1'] * $goods['marketprice'] / 100, 2) : 0;
-                    }
                 }
+            }
+        }elseif($goods['hasoption'] ==1&&$goods['hascommission'] == 0 && $goods['nocommission'] ==0){
+            foreach($options as $ke=>$vl){
+                if ($clevel!='false' && $clevel) {
+                    $options[$ke]['seecommission'] = $set['level'] >= 1 ? round($clevel['commission1'] * $vl['marketprice'] / 100, 2) : 0;
+                } else {
+                    $options[$ke]['seecommission'] = $set['level'] >= 1 ? round($set['commission1'] * $vl['marketprice'] / 100, 2) : 0;
+                }
+            }
+        }else{
+            if ($clevel!='false' && $clevel) {
+                $seecommission = $set['level'] >= 1 ? round($clevel['commission1'] * $goods['marketprice'] / 100, 2) : 0;
+            } else {
+                $seecommission = $set['level'] >= 1 ? round($set['commission1'] * $goods['marketprice'] / 100, 2) : 0;
+            }
+        }
             }
         }
 
@@ -554,12 +422,12 @@ class Picker_EweiShopV2Page extends MobilePage {
         }
         //是否可以加入购物车
         $goods['canAddCart'] = true;
-        if ($goods['isverify'] == 2 || $goods['type'] == 2 || $goods['type'] == 3 || $goods['type'] == 20) {
+        if ($goods['isverify'] == 2 || $goods['type'] == 2 || $goods['type'] == 3 || $goods['type'] == 20 || !empty($goods['cannotrefund'])) {
             $goods['canAddCart'] = false;
         }
-        if(!empty($seckillinfo)){
-            $goods['canAddCart'] = false;
-        }
+       if(!empty($seckillinfo)){
+           $goods['canAddCart'] = false;
+       }
 
 
         if (p('task')){

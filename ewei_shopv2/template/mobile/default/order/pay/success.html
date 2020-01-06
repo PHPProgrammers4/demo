@@ -74,7 +74,7 @@
 	</div>
 
     <div class='fui-content'>
-
+	
 	<div class='fui-list-group result-list ' style="margin-top: 0;display: none">
 	    <div class='fui-list'>
 		<div class='fui-list-media' >
@@ -267,7 +267,7 @@
 	   <div class="fui-according-content store-container">
 		 {loop $stores $item}
 			<!--<div  class="fui-list store-item" -->
-		      <!---->
+		      
 		      <!--data-lng="{php echo floatval($item['lng'])}"-->
 		      <!--data-lat="{php echo floatval($item['lat'])}">-->
 		    <!--<div class="fui-list-media">-->
@@ -329,15 +329,15 @@
 		   </div>
 			{/loop}
 		</div>
-
+	 
 	<div id="nearStore" style="display:none">
-
+		 
 		<div class='fui-list store-item'   id='nearStoreHtml'></div>
 	</div>
 	</div></div>
 	{/if}
 	{if !empty($address)}
-
+	 
 	<div class='fui-list-group' >
 	    <div class='fui-list'>
 		<div class='fui-list-media'><i class="icon icon-dingwei"></i></div>
@@ -366,9 +366,9 @@
 	</a>
 	{/if}
 
-
+	
 	{if !empty($carrier) || !empty($store)}
-
+	 
 	<div class='fui-list-group'>
 	        {if !empty($carrier)}
 	    <div class='fui-list'>
@@ -379,7 +379,7 @@
 		</div>
 	    </div>
 		{/if}
-
+	    
 	    {if !empty($store)}
 	       <!--<div  class="fui-list" >-->
 		    <!--<div class="fui-list-media">-->
@@ -441,8 +441,8 @@
 	    {/if}
 	</div>
 	{/if}
-
-
+	
+	
 	<div class="fui-cell-group ">
 	    <div class="fui-cell">
 		<div class="fui-cell-label">{if $order['paytype']==3}需到付{else}实付金额{/if}</div>
@@ -460,11 +460,7 @@
 					{loop $ordervirtualitem $ordervirtualrow}
 						<div class="fui-cell">
 							<div class="fui-cell-label">{$ordervirtualrow['key']}</div>
-							{if $order['islink'] == 1}
-							<div class="fui-cell-info" style="white-space: normal;word-wrap: break-word"><a href="{$ordervirtualrow['value']}">{$ordervirtualrow['value']}</a></div>
-							{else}
 							<div class="fui-cell-info" style="white-space: normal;word-wrap: break-word">{$ordervirtualrow['value']}</div>
-							{/if}
 						</div>
 					{/loop}
 					{if !empty($virtualtemp) && !empty($virtualtemp['linkurl'])}
@@ -508,7 +504,7 @@
 			</div>
 		</div>
 		{/if}
-
+	 
 	<div class='row'>
 	    <div class='col-50'>
 			{if !empty($order['iscycelbuy'])}
@@ -525,7 +521,7 @@
 			{/if}
 	    </div>
 	</div>
-
+	 
     </div>
 
 	{if p('lottery')}

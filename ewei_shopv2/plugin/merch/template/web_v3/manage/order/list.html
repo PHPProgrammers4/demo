@@ -305,7 +305,7 @@
                         <a class='op  text-primary' style="line-height: 30px;" href="{php echo merchUrl('order/op/single_refund', array('id' => $g['ogid']))}" >维权{if $item['refundstate']!=9}处理{else}详情{/if}</a><br/>
                         <a class='op text-primary'  href="{php echo merchUrl('order/detail', array('id' => $item['id']))}" >查看详情</a><br/>
                         {if $item['addressid']!=0 && $item['statusvalue']>=2}
-                            <a class='op text-primary'  data-toggle="ajaxModal" href="{php echo merchUrl('util/express', array('id' => $item['id'],'express'=>$item['express'],'expresssn'=>$item['expresssn'], 'mobile'=>$item['addressdata']['mobile']))}"   >物流信息</a>
+                            <a class='op text-primary'  data-toggle="ajaxModal" href="{php echo merchUrl('util/express', array('id' => $item['id'],'express'=>$item['express'],'expresssn'=>$item['expresssn']))}"   >物流信息</a>
                         {/if}
                     {else}
                         {if !empty($item['refundid'])}
@@ -313,7 +313,7 @@
                         {/if}
                         <a class='op text-primary'  href="{php echo merchUrl('order/detail', array('id' => $item['id']))}" >查看详情</a><br/>
                         {if $item['addressid']!=0 && $item['statusvalue']>=2}
-                            <a class='op text-primary'  data-toggle="ajaxModal" href="{php echo merchUrl('util/express', array('id' => $item['id'],'express'=>$item['express'],'expresssn'=>$item['expresssn'], 'mobile'=>$item['addressdata']['mobile']))}"   >物流信息</a>
+                            <a class='op text-primary'  data-toggle="ajaxModal" href="{php echo merchUrl('util/express', array('id' => $item['id'],'express'=>$item['express'],'expresssn'=>$item['expresssn']))}"   >物流信息</a>
                         {/if}
                         {php $display_none=1}
                     {/if}

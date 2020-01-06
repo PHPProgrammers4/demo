@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -99,18 +98,18 @@ class Order_EweiShopV2Page extends MerchWebPage
 
 			unset($row);
 			m('excel')->export($list, array(
-				'title'   => '订单报告-' . date('Y-m-d-H-i', time()),
-				'columns' => array(
-					array('title' => '订单号', 'field' => 'ordersn', 'width' => 24),
-					array('title' => '总金额', 'field' => 'price', 'width' => 12),
-					array('title' => '商品金额', 'field' => 'goodsprice', 'width' => 12),
-					array('title' => '运费', 'field' => 'dispatchprice', 'width' => 12),
-					array('title' => '付款方式', 'field' => 'paytype', 'width' => 12),
-					array('title' => '会员名', 'field' => 'realname', 'width' => 12),
-					array('title' => '收货人', 'field' => 'addressname', 'width' => 12),
-					array('title' => '下单时间', 'field' => 'createtime', 'width' => 24)
-				)
-			));
+	'title'   => '订单报告-' . date('Y-m-d-H-i', time()),
+	'columns' => array(
+		array('title' => '订单号', 'field' => 'ordersn', 'width' => 24),
+		array('title' => '总金额', 'field' => 'price', 'width' => 12),
+		array('title' => '商品金额', 'field' => 'goodsprice', 'width' => 12),
+		array('title' => '运费', 'field' => 'dispatchprice', 'width' => 12),
+		array('title' => '付款方式', 'field' => 'paytype', 'width' => 12),
+		array('title' => '会员名', 'field' => 'realname', 'width' => 12),
+		array('title' => '收货人', 'field' => 'addressname', 'width' => 12),
+		array('title' => '下单时间', 'field' => 'createtime', 'width' => 24)
+		)
+	));
 			mplog('statistics.order.export', '导出订单统计');
 		}
 

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -89,7 +88,7 @@ class InvitationProcessor extends PluginProcessor
 			$member = m('member')->getMember($qr['openid']);
 			$news = array(
 				array('title' => !empty($room['share_title']) ? $room['share_title'] : $room['title'], 'picurl' => !empty($room['share_icon']) ? tomedia($room['share_icon']) : tomedia($room['thumb']), 'description' => !empty($room['share_desc']) ? $room['share_desc'] : $this->filter($room['introduce']), 'url' => $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=ewei_shopv2&do=mobile&r=live.room&id=' . $room['id'] . '&mid=' . $member['id'])
-			);
+				);
 		}
 		else {
 			$this->responseDefault($obj, 4);
@@ -106,8 +105,7 @@ class InvitationProcessor extends PluginProcessor
 	protected function filter($str)
 	{
 		if (!empty($str)) {
-			$search = array('\'<script[^>]*?>.*?</script>\'si', '\'<[\\/\\!]*?[^<>]*?>\'si', '\'([
-])[\\s]+\'', '\'&(quot|#34);\'i', '\'&(amp|#38);\'i', '\'&(lt|#60);\'i', '\'&(gt|#62);\'i', '\'&(nbsp|#160);\'i', '\'&(iexcl|#161);\'i', '\'&(cent|#162);\'i', '\'&(pound|#163);\'i', '\'&(copy|#169);\'i');
+			$search = array('\'<script[^>]*?>.*?</script>\'si', '\'<[\\/\\!]*?[^<>]*?>\'si', "'([\r\n])[\\s]+'", '\'&(quot|#34);\'i', '\'&(amp|#38);\'i', '\'&(lt|#60);\'i', '\'&(gt|#62);\'i', '\'&(nbsp|#160);\'i', '\'&(iexcl|#161);\'i', '\'&(cent|#162);\'i', '\'&(pound|#163);\'i', '\'&(copy|#169);\'i');
 			$replace = array('', '', '\\1', '"', '&', '<', '>', ' ', chr(161), chr(162), chr(163), chr(169), 'chr(\\1)');
 			$str = preg_replace($search, $replace, $str);
 		}

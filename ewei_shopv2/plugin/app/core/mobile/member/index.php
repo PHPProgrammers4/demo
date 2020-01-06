@@ -1,16 +1,8 @@
 <?php
-
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class Index_EweiShopV2Page extends AppMobilePage {
 
@@ -20,7 +12,7 @@ class Index_EweiShopV2Page extends AppMobilePage {
         $member = $this->member;
 
         if(empty($member)){
-            return app_error(AppError::$UserNotFound);
+            app_error(AppError::$UserNotFound);
         }
 
         //会员等级
@@ -141,10 +133,10 @@ class Index_EweiShopV2Page extends AppMobilePage {
             $commission = true;
             if(!$member['agentblack']) {
                 if ($member['isagent'] == 1 && $member['status'] == 1) {
-                    $commission_url = "/pages/transfer/commission/index";
+                    $commission_url = "/pages/commission/index";
                     $commission_text = empty($_W['shopset']['commission']['texts']['center']) ? '分销中心' : $_W['shopset']['commission']['texts']['center'];
                 } else {
-                    $commission_url = "/pages/transfer/commission/index";
+                    $commission_url = "/pages/commission/register/index";
                     $commission_text = empty($_W['shopset']['commission']['texts']['become']) ? '成为分销商' : $_W['shopset']['commission']['texts']['become'];
                 }
             }
@@ -290,7 +282,7 @@ class Index_EweiShopV2Page extends AppMobilePage {
         // 3. 小程序开启 && WAP关闭       需要绑定
         // 4. 小程序关闭 && WAP关闭       无需绑定
 
-        return app_json($result);
+        app_json($result);
     }
 
     // 判断是否有插件权限

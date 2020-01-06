@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -37,7 +37,7 @@ class Agent_EweiShopV2Page extends DividendWebPage
 			$params[':endtime'] = $endtime;
 		}
 
-		if ($_GPC['status'] != '') {
+		if ($_GPC['headsstatus'] != '') {
 			$condition .= ' and dm.headsstatus=' . intval($_GPC['status']);
 		}
 
@@ -51,7 +51,7 @@ class Agent_EweiShopV2Page extends DividendWebPage
 		$total = pdo_fetchcolumn('select count(dm.id) from' . tablename('ewei_shop_member') . ' dm  ' . ' left join ' . tablename('ewei_shop_member') . ' p on p.id = dm.headsid ' . ' where dm.uniacid =' . $_W['uniacid'] . (' and dm.isagent =1 and dm.isheads = 1 ' . $condition), $params);
 
 		foreach ($list as &$row) {
-			$info = $this->model->getSimpleInfo($row['openid'], array('total', 'pay'));
+			$info = $this->model->getInfo($row['openid'], array('total', 'pay'));
 			$row['groupscount'] = $info['groupscount'];
 			$row['credit1'] = m('member')->getCredit($row['openid'], 'credit1');
 			$row['credit2'] = m('member')->getCredit($row['openid'], 'credit2');
@@ -114,7 +114,7 @@ class Agent_EweiShopV2Page extends DividendWebPage
 				array('title' => '注册时间', 'field' => 'createtime', 'width' => 12),
 				array('title' => '成为队长时间', 'field' => 'createtime', 'width' => 12),
 				array('title' => '审核状态', 'field' => 'statusstr', 'width' => 12)
-			);
+				);
 
 			if (p('diyform')) {
 				$columns[] = array('title' => '团队会员自定义信息', 'field' => 'member_diyformdata', 'width' => 36);
@@ -307,7 +307,7 @@ class Agent_EweiShopV2Page extends DividendWebPage
 				array('title' => 'openid', 'field' => 'openid', 'width' => 24),
 				array('title' => '注册时间', 'field' => 'createtime', 'width' => 12),
 				array('title' => '是否关注', 'field' => 'followstr', 'width' => 12)
-			);
+				);
 
 			if (p('diyform')) {
 				$columns[] = array('title' => '团队分红会员自定义信息', 'field' => 'member_diyformdata', 'width' => 36);

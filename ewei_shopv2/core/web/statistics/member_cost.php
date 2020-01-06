@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -52,16 +51,16 @@ class Member_cost_EweiShopV2Page extends WebPage
 
 			unset($var);
 			m('excel')->export($list, array(
-				'title'   => '会员消费排行报告-' . date('Y-m-d-H-i', time()),
-				'columns' => array(
-					array('title' => '昵称', 'field' => 'nickname', 'width' => 12),
-					array('title' => '姓名', 'field' => 'realname', 'width' => 12),
-					array('title' => '手机号', 'field' => 'mobile', 'width' => 12),
-					array('title' => 'openid', 'field' => 'openid', 'width' => 24),
-					array('title' => '消费金额', 'field' => 'ordermoney', 'width' => 12),
-					array('title' => '订单数', 'field' => 'ordercount', 'width' => 12)
-				)
-			));
+	'title'   => '会员消费排行报告-' . date('Y-m-d-H-i', time()),
+	'columns' => array(
+		array('title' => '昵称', 'field' => 'nickname', 'width' => 12),
+		array('title' => '姓名', 'field' => 'realname', 'width' => 12),
+		array('title' => '手机号', 'field' => 'mobile', 'width' => 12),
+		array('title' => 'openid', 'field' => 'openid', 'width' => 24),
+		array('title' => '消费金额', 'field' => 'ordermoney', 'width' => 12),
+		array('title' => '订单数', 'field' => 'ordercount', 'width' => 12)
+		)
+	));
 			plog('statistics.member_cost.export', '导出会员消费排行');
 		}
 

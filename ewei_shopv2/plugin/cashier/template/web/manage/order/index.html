@@ -119,7 +119,6 @@
                     {if $value['status'] == -1}
                     <span> 退款人<br>{if !empty($operator[$value['refunduser']]['title'])}{$operator[$value['refunduser']]['title']}{else}管理员{/if}</span>
                     {/if}
-                    <a class="text-primary" data-toggle="ajaxModal"  href="{php echo cashierUrl('order/change',array('id' => $value['id']))}">查看商品</a>
                 </td>
             </tr>
             {/loop}

@@ -88,7 +88,7 @@
 	</div>
     </div>
 
-<script type='text/html' id='tpl_goods_list_promotion'>
+<script type='text/html' id='tpl_goods_list'>
     <%each list as g%>
 	<div class="fui-goods-item" data-goodsid="<%g.id%>" data-type="<%g.type%>">
 		<a <%if g.bargain>0%>href="{php echo mobileUrl('bargain/detail')}&id=<%g.bargain%>"<%/if%><%if g.bargain<=0 && g.type!=9%>href="{php echo mobileUrl('goods/detail')}&id=<%g.id%>"<%else%>href="{php echo mobileUrl('cycelbuy/goods/detail')}&id=<%g.id%>" <%/if%>>
@@ -99,7 +99,7 @@
 				{else}
 				<%if g.total<=0%><div class="salez" style="background-image: url('{php echo '../addons/ewei_shopv2/static/images/shouqin.png'}'); "></div><%/if%>
 				{/if}
-
+				
 				<!--分销佣金-->
 				<%if g.cansee>0 && g.seecommission>0%>
 				<div class="goods-Commission"><%g.seetitle || "预计最高佣金"%>￥<%g.seecommission%> </div>
@@ -117,7 +117,7 @@
 				<%if g.levelbuy ==0 || g.groupbuy==0 %>
 
 				<%else%>
-	           		<span class="buy<%if g.bargain >0%> bargain-btn<%/if%>" data-type="<%g.type%>"  <%if g.total<=0%> style="display:none;" <%/if%>><%if g.bargain >0%>砍价活动<%else%>购买<%/if%></span>
+	           		<span class="buy<%if g.bargain >0%> bargain-btn<%/if%>" data-type="<%g.type%>" ><%if g.bargain >0%>砍价活动<%else%>购买<%/if%></span>
 				<%/if%>
 
 

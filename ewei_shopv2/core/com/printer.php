@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -733,8 +733,8 @@ class Printer_EweiShopV2ComModel extends ComModel
 			'print_data'  => array(
 				'key'   => array('会员昵称：|' . $params['nickname'], '充值金额：|￥' . $params['price'], '支付方式：|' . $params['paytype'], '充值时间：|' . $params['paytime']),
 				'value' => array('0', '0', '0')
-			)
-		);
+				)
+			);
 		$this->printer = $printer;
 		load()->func('communication');
 
@@ -847,7 +847,7 @@ class Printer_EweiShopV2ComModel extends ComModel
 		foreach ($order_goods as $og) {
 			$shorttitle = empty($og['shorttitle']) ? $og['title'] : $og['shorttitle'];
 			$print_title = str_replace($replace_str, '', trim($shorttitle));
-			$goods[] = array('shorttitle' => $print_title, 'goodsprice' => (double) $og['price'] / (int) $og['total'], 'goodstotal' => (int) $og['total'], 'goodssn' => (string) $og['goodssn'], 'productsn' => (string) $og['productsn'], 'goodstotalprice' => (double) $og['price'], 'optiontitle' => $og['optiontitle']);
+			$goods[] = array('shorttitle' => $print_title, 'goodsprice' => (double) $og['price'] / (int) $og['total'], 'goodstotal' => (int) $og['total'], 'goodssn' => (int) $og['goodssn'], 'productsn' => (int) $og['productsn'], 'goodstotalprice' => (double) $og['price'], 'optiontitle' => $og['optiontitle']);
 		}
 
 		$store = false;
@@ -897,13 +897,12 @@ class Printer_EweiShopV2ComModel extends ComModel
 			}
 		}
 
-		if ($order['isverify'] && !empty($verify)) {
+		if ($order['isverify'] && $order['verifystoreid'] && !empty($verify)) {
 			if ($verify['type'] == 0) {
 				$this->verify = '核销完成!';
 			}
 			else if ($verify['type'] == 1) {
-				$this->verify = '核销次数: ' . $verify['times'] . '次' . '
-剩余次数:' . ($verify['lastverifys'] - $verify['times']) . '次';
+				$this->verify = '核销了 : ' . $verify['times'] . '次还剩' . $verify['lastverifys'] . '次';
 			}
 			else {
 				if ($verify['type'] == 2) {
@@ -1070,10 +1069,9 @@ class Printer_EweiShopV2ComModel extends ComModel
      * @param $client_id  易联云颁发给开发者的应用ID
      * @param $client_secret 易联云颁发给开发者的应用密钥
      * @param $merchid 商户id
-     * @param $refresh 是否刷新token
      * @return array
      */
-	protected function getYilianyunToken($client_id = '', $client_secret = '', $merchid = 0, $refresh = false)
+	protected function getYilianyunToken($client_id = '', $client_secret = '', $merchid = 0)
 	{
 		global $_W;
 
@@ -1098,7 +1096,8 @@ class Printer_EweiShopV2ComModel extends ComModel
 		}
 
 		$token_file = $file_dir . $token_name;
-		if (file_exists($token_file) && !$refresh) {
+
+		if (file_exists($token_file)) {
 			$content = file_get_contents($token_file);
 			$cont = json_decode($content, true);
 
@@ -1152,7 +1151,7 @@ class Printer_EweiShopV2ComModel extends ComModel
 		}
 
 		$timestamp = time();
-		$token = $this->getYilianyunToken($client_id, $client_secret, $merchid, true);
+		$token = $this->getYilianyunToken($client_id, $client_secret, $merchid);
 
 		if ($token['error']) {
 			return array('error' => $token['error'], 'error_description' => $token['error_description']);

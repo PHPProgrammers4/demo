@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -157,7 +156,7 @@ class Send_EweiShopV2Page extends PluginWebPage
 		$msg = array(
 			'first'  => array('value' => $template['first'], 'color' => $template['firstcolor']),
 			'remark' => array('value' => $template['remark'], 'color' => $template['remarkcolor'])
-		);
+			);
 		$i = 0;
 
 		while ($i < count($data)) {

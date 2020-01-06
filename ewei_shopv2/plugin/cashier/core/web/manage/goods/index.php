@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -16,41 +16,6 @@ class Index_EweiShopV2Page extends CashierWebPage
 			$selfgoods = isset($_GPC['selfgoods']) ? $_GPC['selfgoods'] : array();
 			$goods = isset($_GPC['goods']) ? $_GPC['goods'] : array();
 			$data = $_GPC['data'];
-
-			if (!empty($goods)) {
-				$goodsIds = array();
-				$optionGoodsIDs = array();
-
-				foreach ($goods as $index => $item) {
-					if (0 < $item['optionid']) {
-						$optionGoodsIDs[] = $item['optionid'];
-					}
-					else {
-						$goodsIds[] = $item['goodsid'];
-					}
-				}
-
-				$goodsData = array();
-				$optionGoodsData = array();
-
-				if (!empty($goodsIds)) {
-					$goodsData = pdo_fetchall('SELECT title,total FROM ' . tablename('ewei_shop_goods') . ' WHERE id IN  (:id)', array(':id' => implode(',', $goodsIds)));
-				}
-
-				if (!empty($optionGoodsIDs)) {
-					$optionGoodsData = pdo_fetchall('SELECT id,title,stock as total FROM ' . tablename('ewei_shop_goods_option') . ' WHERE id IN  (:id)', array(':id' => implode(',', $optionGoodsIDs)));
-				}
-
-				$goodsData = array_merge($goodsData, $optionGoodsData);
-
-				if (!empty($goodsData)) {
-					foreach ($goodsData as $g) {
-						if ((int) $g['total'] <= 0) {
-							show_json(-101, $g['title'] . '库存不足');
-						}
-					}
-				}
-			}
 
 			if ((double) $data['money'] <= 0) {
 				show_json(-101, '请输入有效收款金额');
@@ -88,33 +53,6 @@ class Index_EweiShopV2Page extends CashierWebPage
 	{
 		global $_W;
 		global $_GPC;
-		$_W['attachurl'] = $_W['attachurl_local'] = $_W['siteroot'] . $_W['config']['upload']['attachdir'] . '/';
-
-		if (!empty($_W['setting']['remote'][$_W['uniacid']]['type'])) {
-			$_W['setting']['remote'] = $_W['setting']['remote'][$_W['uniacid']];
-		}
-
-		if ($_W['setting']['remote']['type'] == 0) {
-			$_W['setting']['remote'] = uni_setting_load('remote', $uniacid)['remote'];
-		}
-
-		if (!empty($_W['setting']['remote']['type'])) {
-			if ($_W['setting']['remote']['type'] == ATTACH_FTP) {
-				$_W['attachurl'] = $_W['attachurl_remote'] = $_W['setting']['remote']['ftp']['url'] . '/';
-			}
-			else if ($_W['setting']['remote']['type'] == ATTACH_OSS) {
-				$_W['attachurl'] = $_W['attachurl_remote'] = $_W['setting']['remote']['alioss']['url'] . '/';
-			}
-			else if ($_W['setting']['remote']['type'] == ATTACH_QINIU) {
-				$_W['attachurl'] = $_W['attachurl_remote'] = $_W['setting']['remote']['qiniu']['url'] . '/';
-			}
-			else {
-				if ($_W['setting']['remote']['type'] == ATTACH_COS) {
-					$_W['attachurl'] = $_W['attachurl_remote'] = $_W['setting']['remote']['cos']['url'] . '/';
-				}
-			}
-		}
-
 		$keyword = trim($_GPC['keyword']);
 		$cate = trim($_GPC['cate']);
 		$goodstotal = intval($_W['shopset']['shop']['goodstotal']);
@@ -193,17 +131,6 @@ class Index_EweiShopV2Page extends CashierWebPage
 
 				if (is_array($goods1)) {
 					$goods = array_merge($goods, $goods1);
-					$key = 'id';
-					$tmp_arr = array();
-
-					foreach ($goods as $k => $v) {
-						if (in_array($v[$key], $tmp_arr)) {
-							unset($goods[$k]);
-						}
-						else {
-							$tmp_arr[] = $v[$key];
-						}
-					}
 				}
 
 				foreach ($goods as $k => $g) {

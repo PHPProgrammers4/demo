@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 ini_set('display_errors', 'On');
 error_reporting(32767);
 require '../../../../../framework/bootstrap.inc.php';

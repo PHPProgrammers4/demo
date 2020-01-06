@@ -192,7 +192,7 @@ class LotteryModel extends PluginModel
 		if (!empty($lottery_list)) {
 			$datas = array(
 				array('name' => '活动名称', 'value' => $lottery_list['title'])
-			);
+				);
 			$url = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=ewei_shopv2&do=mobile&r=lottery.index.lottery_info&id=' . $param['lottery_id'];
 			$url = str_replace('addons/ewei_shopv2/', '', $url);
 			$remark = '
@@ -206,7 +206,7 @@ class LotteryModel extends PluginModel
 				'keyword3' => array('title' => '处理结果', 'value' => '获得抽奖机会', 'color' => '#000000'),
 				'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 				'remark'   => array('value' => '恭喜您获得抽奖机会！！', 'color' => '#000000')
-			);
+				);
 			m('notice')->sendNotice(array('openid' => $openid, 'tag' => 'lottery_get', 'default' => $message, 'cusdefault' => $text, 'url' => $url, 'datas' => $datas));
 		}
 	}

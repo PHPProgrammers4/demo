@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -154,7 +154,7 @@ if (!class_exists('CreditshopModel')) {
 					}
 				}
 
-				if (!empty($goods) && round($goods['money'] + $goods['dispatch'], 2) <= $total_fee) {
+				if (!empty($goods) && $goods['money'] + $goods['dispatch'] <= $total_fee) {
 					pdo_update('ewei_shop_creditshop_log', $record, array('id' => $log['id']));
 				}
 
@@ -768,7 +768,7 @@ if (!class_exists('CreditshopModel')) {
 							'keyword3' => array('title' => '处理结果', 'value' => '已中奖', 'color' => '#4a5077'),
 							'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i', time()), 'color' => '#4a5077'),
 							'remark'   => array('value' => $remark, 'color' => '#4a5077')
-						);
+							);
 
 						if (!empty($tm['award'])) {
 							m('message')->sendTplNotice($log['openid'], $tm['award'], $msg, $detailurl);
@@ -801,7 +801,7 @@ if (!class_exists('CreditshopModel')) {
 							'keyword3' => array('title' => '处理结果', 'value' => '剩余积分' . $credit, 'color' => '#4a5077'),
 							'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i', time()), 'color' => '#4a5077'),
 							'remark'   => array('value' => $remark, 'color' => '#4a5077')
-						);
+							);
 
 						if (!empty($tm['exchange'])) {
 							$res = m('message')->sendTplNotice($log['openid'], $tm['exchange'], $msg, $detailurl);
@@ -836,7 +836,7 @@ if (!class_exists('CreditshopModel')) {
 						'keyword3' => array('title' => '处理结果', 'value' => '兑换码' . $goods['isverify'] ? '已发放' : '物流配送', 'color' => '#4a5077'),
 						'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i', $log['createtime']), 'color' => '#4a5077'),
 						'remark'   => array('value' => $remark, 'color' => '#4a5077')
-					);
+						);
 					$noticeopenids = explode(',', $goods['noticeopenid']);
 
 					if (empty($goods['noticeopenid'])) {
@@ -879,7 +879,7 @@ if (!class_exists('CreditshopModel')) {
 						'keyword3' => array('title' => '处理结果', 'value' => $info, 'color' => '#4a5077'),
 						'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i', time()), 'color' => '#4a5077'),
 						'remark'   => array('value' => $remark, 'color' => '#4a5077')
-					);
+						);
 
 					if (!empty($tm['send'])) {
 						$res = m('message')->sendTplNotice($log['openid'], $tm['send'], $msg, $detailurl);
@@ -905,7 +905,7 @@ if (!class_exists('CreditshopModel')) {
 						'keyword3' => array('title' => '处理结果', 'value' => $info, 'color' => '#4a5077'),
 						'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i', time()), 'color' => '#4a5077'),
 						'remark'   => array('value' => $remark, 'color' => '#4a5077')
-					);
+						);
 
 					if (!empty($tm['send'])) {
 						$res = m('message')->sendTplNotice($log['verifyopenid'], $tm['send'], $msg_saler, $detailurl1);
@@ -947,20 +947,20 @@ if (!class_exists('CreditshopModel')) {
 		public function perms()
 		{
 			return array(
-				'creditshop' => array(
-					'text'     => $this->getName(),
-					'isplugin' => true,
-					'child'    => array(
-						'cover'    => array('text' => '入口设置'),
-						'goods'    => array('text' => '商品', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'),
-						'category' => array('text' => '分类', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'),
-						'adv'      => array('text' => '幻灯片', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'),
-						'log'      => array('text' => '兑换记录', 'view0' => '浏览兑换记录', 'view1' => '浏览抽奖记录', 'exchange' => '确认兑换-log', 'export0' => '导出兑换记录-log', 'export1' => '导出抽奖记录-log'),
-						'notice'   => array('text' => '通知设置', 'view' => '查看', 'save' => '修改-log'),
-						'set'      => array('text' => '基础设置', 'view' => '查看', 'save' => '修改-log')
-					)
-				)
-			);
+	'creditshop' => array(
+		'text'     => $this->getName(),
+		'isplugin' => true,
+		'child'    => array(
+			'cover'    => array('text' => '入口设置'),
+			'goods'    => array('text' => '商品', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'),
+			'category' => array('text' => '分类', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'),
+			'adv'      => array('text' => '幻灯片', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'),
+			'log'      => array('text' => '兑换记录', 'view0' => '浏览兑换记录', 'view1' => '浏览抽奖记录', 'exchange' => '确认兑换-log', 'export0' => '导出兑换记录-log', 'export1' => '导出抽奖记录-log'),
+			'notice'   => array('text' => '通知设置', 'view' => '查看', 'save' => '修改-log'),
+			'set'      => array('text' => '基础设置', 'view' => '查看', 'save' => '修改-log')
+			)
+		)
+	);
 		}
 
 		public function allow($logid, $times = 0, $verifycode = '', $openid = '')
@@ -1058,7 +1058,7 @@ if (!class_exists('CreditshopModel')) {
 				if ($goods['verifytype'] == 1) {
 					$verifynum = pdo_fetchcolumn('select COUNT(1) from ' . tablename('ewei_shop_creditshop_verify') . ' where uniacid = :uniacid and logid = :logid ', array(':uniacid' => $uniacid, ':logid' => $logid));
 
-					if ($goods['verifynum'] < $verifynum) {
+					if ($goods['verifynum'] <= $verifynum) {
 						return error(-1, '此订单已完成核销！');
 					}
 

@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -21,6 +21,8 @@ class Index_EweiShopV2Page extends CreditshopMobilePage
 			$is_openmerch = 0;
 		}
 
+
+
 		$contation = ' uniacid=:uniacid ';
 
 		if (0 < intval($_GPC['merchid'])) {
@@ -30,8 +32,42 @@ class Index_EweiShopV2Page extends CreditshopMobilePage
 		$openid = $_W['openid'];
 		$uniacid = $_W['uniacid'];
 		$shop = m('common')->getSysset('shop');
-		$advs = pdo_fetchall('select id,advname,link,thumb from ' . tablename('ewei_shop_creditshop_adv') . ' where ' . $contation . ' and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
+		$member = m('member')->getMember($openid);
+
+		if (!empty($member)) {
+			$levelid = intval($member['level']);
+			$groupid = trim($member['groupid']);
+			$contation .= ' and ( ifnull(showlevels,\'\')=\'\' or FIND_IN_SET( ' . $levelid . ',showlevels)<>0 ) ';
+
+			if (strpos($groupid, ',') !== false) {
+				$groupidArr = explode(',', $groupid);
+				$groupidStr = '';
+
+				foreach ($groupidArr as $grk => $grv) {
+					$groupidStr .= 'INSTR( showgroups,\'' . $grv . '\')<>0 or ';
+
+					if ($grk == count($groupidArr) - 1) {
+						$groupidStr .= 'INSTR( showgroups,\'' . $grv . '\')<>0 ';
+					}
+				}
+
+				$contation .= 'and ( ifnull(showgroups,\'\')=\'\' or  ' . $groupidStr . ' )';
+			}
+			else {
+				$contation .= ' and ( ifnull(showgroups,\'\')=\'\' or FIND_IN_SET( \'' . $groupid . '\',showgroups)<>0 ) ';
+			}
+		}
+		else {
+			$contation .= ' and ifnull(showlevels,\'\')=\'\' ';
+			$contation .= ' and   ifnull(showgroups,\'\')=\'\' ';
+		}
+
+		$advs = pdo_fetchall('select uniacid,id,advname,link,thumb from ' . tablename('ewei_shop_creditshop_adv') . ' where   uniacid = :uniacid and  enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
+
+
 		$advs = set_medias($advs, 'thumb');
+
+
 		$credit = m('member')->getCredit($openid, 'credit1');
 		$category = array();
 
@@ -69,7 +105,7 @@ class Index_EweiShopV2Page extends CreditshopMobilePage
 			}
 		}
 
-		$exchanges = pdo_fetchall('select id, title,goodstype, subtitle, credit, money, thumb,`type` from ' . tablename('ewei_shop_creditshop_goods') . '
+		$exchanges = pdo_fetchall('select id, title,goodstype, subtitle, credit, money, thumb,`type`,showgroups,showlevels,buylevels,buygroups from ' . tablename('ewei_shop_creditshop_goods') . '
 				where ' . $contation . ' and isrecommand = 1 and goodstype = 0 and `type` = 0 and  status=1 and deleted=0 order by displayorder,id desc limit 4', array(':uniacid' => $uniacid));
 		$exchanges = set_medias($exchanges, 'thumb');
 		is_array($exchanges) ? $exchanges : ($exchanges = array());
@@ -135,7 +171,6 @@ class Index_EweiShopV2Page extends CreditshopMobilePage
 			}
 		}
 
-		$data = m('common')->getSysset('trade');
 		include $this->template();
 	}
 }

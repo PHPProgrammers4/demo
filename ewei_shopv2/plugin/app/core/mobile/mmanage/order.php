@@ -1,12 +1,4 @@
 <?php
-
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -16,7 +8,7 @@ require EWEI_SHOPV2_PLUGIN . 'app/core/page_auth_mobile.php';
 class Order_EweiShopV2Page extends AppMobileAuthPage{
 
     public function main(){
-        return app_json(array(
+        app_json(array(
             'perm' => array(
                 'order0' => cv('order.list.status0'),
                 'order1' => cv('order.list.status1'),
@@ -37,7 +29,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         global $_W, $_GPC;
 
         if(!cv('order')){
-            return app_error(AppError::$PermError, '您无操作权限');
+            app_error(AppError::$PermError, '您无操作权限');
         }
 
         $status = intval($_GPC['status']);
@@ -579,7 +571,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         $stores = pdo_fetchall('select id,storename from ' . tablename('ewei_shop_store') . ' where uniacid=:uniacid ', array(':uniacid' => $uniacid));
         $r_type = array( '0' => '退款', '1' => '退货退款', '2' => '换货');*/
 
-        return app_json(array(
+        app_json(array(
             'list'=>$list,
             'total'=>$total,
             'pagesize'=>$psize,
@@ -602,17 +594,17 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         global $_W, $_GPC;
 
         if(!cv('order.detail')){
-            return app_error(AppError::$PermError, '您无操作权限');
+            app_error(AppError::$PermError, '您无操作权限');
         }
 
         $id = intval($_GPC['id']);
         if(empty($id)){
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
 
         $item = pdo_fetch("SELECT * FROM " . tablename('ewei_shop_order') . " WHERE id = :id and uniacid=:uniacid", array(':id' => $id, ':uniacid' => $_W['uniacid']));
         if(empty($item)){
-            return app_error(AppError::$OrderNotFound);
+            app_error(AppError::$OrderNotFound);
         }
 
         $item['statusvalue'] = $item['status'];
@@ -802,7 +794,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         $item['paytime'] = empty($item['paytime'])? 0: date('Y-m-d H:i:s', $item['paytime']);
         $item['createtime'] = empty($item['createtime'])? 0: date('Y-m-d H:i:s', $item['createtime']);
 
-        return app_json(array(
+        app_json(array(
             'detail'=>$item,
             'member'=>array(
                 'id'=>$member['id'],
@@ -832,7 +824,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         global $_W, $_GPC;
 
         if(!cv('order.op.remarksaler')){
-            return app_error(AppError::$PermError, '您无操作权限');
+            app_error(AppError::$PermError, '您无操作权限');
         }
 
         $orderid = intval($_GPC['id']);
@@ -843,10 +835,10 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
             $remarksaler = trim($_GPC['remarksaler']);
             pdo_update('ewei_shop_order', array('remarksaler' => $remarksaler), array('id' => $orderid, 'uniacid' => $_W['uniacid']));
             plog('order.op.remarksaler', "订单备注 ID: {$item['id']} 订单编号: {$item['ordersn']} 备注内容: " . $remarksaler);
-            return app_json();
+            app_json();
         }
 
-        return app_error(0, array(
+        app_error(0, array(
             'remarksaler'=>$item['remarksaler']
         ));
     }
@@ -858,17 +850,17 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         global $_W, $_GPC;
 
         if (!$_W['ispost']){
-            return app_error(AppError::$RequestError);
+            app_error(AppError::$RequestError);
         }
 
         if(!cv('order.op.pay')){
-            return app_error(AppError::$PermError, '您无操作权限');
+            app_error(AppError::$PermError, '您无操作权限');
         }
 
         $orderid = intval($_GPC['id']);
         $item = $this->getOrder($orderid);
         if ($item['status'] > 1) {
-            return app_error(AppError::$ParamsError, '订单已付款，不需重复付款');
+            app_error(AppError::$ParamsError, '订单已付款，不需重复付款');
         }
 
         if (!empty($item['virtual']) && com('virtual')) {
@@ -910,7 +902,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
 
         plog('order.op.pay', "订单确认付款 ID: {$item['id']} 订单号: {$item['ordersn']}");
 
-        return app_json();
+        app_json();
     }
 
     /**
@@ -920,18 +912,18 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         global $_W, $_GPC;
 
         if(!cv('order.op.send')){
-            return app_error(AppError::$PermError, '您无操作权限');
+            app_error(AppError::$PermError, '您无操作权限');
         }
 
         $orderid = intval($_GPC['id']);
         $item = $this->getOrder($orderid);
 
         if (empty($item['addressid'])) {
-            return app_error(AppError::$ParamsError, '无收货地址，无法发货');
+            app_error(AppError::$ParamsError, '无收货地址，无法发货');
         }
         if ($item['paytype'] != 3) {
             if ($item['status'] != 1) {
-                return app_error(AppError::$ParamsError, '订单未付款，无法发货');
+                app_error(AppError::$ParamsError, '订单未付款，无法发货');
             }
         }
 
@@ -939,7 +931,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
             if($item['city_express_state'] ==0){
                 $expresssn = trim($_GPC['expresssn']);
                 if (empty($expresssn)) {
-                    return app_error(AppError::$ParamsError, '请输入快递单号');
+                    app_error(AppError::$ParamsError, '请输入快递单号');
                 }
                 $express = trim($_GPC['express']);
                 $expresscom = trim($_GPC['expresscom']);
@@ -958,7 +950,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
                 if(!empty($sendtype)){
                     $goodsids = $_GPC['sendgoodsids'];
                     if(empty($goodsids)){
-                        return app_error(AppError::$ParamsError, '请选择发货商品');
+                        app_error(AppError::$ParamsError, '请选择发货商品');
                     }
                     $ogoods = array();
                     $ogoods = pdo_fetchall("select sendtype from ".tablename('ewei_shop_order_goods')."
@@ -1024,7 +1016,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
             //模板消息
             m('notice')->sendOrderMessage($item['id']);
             plog('order.op.send', "订单发货 ID: {$item['id']} 订单号: {$item['ordersn']} <br/>快递公司: {$_GPC['expresscom']} 快递单号: {$_GPC['expresssn']}");
-            return app_json(1);
+            app_json(1);
         }
 
         //订单商品
@@ -1058,7 +1050,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         }
         $express_list = m('express')->getExpressList();
 
-        return app_json(array(
+        app_json(array(
             'address'=>$address,
             'express_list'=>$express_list,
             'order_goods'=>$order_goods,
@@ -1074,14 +1066,14 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         global $_W, $_GPC;
 
         if(!cv('order.op.sendcancel')){
-            return app_error(AppError::$PermError, '您无操作权限');
+            app_error(AppError::$PermError, '您无操作权限');
         }
 
         $orderid = intval($_GPC['id']);
         $item = $this->getOrder($orderid);
 
         if ($item['status'] != 2 && $item['sendtype'] == 0) {
-            return app_error(AppError::$ParamsError, '订单未发货，无法取消');
+            app_error(AppError::$ParamsError, '订单未发货，无法取消');
         }
         $sendtype = trim($_GPC['sendtype']);
 
@@ -1124,7 +1116,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
             }
 
             plog('order.op.sendcancel', "订单取消发货 ID: {$item['id']} 订单号: {$item['ordersn']} 原因: {$remark}");
-            return app_json();
+            app_json();
         }
 
         $sendgoods = array();
@@ -1154,7 +1146,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
             }
         }
 
-        return app_json(array(
+        app_json(array(
             'sendgoods'=>$sendgoods,
             'bundles'=>$bundles
         ));
@@ -1167,7 +1159,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         global $_W, $_GPC;
 
         if(!cv('order.op.changeaddress')){
-            return app_error(AppError::$PermError, '您无操作权限');
+            app_error(AppError::$PermError, '您无操作权限');
         }
 
         $orderid = intval($_GPC['id']);
@@ -1205,17 +1197,17 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
             $changead = intval($_GPC['changead']);
             $address = trim($_GPC['address']);
             if (empty($realname)) {
-                return app_error(AppError::$ParamsError, "请填写收件人姓名");
+                app_error(AppError::$ParamsError, "请填写收件人姓名");
             }
             if (empty($mobile)) {
-                return app_error(AppError::$ParamsError, "请填写收件人手机");
+                app_error(AppError::$ParamsError, "请填写收件人手机");
             }
             if ($changead) {
                 if ($province == '请选择省份') {
-                    return app_error(AppError::$ParamsError, "请选择省份");
+                    app_error(AppError::$ParamsError, "请选择省份");
                 }
                 if (empty($address)) {
-                    return app_error(AppError::$ParamsError, "请填写详细地址");
+                    app_error(AppError::$ParamsError, "请填写详细地址");
                 }
             }
 
@@ -1249,10 +1241,10 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
                 'type' => 0
             ), 'orderstatus');
 
-            return app_json();
+            app_json();
         }
 
-        return app_json(array(
+        app_json(array(
             'user_address'=>$user,
             'new_area'=>$new_area,
             'address_street'=>$address_street
@@ -1266,7 +1258,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         global $_W, $_GPC;
 
         if(!cv('order.op.changeexpress')){
-            return app_error(AppError::$PermError, '您无操作权限');
+            app_error(AppError::$PermError, '您无操作权限');
         }
 
         $orderid = intval($_GPC['id']);
@@ -1279,7 +1271,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
             $expresscom = $_GPC['expresscom'];
             $expresssn = trim($_GPC['expresssn']);
             if(empty($expresssn)){
-                return app_error(AppError::$ParamsError, "请填写快递单号");
+                app_error(AppError::$ParamsError, "请填写快递单号");
             }
             $change_data = array();
             $change_data['express'] = $express;
@@ -1289,7 +1281,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
             if($item['sendtype']>0){
                 if(empty($sendtype)){
                     if(empty($_GPC['bundles'])){
-                        return app_error(AppError::$ParamsError, "请选择您要修改的包裹");
+                        app_error(AppError::$ParamsError, "请选择您要修改的包裹");
                     }
                     $sendtype = $_GPC['bundles'];
                 }
@@ -1305,7 +1297,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
                 pdo_update('ewei_shop_order', $change_data, array('id' => $orderid, 'uniacid' => $_W['uniacid']));
             }
             plog('order.op.changeexpress', "修改快递状态 ID: {$item['id']} 订单号: {$item['ordersn']} 快递公司: {$expresscom} 快递单号: {$expresssn}");
-            return app_json();
+            app_json();
         }
 
         //是否存在包裹
@@ -1348,7 +1340,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         }
         $express_list = m('express')->getExpressList();
 
-        return app_json(array(
+        app_json(array(
             'address'=>$address,
             'express_list'=>$express_list,
             'sendgoods'=>$sendgoods,
@@ -1364,10 +1356,10 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         global $_W, $_GPC;
 
         if(!cv('order.op.finish')){
-            return app_error(AppError::$PermError, '您无操作权限');
+            app_error(AppError::$PermError, '您无操作权限');
         }
         if(!$_W['ispost']) {
-            return app_error(AppError::$RequestError);
+            app_error(AppError::$RequestError);
         }
 
         $orderid = intval($_GPC['id']);
@@ -1410,7 +1402,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
             }
         }
         plog('order.op.finish', "订单完成 ID: {$item['id']} 订单号: {$item['ordersn']}");
-        return app_json();
+        app_json();
     }
 
     /**
@@ -1420,7 +1412,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         global $_W, $_GPC;
 
         if(!cv('order.op.fetch')){
-            return app_error(AppError::$PermError, '您无操作权限');
+            app_error(AppError::$PermError, '您无操作权限');
         }
         if(!$_W['ispost']) {
             app_error(AppError::$RequestError);
@@ -1480,7 +1472,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
             p('commission')->checkOrderFinish($item['id']);
         }
         plog('order.op.fetch', $log);
-        return app_json();
+        app_json();
     }
 
     /**
@@ -1494,7 +1486,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
 
         $list = m('util')->getExpressList($express, $expresssn);
 
-        return app_json(array(
+        app_json(array(
             'list'=>$list
         ));
     }
@@ -1658,7 +1650,7 @@ class Order_EweiShopV2Page extends AppMobileAuthPage{
         //订单商品
         $order_goods = pdo_fetchall('select og.id,g.title,g.thumb,g.goodssn,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice,og.oldprice from ' . tablename('ewei_shop_order_goods') . ' og ' . ' left join ' . tablename('ewei_shop_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $item['id']));
 
-        return app_json(array(
+        app_json(array(
             'list'=>$order_goods,
             'item'=>$item
         ));

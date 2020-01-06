@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -110,7 +110,7 @@ if (!class_exists('GlobonusModel')) {
 						'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 						'remark'   => array('value' => '
 感谢您的支持', 'color' => '#000000')
-					);
+						);
 					$toopenid = $openid;
 					$datas[] = array('name' => '昵称', 'value' => $member['nickname']);
 					$datas[] = array('name' => '时间', 'value' => $time);
@@ -132,7 +132,7 @@ if (!class_exists('GlobonusModel')) {
 						'keyword1' => array('value' => '会员通知', 'color' => '#73a68d'),
 						'keyword2' => array('value' => !empty($tm['paytitle']) ? $tm['paytitle'] : '分红发放通知', 'color' => '#73a68d'),
 						'keyword3' => array('value' => $message, 'color' => '#73a68d')
-					);
+						);
 					return $this->sendNotice($openid, $tm, 'pay_advanced', $data, $member, $msg);
 				}
 			}
@@ -155,7 +155,7 @@ if (!class_exists('GlobonusModel')) {
 							'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 							'remark'   => array('value' => '
 感谢您的支持', 'color' => '#000000')
-						);
+							);
 						$toopenid = $openid;
 						$datas[] = array('name' => '昵称', 'value' => $member['nickname']);
 						$datas[] = array('name' => '时间', 'value' => $time);
@@ -181,7 +181,7 @@ if (!class_exists('GlobonusModel')) {
 							'keyword1' => array('value' => '会员通知', 'color' => '#73a68d'),
 							'keyword2' => array('value' => !empty($tm['upgradetitle']) ? $tm['upgradetitle'] : '股东等级升级通知', 'color' => '#73a68d'),
 							'keyword3' => array('value' => $message, 'color' => '#73a68d')
-						);
+							);
 						return $this->sendNotice($openid, $tm, 'upgrade_advanced', $data, $member, $msg);
 					}
 				}
@@ -204,7 +204,7 @@ if (!class_exists('GlobonusModel')) {
 								'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 								'remark'   => array('value' => '
 感谢您的支持', 'color' => '#000000')
-							);
+								);
 							$toopenid = $openid;
 							$datas[] = array('name' => '昵称', 'value' => $member['nickname']);
 							$datas[] = array('name' => '时间', 'value' => $time);
@@ -222,7 +222,7 @@ if (!class_exists('GlobonusModel')) {
 								'keyword1' => array('value' => '会员通知', 'color' => '#73a68d'),
 								'keyword2' => array('value' => !empty($tm['becometitle']) ? $tm['becometitle'] : '成为股东通知', 'color' => '#73a68d'),
 								'keyword3' => array('value' => $message, 'color' => '#73a68d')
-							);
+								);
 							return $this->sendNotice($openid, $tm, 'become_advanced', $data, $member, $msg);
 						}
 					}
@@ -243,7 +243,7 @@ if (!class_exists('GlobonusModel')) {
 					$advanced_message = array(
 						'first'  => array('value' => $this->replaceTemplate($advanced_template['first'], $tag, $datas, $member), 'color' => $advanced_template['firstcolor']),
 						'remark' => array('value' => $this->replaceTemplate($advanced_template['remark'], $tag, $datas, $member), 'color' => $advanced_template['remarkcolor'])
-					);
+						);
 					$data = iunserializer($advanced_template['data']);
 
 					foreach ($data as $d) {

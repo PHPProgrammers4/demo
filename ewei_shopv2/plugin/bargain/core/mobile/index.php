@@ -504,8 +504,8 @@ class Index_EweiShopV2Page extends PluginMobileLoginPage
 		}
 
 		$account_set['partin'] *= -1;
-		$res3 = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_bargain_record') . ' WHERE actor_id = :actor_id ORDER BY id DESC', array(':actor_id' => $id));
-		$res4 = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_bargain_actor') . (' WHERE goods_id = ' . $res2['id'] . ' AND account_id=:uniacid and bargain_price <= \'' . $account_set['partin'] . '\' ORDER BY bargain_price ASC limit 20'), array(':uniacid' => $_W['uniacid']));
+		$res3 = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_bargain_record') . ' WHERE actor_id = :actor_id ORDER BY id DESC LIMIT 0,10', array(':actor_id' => $id));
+		$res4 = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_bargain_actor') . (' WHERE goods_id = ' . $res2['id'] . ' AND account_id=:uniacid and bargain_price <= \'' . $account_set['partin'] . '\' ORDER BY bargain_price ASC LIMIT 10'), array(':uniacid' => $_W['uniacid']));
 		$min_price = $res2['end_price'];
 		$max_price = $res2['start_price'];
 
@@ -821,7 +821,7 @@ class Index_EweiShopV2Page extends PluginMobileLoginPage
 当前价格：' . $now_price . '元
 
 点击立即下单', 'color' => '#000000')
-			);
+				);
 		}
 		else {
 			$tag = 'bargain_message';
@@ -844,7 +844,7 @@ class Index_EweiShopV2Page extends PluginMobileLoginPage
 当前价格：' . $now_price . '元
 
 点击立即下单', 'color' => '#000000')
-			);
+				);
 		}
 
 		$this->sendNotice(array('openid' => $openid, 'tag' => $tag, 'default' => $message, 'cusdefault' => $text, 'url' => $url, 'datas' => $datas));
@@ -886,7 +886,7 @@ class Index_EweiShopV2Page extends PluginMobileLoginPage
 				$template_message = array(
 					'first'  => array('value' => $this->replaceTemplate($template['first'], $datas), 'color' => $template['firstcolor']),
 					'remark' => array('value' => $this->replaceTemplate($template['remark'], $datas), 'color' => $template['remarkcolor'])
-				);
+					);
 				$data = iunserializer($template['data']);
 
 				foreach ($data as $d) {

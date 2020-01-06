@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -91,28 +90,13 @@ class CouponProcessor extends ComProcessor
 			$_SESSION['ewei_shop_coupon_key'] = $content;
 		}
 
-		$coupon = pdo_fetch('select id,couponname,pwdkey2,pwdask,pwdsuc,pwdfail,pwdfull,pwdtimes,pwdurl,pwdwords,pwdown,pwdexit,pwdexitstr,total from ' . tablename('ewei_shop_coupon') . ' where pwdkey2=:pwdkey2 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':pwdkey2' => $couponkey));
+		$coupon = pdo_fetch('select id,couponname,pwdkey2,pwdask,pwdsuc,pwdfail,pwdfull,pwdtimes,pwdurl,pwdwords,pwdown,pwdexit,pwdexitstr from ' . tablename('ewei_shop_coupon') . ' where pwdkey2=:pwdkey2 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':pwdkey2' => $couponkey));
 		$words = explode(',', $coupon['pwdwords']);
 
 		if (empty($coupon)) {
 			$obj->endContext();
 			unset($_SESSION['ewei_shop_coupon_key']);
 			return $this->responseEmpty();
-		}
-
-		$left_count = 0;
-
-		if ($coupon['total'] == '-1') {
-			$coupon['total'] = '不限';
-		}
-		else {
-			$gettotal = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_coupon_data') . ' where couponid=:couponid and uniacid=:uniacid limit 1', array(':couponid' => $coupon['id'], ':uniacid' => $_W['uniacid']));
-			$left_count = $coupon['total'] - $gettotal;
-			$left_count = intval($left_count);
-
-			if ($left_count == 0) {
-				return $obj->respText('优惠券数量不足请下次及时领取');
-			}
 		}
 
 		if (!$obj->inContext) {

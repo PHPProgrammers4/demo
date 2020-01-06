@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -46,8 +45,8 @@ class Index_EweiShopV2Page extends PluginWebPage
 		if ($_W['ispost']) {
 			$data = is_array($_GPC['data']) ? $_GPC['data'] : array();
 			m('common')->updatePluginset(array(
-				'globonus' => array('tm' => $data)
-			));
+	'globonus' => array('tm' => $data)
+	));
 			plog('globonus.notice.edit', '修改通知设置');
 			show_json(1);
 		}

@@ -11,7 +11,7 @@
     {else if $value['data_type'] == 3}
         {if !empty($datas[$key])}
             {loop $datas[$key] $k1 $v1}
-                 {php echo $v1.'<br />'}
+                 {php echo $v1}
             {/loop}
         {else}
         未填写
@@ -68,3 +68,4 @@
     <br/>
     {php echo $datas[$key]['name2']}
     {/if}
+

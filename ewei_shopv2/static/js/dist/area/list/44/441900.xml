@@ -599,28 +599,21 @@
             <street code="441900126213" name="漳澎村村民委员会"/>
         </county>
         <county name="望牛墩镇" code="441901127">
-            <street code="441900127002" name="望牛墩社区居民委员会"/>
-            <street code="441900127200" name="李屋村村民委员会"/>
-            <street code="441900127201" name="望东村村民委员会"/>
-            <street code="441900127202" name="扶涌村村民委员会"/>
-            <street code="441900127203" name="赤滘村村民委员会"/>
-            <street code="441900127204" name="五涌村村民委员会"/>
-            <street code="441900127205" name="下漕村村民委员会"/>
-            <street code="441900127206" name="上合村村民委员会"/>
-            <street code="441900127207" name="聚龙江村村民委员会"/>
-            <street code="441900127208" name="望联村村民委员会"/>
-            <street code="441900127209" name="洲湾村村民委员会"/>
-            <street code="441900127210" name="洲涡村村民委员会"/>
-            <street code="441900127211" name="寮厦村村民委员会"/>
-            <street code="441900127212" name="官桥涌村村民委员会"/>
-            <street code="441900127213" name="芙蓉沙村村民委员会"/>
-            <street code="441900127214" name="杜屋村村民委员会"/>
-            <street code="441900127215" name="横沥村村民委员会"/>
-            <street code="441900127216" name="福安村村民委员会"/>
-            <street code="441900127217" name="官洲村村民委员会"/>
-            <street code="441900127218" name="石排村村民委员会"/>
-            <street code="441900127219" name="朱平沙村村民委员会"/>
-            <street code="441900127220" name="锦涡村村民委员会"/>
+            <street code="441900126003" name="麻涌社区居民委员会"/>
+            <street code="441900126004" name="麻二社区居民委员会"/>
+            <street code="441900126200" name="麻一村村民委员会"/>
+            <street code="441900126202" name="麻三村村民委员会"/>
+            <street code="441900126203" name="麻四村村民委员会"/>
+            <street code="441900126204" name="大步村村民委员会"/>
+            <street code="441900126205" name="东太村村民委员会"/>
+            <street code="441900126206" name="新基村村民委员会"/>
+            <street code="441900126207" name="川槎村村民委员会"/>
+            <street code="441900126208" name="鸥涌村村民委员会"/>
+            <street code="441900126209" name="黎滘村村民委员会"/>
+            <street code="441900126210" name="华阳村村民委员会"/>
+            <street code="441900126211" name="南洲村村民委员会"/>
+            <street code="441900126212" name="大盛村村民委员会"/>
+            <street code="441900126213" name="漳澎村村民委员会"/>
         </county>
         <county name="中堂镇" code="441901128">
             <street code="441900128002" name="中心社区居民委员会"/>

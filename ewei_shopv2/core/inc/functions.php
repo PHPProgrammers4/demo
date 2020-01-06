@@ -1,17 +1,8 @@
 <?php
-
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 
-//加载模型
 if (!function_exists('m')) {
     function m($name = '')
     {
@@ -32,7 +23,6 @@ if (!function_exists('m')) {
     }
 }
 
-//加载数据缓存模型
 if (!function_exists('d')) {
     function d($name = '')
     {
@@ -52,7 +42,6 @@ if (!function_exists('d')) {
     }
 }
 
-//运行插件方法
 if (!function_exists('plugin_run')) {
     function plugin_run($name = '')
     {
@@ -71,7 +60,6 @@ if (!function_exists('plugin_run')) {
     }
 }
 
-// 加载插件Socket方法
 
 if (!function_exists('socket')) {
     function socket($name)
@@ -102,7 +90,6 @@ if (!function_exists('socket')) {
     }
 }
 
-//加载插件方法
 if (!function_exists('p')) {
     function p($name = '')
     {
@@ -142,7 +129,6 @@ if (!function_exists('p')) {
     }
 }
 
-//加载组建插件方法
 if (!function_exists('com')) {
     function com($name = '')
     {
@@ -153,14 +139,13 @@ if (!function_exists('com')) {
             return $_coms[$name];
         }
 
-        //如果未使用商城七牛则不再显示七牛菜单
-//        if($name == 'qiniu') {
-//            $data = m('cache')->getArray('qiniu', 'global');
-//           if(empty($data['upload'])){
-//                $_coms[$name] = false;
-//                return $_coms[$name];
-//           }
-//        }
+        if($name == 'qiniu') {
+            $data = m('cache')->getArray('qiniu', 'global');
+            if(empty($data['upload'])){
+                $_coms[$name] = false;
+                return $_coms[$name];
+            }
+        }
 
         $model = EWEI_SHOPV2_CORE . "com/" . strtolower($name) . '.php';
         if (!is_file($model)) {
@@ -221,8 +206,6 @@ if (!function_exists('com_perm_isopen')) {
 if (!function_exists('com_perm_check_plugin')) {
     function com_perm_check_plugin($pluginname = ''){
         global $_W, $_GPC;
-
-        //如果未开启插件分权
         $permset =com_perm_getPermset();
         if (empty($permset)) {
             return true;
@@ -230,10 +213,8 @@ if (!function_exists('com_perm_check_plugin')) {
         //founder
         $founders = explode(',',$_W['config']['setting']['founder']);
 
-        //公众号拥有者
         $owner = account_owner($_W['uniacid']);
         if ($_W['role'] == 'founder' || empty($_W['role'])){
-            //如果是founder 自建公众号,拥有所有权限
             if(in_array($owner['uid'],$founders)){
 
                 return true;
@@ -241,12 +222,10 @@ if (!function_exists('com_perm_check_plugin')) {
         }
 
         if($pluginname=='grant' && $_W['role'] == 'founder') {
-            //应用授权管理在系统管理从那个公众号都能访问
 
             return true;
         }
 
-        //如果是超管公众号的操作员
         if(in_array($owner['uid'],$founders)){
             static $userids = array();
             if(!isset($userids['uniacid_'.$_W['uniacid'] ])) {
@@ -258,16 +237,13 @@ if (!function_exists('com_perm_check_plugin')) {
             }
         }
 
-        //插件开关判断
         $isopen =com_perm_isopen($pluginname);
         if (!$isopen) {
             return false;
         }
 
         $allow = true;
-        //如果多客户服务商城判断插件
         $acid = pdo_fetchcolumn("SELECT acid FROM " . tablename('account_wechats') . " WHERE `uniacid`=:uniacid LIMIT 1", array(':uniacid' => $_W['uniacid']));
-        //先判断公众号的
         $ac_perm = pdo_fetch('select  plugins from ' . tablename('ewei_shop_perm_plugin') . ' where acid=:acid limit 1', array(':acid' => $acid));
         if (!empty($ac_perm)) {
 
@@ -307,7 +283,6 @@ if (!function_exists('com_perm_check_plugin')) {
             //if (in_array($_W['uniacid'], $founder_accounts)) {
 
             if(in_array($owner['uid'],$founders)){
-                //判读公众号是否属于超级管理员
                 if(file_exists($filename)){
                     $allow = m("grant")->checkplugin($pluginname);
                 }else{
@@ -350,7 +325,6 @@ if (!function_exists('com_perm_check_com')) {
 
         global $_W, $_GPC;
 
-        //如果未开启插件分权
         $permset = com_perm_getPermset();
         if (empty($permset)) {
             return true;
@@ -361,7 +335,6 @@ if (!function_exists('com_perm_check_com')) {
         //公众号拥有者
         $owner = account_owner($_W['uniacid']);
         if ($_W['role'] == 'founder') {
-            //如果是founder 自建公众号,拥有所有权限
             if (in_array($owner['uid'], $founders)) {
                 return true;
             }
@@ -371,7 +344,6 @@ if (!function_exists('com_perm_check_com')) {
             return true;
         }
         
-        //如果是超管公众号的操作员
         if (in_array($owner['uid'], $founders)) {
             static $userids = array();
             if (!isset($userids['uniacid_' . $_W['uniacid']])) {
@@ -383,16 +355,13 @@ if (!function_exists('com_perm_check_com')) {
             }
         }
 
-        //插件开关判断
         $isopen = com_perm_isopen($comname, true);
         if (!$isopen) {
             return false;
         }
 
         $allow = true;
-        //如果多客户服务商城判断插件
         $acid = pdo_fetchcolumn("SELECT acid FROM " . tablename('account_wechats') . " WHERE `uniacid`=:uniacid LIMIT 1", array(':uniacid' => $_W['uniacid']));
-        //先判断公众号的
         $ac_perm = pdo_fetch('select  coms from ' . tablename('ewei_shop_perm_plugin') . ' where acid=:acid limit 1', array(':acid' => $acid));
         if (!empty($ac_perm)) {
 
@@ -419,7 +388,6 @@ if (!function_exists('com_perm_check_com')) {
             //if (in_array($_W['uniacid'], $founder_accounts)) {
 
             if (in_array($owner['uid'], $founders)) {
-                //判读公众号是否属于超级管理员
                 $allow = true;
                 $filename = "../addons/ewei_shopv2/core/model/grant.php";
                 if (file_exists($filename)) {
@@ -448,19 +416,16 @@ if (!function_exists('com_perm_check_com')) {
     }
 }
 
-//判断当前用户是否拥有插件权限
 if(!function_exists('check_operator_perm')){
     function check_operator_perm($pluginname = ''){
         global $_W, $_GPC;
         $uid = empty($_W['uid'])?$_W['user']['uid']:$_W['uid'];
         if(empty($uid)) return false;
         if(empty($_W['role']) || ($_W['role'] != 'operator')) return true;
-        $user_perms = array();  //操作员权限
-        $role_perms = array();  //角色权限
-        //当前操作员
+        $user_perms = array();  
+        $role_perms = array(); 
         $item = pdo_fetch("SELECT * FROM " . tablename('ewei_shop_perm_user') . " WHERE uid =:uid and deleted=0 and uniacid=:uniacid limit 1", array(':uniacid' => $_W['uniacid'], ':uid' => $uid));
         if (!empty($item)) {
-            //所属角色
             $role = pdo_fetch("SELECT * FROM " . tablename('ewei_shop_perm_role') . " WHERE id =:id and deleted=0 and uniacid=:uniacid limit 1", array(':uniacid' => $_W['uniacid'], ':id' => $item['roleid']));
             if (!empty($role)) {
                 $role_perms = explode(',', $role['perms2']);
@@ -474,7 +439,6 @@ if(!function_exists('check_operator_perm')){
         return false;
     }
 }
-//运行插件方法
 if (!function_exists('com_run')) {
     function com_run($name = '')
     {
@@ -521,12 +485,6 @@ if (!function_exists('is_array2')) {
     }
 }
 
-/**
- * 设置图片路径
- * @param type $list
- * @param type $fields
- * @return type
- */
 if (!function_exists('set_medias')) {
     function set_medias($list = array(), $fields = null)
     {
@@ -569,9 +527,6 @@ if (!function_exists('set_medias')) {
     }
 }
 
-/**
- * 获取月份最后一天
- */
 if (!function_exists('get_last_day')) {
     function get_last_day($year, $month)
     {
@@ -589,11 +544,6 @@ if (!function_exists('show_message')) {
     }
 }
 
-/**
- * 返回JSON格式数据
- * @param type $status
- * @param type $return
- */
 if (!function_exists('show_json')) {
     function show_json($status = 1, $return = null)
     {
@@ -795,7 +745,6 @@ if (!function_exists('shop_template_parse')) {
             $str = template_parse_web($str, $inmodule);
         }
         if (strexists($_W['siteurl'], 'merchant.php') || strexists($_W['siteurl'], 'r=merch.mmanage')) {
-            //多商户分权
             if (p('merch')) {
                 $str = preg_replace('/{ifp\s+(.+?)}/', '<?php if(mcv($1)) { ?>', $str);
                 $str = preg_replace('/{ifpp\s+(.+?)}/', '<?php if(mcp($1)) { ?>', $str);
@@ -804,7 +753,6 @@ if (!function_exists('shop_template_parse')) {
             }
         }
         if (strexists($_W['siteurl'], 'newstoreant.php')) {
-            //门店分权
             if (p('newstore')) {
                 $str = preg_replace('/{ifp\s+(.+?)}/', '<?php if(mcv($1)) { ?>', $str);
                 $str = preg_replace('/{ifpp\s+(.+?)}/', '<?php if(mcp($1)) { ?>', $str);
@@ -814,7 +762,6 @@ if (!function_exists('shop_template_parse')) {
             }
         }
 
-        //分权
         $str = preg_replace('/{ifp\s+(.+?)}/', '<?php if(cv($1)) { ?>', $str);
         $str = preg_replace('/{ifpp\s+(.+?)}/', '<?php if(cp($1)) { ?>', $str);
         $str = preg_replace('/{ife\s+(\S+)\s+(\S+)}/', '<?php if( ce($1 ,$2) ) { ?>', $str);
@@ -1028,8 +975,6 @@ if (!function_exists('tpl_selector')) {
 
                  >";
 
-        // 如果value不是空,去除里面特殊字符串
-
         if($options['text'] == 'nickname' && $options['value'] != "") {
             $optionsValue = &$options['value'];
             $optionsValue = preg_replace('#[\'|"]#', '', $options['value']);
@@ -1234,7 +1179,6 @@ if (!function_exists('tpl_selector')) {
 }
 
 
-//商品搜索新控件
 if (!function_exists('tpl_selector_new')) {
     function tpl_selector_new($name, $options = array())
     {
@@ -1319,18 +1263,6 @@ if (!function_exists('tpl_selector_new')) {
                         </tr>
                     </thead>
                     <tbody id='param-items{$options['selectorid']}' class='ui-sortable'>";
-        }  else if ($options['type'] == 'card') {
-    
-            $html .= "<div class='input-group multi-audio-details container' $show>
-<table class='table' style='width:600px;'>
-                    <thead>
-                        <tr>
-                            <th style='width:80px;'>商品名称</th>
-                            <th ></th>
-                            <th style='width:50px;'>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id='param-items{$options['selectorid']}' class='ui-sortable'>";
         } else if ($options['type'] == 'fullback') {
             $html .= "<div class='input-group multi-audio-details container' $show>
 <table class='table' style='width:600px;'>
@@ -1359,25 +1291,6 @@ if (!function_exists('tpl_selector_new')) {
                                      <input type='hidden' value='{$item[$options['key']]}' name='{$id}'>
                                      <em onclick='biz.selector_new.remove(this,\"{$name}\")'  class='close'>×</em>
                          </div>";
-            }  elseif ($options['type'] == 'card') {
-                if ($item['optiontitle']) {
-                    $optiontitle = $item['optiontitle'][0]['title'] . "...";
-                } else {
-                    $optiontitle = "&yen;" . $item['packageprice'];
-                }
-    
-                $html .= "
-                    <tr class='multi-product-item' data-{$options['key']}='{$item['id']}' >
-                        <input type='hidden' class='form-control img-textname' readonly='' value='{$item[$options['text']]}'>
-                       <input type='hidden'  value='{$item['goodsid']}' name='{$id}'>
-                        <td style='width:80px;'>
-                            <img src='" . tomedia($item[$options['thumb']]) . "' style='width:70px;border:1px solid #ccc;padding:1px' onerror=\"this.src='../addons/ewei_shopv2/static/images/nopic.png'\">
-                        </td>
-                        <td style='width:220px;'>{$item[$options['text']]}<input type='hidden' id='packagegoods" . $item['id'] . "' value='" . $item['option'] . "' name='packagegoods[" . $item['id'] . "]'></td>
-                        
-                        <td><a href='javascript:void(0);' class='btn btn-default btn-sm' onclick='biz.selector_new.remove(this,\"{$name}\")' title='删除'>
-                        <i class='fa fa-times'></i></a></td>
-                    </tr>";
             } elseif ($options['type'] == 'product') {
                 if ($item['optiontitle']) {
                     $optiontitle = $item['optiontitle'][0]['title'] . "...";
@@ -1524,7 +1437,7 @@ if (!function_exists('tpl_daterange')) {
             $s = '
 <script type="text/javascript">
     myrequire(["moment"], function(){
-        require(["daterangepicker"], function(){
+        myrequire(["daterangepicker"], function(){
             $(function(){
                 $(".daterange.daterange-date").each(function(){
                     var elm = this;
@@ -1538,7 +1451,7 @@ if (!function_exists('tpl_daterange')) {
                     });
                 });
             });
-        });
+		});
 	});
 </script> 
 ';
@@ -1549,7 +1462,7 @@ if (!function_exists('tpl_daterange')) {
             $s = '
 <script type="text/javascript">
     myrequire(["moment"], function(){
-        require(["daterangepicker"], function(){
+        myrequire(["daterangepicker"], function(){
             $(function(){
                 $(".daterange.daterange-time").each(function(){
                     var elm = this;
@@ -1567,7 +1480,7 @@ if (!function_exists('tpl_daterange')) {
                     });
                 });
             });
-        });
+		});
 	});
      function clearTime(obj){
               $(obj).prev().html("<span class=date-title>" + $(obj).attr("placeholder") + "</span>");
@@ -1715,11 +1628,9 @@ if (!function_exists('webUrl')) {
 
         $query = array_merge(array('do' => 'web'), $query);
         $query = array_merge(array('m' => "ewei_shopv2"), $query);
-
         if ($full) {
             return $_W['siteroot'] . 'web/' . substr(wurl('site/entry', $query), 2);
         }
-
         return wurl('site/entry', $query);
     }
 }
@@ -1807,7 +1718,6 @@ if (!function_exists('save_media')) {
                 $_W['attachurl'] = $_W['attachurl_remote'] = $_W['setting']['remote']['cos']['url'] . '/';
             }
         }
-        //保存媒体 同时开OSS和七牛，商城优先七牛，其他不管，不使用七牛则使用系统
         static $com;
         if (!$com) {
             $com = com('qiniu');
@@ -1853,7 +1763,6 @@ if (!function_exists('save_media')) {
         if (strexists($url, $_W['siteroot']) && !strexists($url, '/addons/')) {
             $urls = parse_url($url);
             $url= substr($urls['path'], strpos($urls['path'], 'images'));
-            //只有附件下面的图片URL才做处理
             if(file_exists(IA_ROOT . '/' . $_W['config']['upload']['attachdir'] . '/' . $url)){
                 return $url;
             }
@@ -2033,8 +1942,6 @@ if (!function_exists('createRedPack')) {
         if (($money / $sum) < $min) {
             return false;
         }
-        // remainSize 剩余的红包数量
-        // remainMoney 剩余的钱
         $_leftMoneyPackage = array(
             'remainSize' => (int)$sum,
             'remainMoney' => round($money, 2)
@@ -2066,10 +1973,6 @@ if (!function_exists('createRedPack')) {
 if (!function_exists("redis")) {
 
 
-    /**
-     * 获取 Redis 实例
-     * @return null|Redis
-     */
     function redis()
     {
 
@@ -2139,9 +2042,6 @@ if (!function_exists("redis")) {
 }
 
 if (!function_exists("logg")) {
-    /**
-     * 在网站根目录创建log
-     */
     function logg($name, $data)
     {
         global $_W;
@@ -2673,7 +2573,7 @@ if (!function_exists('tpl_form_field_eweishop_daterange')) {
                     });
                 });
             });
-        });
+		});
 	});
 </script>
 ';
@@ -2703,7 +2603,7 @@ if (!function_exists('tpl_form_field_eweishop_daterange')) {
                     });
                 });
             });
-        });
+		});
 	});
 </script>
 ';
@@ -2760,7 +2660,7 @@ if (!function_exists('tpl_form_field_eweishop_date')) {
                         };
                     $(".datetimepicker[name = \'' . $name . '\']").datetimepicker(option);
                 });
-            });
+			});
 		</script>';
         return $s;
     }
@@ -2881,23 +2781,14 @@ if (!function_exists('tpl_form_field_position')) {
     }
 }
 
-/**
- * 商品选择器模板
- */
 if (!function_exists('tpl_goods_selector')) {
-    /**
-     * @param $name 名字
-     * @param string $data_gs 数据
-     * @param string $option 设置选项
-     * @param string $where 商品表where条件
-     */
     function tpl_goods_selector($name, $data_gs = '', $option = array())
     {
         global $_W;
         $condition = base64_encode($option['condition']);
-        if (is_array($data_gs)) {//数组转json
+        if (is_array($data_gs)) {
             $data_gs = json_encode($data_gs);
-        } else {//有错或空,设置空对象
+        } else {
             json_decode($data_gs);
             if (json_last_error() != JSON_ERROR_NONE || empty($data_gs)) {
                 $data_gs = '{}';
@@ -2908,7 +2799,6 @@ if (!function_exists('tpl_goods_selector')) {
             $ophtml = $option['ophtml'];
         }
 
-        //名字
         $name_id = 'goods_selector_' . $name;
         if (!empty($option['url'])) {
             $post_url = $option['url'];
@@ -2921,10 +2811,8 @@ if (!function_exists('tpl_goods_selector')) {
             $_type = $option['type'];
         }
 
-        //数据数组
         $data = json_decode($data_gs, 1);
 
-        //将key替换成id
         $data_arr = array();
         foreach ($data as $value) {
             $data_arr[$value['id']] = $value;
@@ -2941,7 +2829,6 @@ if (!function_exists('tpl_goods_selector')) {
         if (empty($data_arr)) {
             $data_gs = '{}';
         }
-        //包含模板文件
         $path = IA_ROOT . '/addons/ewei_shopv2/template/web_v3/util/tpl_goods_selector.html';
         include $path;
         $_W['goods_selector_js'] = 1;
@@ -2950,34 +2837,21 @@ if (!function_exists('tpl_goods_selector')) {
 
 
 if (!function_exists('get_wxpay_sign')) {
-    /**
-     * 生成微信支付签名
-     * @param array $data    签名数据
-     * @param string $key    支付密钥
-     */
     function get_wxpay_sign($data,$key)
     {
-        // 去空
         $data=array_filter($data);
-        //签名步骤一：按字典序排序参数
         ksort($data);
         $string_a=http_build_query($data);
         $string_a=urldecode($string_a);
-        //签名步骤二：在string后加入KEY
         $string_sign_temp=$string_a."&key=".$key;
-        //签名步骤三：MD5加密
         $sign = md5($string_sign_temp);
-        // 签名步骤四：所有字符转为大写
         $result=strtoupper($sign);
         return $result;
     }
 }
 
 if (!function_exists('redis_getarr')) {
-    /**
-     * 获取redis缓存
-     * @param array $key    键 字符串
-     */
+
     function redis_getarr($key)
     {
         $open_redis = function_exists('redis') && !is_error(redis());
@@ -3009,4 +2883,321 @@ if (!function_exists('redis_setarr')) {
             $redis->set($key,$data,$timeout);
         }
     }
+}
+function auth_user($siteid, $domain) {
+    $ret = cloud_upgrade('user', array('website' => $siteid,'domain'=> $domain));
+    return $ret;
+}
+
+function auth_checkauth($auth){
+    $ret = cloud_upgrade('checkauth', array('code' => $auth['code']));
+    return $ret;
+}
+function auth_grant($data) {
+    $ret = cloud_upgrade('grant', $data);
+    return $ret;
+}
+
+function auth_check($auth,$version,$release){
+    $ret = cloud_upgrade('check', array('version' => $version,'release' => $release,'code' => $auth['code']));
+    return $ret;
+}
+
+function auth_download($auth,$path){
+    $ret = cloud_upgrade('download', array('path' => $path,'code' => $auth['code']));
+    return $ret;
+}
+
+function auth_downaddress($auth){
+    $ret = cloud_upgrade('downaddress', array('code' => $auth['code']));
+    return $ret;
+}
+
+function auth_upaddress($auth,$data){
+    $ret = cloud_upgrade('upaddress', array('code' => $auth['code'],'data' => $data));
+    return $ret;
+}
+
+function cloud_upgrade($post_data = array(), $timeout = 60)
+{
+    global $_W;
+    load()->func('communication');
+	define('HTTP_X_FOR', (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443') ? 'https://' : 'http://');
+	$post_data['domain'] = trim(preg_replace('/http(s)?:\\/\\//', '', rtrim($_W['siteroot'], '/')));
+	$post_data['ip'] = gethostbyname($_SERVER['HTTP_HOST']);
+	$post_data['modname'] = 'ewei_shopv2';
+    $resp = ihttp_request(HTTP_X_FOR .'www.we7.cc/app/ewei.php?a=validate', $post_data, $timeout);
+    $ret  = @json_decode($resp['content'], true);
+    return $ret;
+}
+$GLOBALS['_W']['config']['db']['tablepre'] = empty($GLOBALS['_W']['config']['db']['tablepre']) ? $GLOBALS['_W']['config']['db']['master']['tablepre'] : $GLOBALS['_W']['config']['db']['tablepre'];
+function db_table_schema_ab($db, $tablename = '') {
+    $result = $db->fetch("SHOW TABLE STATUS LIKE '" . trim($db->tablename($tablename), '`') . "'");
+    if (empty($result) || empty($result['Create_time'])) {
+        return array();
+    }
+    $ret['tablename'] = $result['Name'];
+    $ret['charset'] = $result['Collation'];
+    $ret['engine'] = $result['Engine'];
+    $ret['increment'] = $result['Auto_increment'];
+    $result = $db->fetchall("SHOW FULL COLUMNS FROM " . $db->tablename($tablename));
+    foreach ($result as $value) {
+        $temp = array();
+        $type = explode(" ", $value['Type'], 2);
+        $temp['name'] = $value['Field'];
+        $pieces = explode('(', $type[0], 2);
+        $temp['type'] = $pieces[0];
+        $temp['length'] = rtrim($pieces[1], ')');
+        $temp['null'] = $value['Null'] != 'NO';
+        $temp['signed'] = empty($type[1]);
+        $temp['increment'] = $value['Extra'] == 'auto_increment';
+        $ret['fields'][$value['Field']] = $temp;
+    }
+    $result = $db->fetchall("SHOW INDEX FROM " . $db->tablename($tablename));
+    foreach ($result as $value) {
+        $ret['indexes'][$value['Key_name']]['name'] = $value['Key_name'];
+        $ret['indexes'][$value['Key_name']]['type'] = ($value['Key_name'] == 'PRIMARY') ? 'primary' : ($value['Non_unique'] == 0 ? 'unique' : ($value['Index_type'] == 'FULLTEXT' ? "FULLTEXT" : "index"));
+        $ret['indexes'][$value['Key_name']]['fields'][] = $value['Column_name'];
+        if (!empty($value['Sub_part'])) {
+            $ret['indexes'][$value['Key_name']]['length'] = $value['Sub_part'];
+        }
+    }
+    return $ret;
+}
+function db_table_serialize_ab($db, $dbname) {
+    $tables = $db->fetchall('SHOW TABLES');
+    if (empty($tables)) {
+        return '';
+    }
+    $struct = array();
+    foreach ($tables as $value) {
+        $structs[] = db_table_schema_ab($db, substr($value['Tables_in_' . $dbname], strpos($value['Tables_in_' . $dbname], '_') + 1));
+    }
+    return iserializer($structs);
+}
+function db_table_create_sqll_ab($schema) {
+    $pieces = explode('_', $schema['charset']);
+    $charset = $pieces[0];
+    $engine = $schema['engine'];
+    $schema['tablename'] = str_replace('ims_', $GLOBALS['_W']['config']['db']['tablepre'], $schema['tablename']);
+    $sql = "CREATE TABLE IF NOT EXISTS `{$schema['tablename']}` (\n";
+    foreach ($schema['fields'] as $value) {
+        $piece = _db_build_field_sql_ab($value);
+        $sql.= "`{$value['name']}` {$piece},\n";
+    }
+    foreach ($schema['indexes'] as $value) {
+        $fields = implode('`,`', $value['fields']);
+        if ($value['type'] == 'index') {
+            if (!empty($value['length'])) {
+                $sql.= "KEY `{$value['name']}` (`{$fields}`({$value['length']})),\n";
+            } else {
+                $sql.= "KEY `{$value['name']}` (`{$fields}`),\n";
+            }
+        }
+        if ($value['type'] == 'unique') {
+            $sql.= "UNIQUE KEY `{$value['name']}` (`{$fields}`),\n";
+        }
+        if ($value['type'] == 'primary') {
+            $sql.= "PRIMARY KEY (`{$fields}`),\n";
+        }
+        if ($value['type'] == 'FULLTEXT') {
+            $sql.= "FULLTEXT KEY `{$value['name']}` (`{$fields}`),\n";
+        }
+    }
+    $sql = rtrim($sql);
+    $sql = rtrim($sql, ',');
+    $sql.= "\n) ENGINE=$engine DEFAULT CHARSET=$charset;\n\n";
+    return $sql;
+}
+function db_schema_comparel_ab($table1, $table2) {
+    $table1['charset'] == $table2['charset'] ? '' : $ret['diffs']['charset'] = true;
+    $fields1 = array_keys($table1['fields']);
+    $fields2 = array_keys($table2['fields']);
+    $diffs = array_diff($fields1, $fields2);
+    if (!empty($diffs)) {
+        $ret['fields']['greater'] = array_values($diffs);
+    }
+    $diffs = array_diff($fields2, $fields1);
+    if (!empty($diffs)) {
+        $ret['fields']['less'] = array_values($diffs);
+    }
+    $diffs = array();
+    $intersects = array_intersect($fields1, $fields2);
+    if (!empty($intersects)) {
+        foreach ($intersects as $field) {
+            if ($table1['fields'][$field] != $table2['fields'][$field]) {
+                $diffs[] = $field;
+            }
+        }
+    }
+    if (!empty($diffs)) {
+        $ret['fields']['diff'] = array_values($diffs);
+    }
+    $indexes1 = array_keys($table1['indexes']);
+    $indexes2 = array_keys($table2['indexes']);
+    $diffs = array_diff($indexes1, $indexes2);
+    if (!empty($diffs)) {
+        $ret['indexes']['greater'] = array_values($diffs);
+    }
+    $diffs = array_diff($indexes2, $indexes1);
+    if (!empty($diffs)) {
+        $ret['indexes']['less'] = array_values($diffs);
+    }
+    $diffs = array();
+    $intersects = array_intersect($indexes1, $indexes2);
+    if (!empty($intersects)) {
+        foreach ($intersects as $index) {
+            if ($table1['indexes'][$index] != $table2['indexes'][$index]) {
+                $diffs[] = $index;
+            }
+        }
+    }
+    if (!empty($diffs)) {
+        $ret['indexes']['diff'] = array_values($diffs);
+    }
+    return $ret;
+}
+function db_table_fix_sql_ab($schema1, $schema2, $strict = false) {
+    if (empty($schema1)) {
+        return array(db_table_create_sqll_ab($schema2));
+    }
+    $diff = $result = db_schema_comparel_ab($schema1, $schema2);
+    if (!empty($diff['diffs']['tablename'])) {
+        return array(db_table_create_sqll_ab($schema2));
+    }
+    $sqls = array();
+    if (!empty($diff['diffs']['engine'])) {
+        $sqls[] = "ALTER TABLE `{$schema1['tablename']}` ENGINE = {$schema2['engine']}";
+    }
+    if (!empty($diff['diffs']['charset'])) {
+        $pieces = explode('_', $schema2['charset']);
+        $charset = $pieces[0];
+        $sqls[] = "ALTER TABLE `{$schema1['tablename']}` DEFAULT CHARSET = {$charset}";
+    }
+    if (!empty($diff['fields'])) {
+        if (!empty($diff['fields']['less'])) {
+            foreach ($diff['fields']['less'] as $fieldname) {
+                $field = $schema2['fields'][$fieldname];
+                $piece = _db_build_field_sql_ab($field);
+                if (!empty($field['rename']) && !empty($schema1['fields'][$field['rename']])) {
+                    $sql = "ALTER TABLE `{$schema1['tablename']}` CHANGE `{$field['rename']}` `{$field['name']}` {$piece}";
+                    unset($schema1['fields'][$field['rename']]);
+                } else {
+                    if ($field['position']) {
+                        $pos = ' ' . $field['position'];
+                    }
+                    $sql = "ALTER TABLE `{$schema1['tablename']}` ADD `{$field['name']}` {$piece}{$pos}";
+                }
+                $primary = array();
+                $isincrement = array();
+                if (strexists($sql, 'AUTO_INCREMENT')) {
+                    $isincrement = $field;
+                    $sql = str_replace('AUTO_INCREMENT', '', $sql);
+                    foreach ($schema1['fields'] as $field) {
+                        if ($field['increment'] == 1) {
+                            $primary = $field;
+                            break;
+                        }
+                    }
+                    if (!empty($primary)) {
+                        $piece = _db_build_field_sql_ab($primary);
+                        if (!empty($piece)) {
+                            $piece = str_replace('AUTO_INCREMENT', '', $piece);
+                        }
+                        $sqls[] = "ALTER TABLE `{$schema1['tablename']}` CHANGE `{$primary['name']}` `{$primary['name']}` {$piece}";
+                    }
+                }
+                $sqls[] = $sql;
+            }
+        }
+        if (!empty($diff['fields']['diff'])) {
+            foreach ($diff['fields']['diff'] as $fieldname) {
+                $field = $schema2['fields'][$fieldname];
+                $piece = _db_build_field_sql_ab($field);
+                if (!empty($schema1['fields'][$fieldname])) {
+                    $sqls[] = "ALTER TABLE `{$schema1['tablename']}` CHANGE `{$field['name']}` `{$field['name']}` {$piece}";
+                }
+            }
+        }
+        if ($strict && !empty($diff['fields']['greater'])) {
+            foreach ($diff['fields']['greater'] as $fieldname) {
+                if (!empty($schema1['fields'][$fieldname])) {
+                    $sqls[] = "ALTER TABLE `{$schema1['tablename']}` DROP `{$fieldname}`";
+                }
+            }
+        }
+    }
+    if (!empty($diff['indexes'])) {
+        if (!empty($diff['indexes']['less'])) {
+            foreach ($diff['indexes']['less'] as $indexname) {
+                $index = $schema2['indexes'][$indexname];
+                $piece = _db_build_index_sql_ab($index);
+                $sqls[] = "ALTER TABLE `{$schema1['tablename']}` ADD {$piece}";
+            }
+        }
+        if (!empty($diff['indexes']['diff'])) {
+            foreach ($diff['indexes']['diff'] as $indexname) {
+                $index = $schema2['indexes'][$indexname];
+                $piece = _db_build_index_sql_ab($index);
+                $sqls[] = "ALTER TABLE `{$schema1['tablename']}` DROP " . ($indexname == 'PRIMARY' ? " PRIMARY KEY " : ($index['type'] == "FULLTEXT" ? "FULLTEXT " : "INDEX {$indexname}")) . ", ADD {$piece}";
+            }
+        }
+        if ($strict && !empty($diff['indexes']['greater'])) {
+            foreach ($diff['indexes']['greater'] as $indexname) {
+                $sqls[] = "ALTER TABLE `{$schema1['tablename']}` DROP `{$indexname}`";
+            }
+        }
+    }
+    if (!empty($isincrement)) {
+        $piece = _db_build_field_sql_ab($isincrement);
+        $sqls[] = "ALTER TABLE `{$schema1['tablename']}` CHANGE `{$isincrement['name']}` `{$isincrement['name']}` {$piece}";
+    }
+    return $sqls;
+}
+function _db_build_index_sql_ab($index) {
+    $piece = '';
+    $fields = implode('`,`', $index['fields']);
+    if ($index['type'] == 'index') {
+        if (!empty($index['length'])) {
+            $piece.= "KEY `{$index['name']}` (`{$fields}`({$index['length']}))";
+        } else {
+            $piece.= "KEY `{$index['name']}` (`{$fields}`)";
+        }
+        //$piece .= " INDEX `{$index['name']}` (`{$fields}`)";
+        
+    }
+    if ($index['type'] == 'unique') {
+        $piece.= "UNIQUE `{$index['name']}` (`{$fields}`)";
+    }
+    if ($index['type'] == 'primary') {
+        $piece.= "PRIMARY KEY (`{$fields}`)";
+    }
+    if ($value['type'] == 'FULLTEXT') {
+        $$piece.= "FULLTEXT KEY `{$index['name']}` (`{$fields[0]}`)";
+    }
+    return $piece;
+}
+function _db_build_field_sql_ab($field) {
+    if (!empty($field['length'])) {
+        $length = "({$field['length']})";
+    } else {
+        $length = '';
+    }
+    $signed = empty($field['signed']) ? ' unsigned' : '';
+    if (empty($field['null'])) {
+        $null = ' NOT NULL';
+    } else {
+        $null = '';
+    }
+    if (isset($field['default'])) {
+        $default = " DEFAULT '" . $field['default'] . "'";
+    } else {
+        $default = '';
+    }
+    if ($field['increment']) {
+        $increment = ' AUTO_INCREMENT';
+    } else {
+        $increment = '';
+    }
+    return "{$field['type']}{$length}{$signed}{$null}{$default}{$increment}";
 }

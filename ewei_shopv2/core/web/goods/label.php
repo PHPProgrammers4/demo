@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -26,8 +25,9 @@ class Label_EweiShopV2Page extends WebPage
 			$params[':keyword'] = '%' . $_GPC['keyword'] . '%';
 		}
 
-		$label = pdo_fetchall('SELECT id,uniacid,label,labelname,status,displayorder FROM ' . tablename('ewei_shop_goods_label') . '
-                WHERE uniacid=:uniacid ' . $condition . ' order by id limit ' . ($pindex - 1) * $psize . ',' . $psize, $params);
+//		var_dump(123);die;
+
+		$label = pdo_fetchall('SELECT id,uniacid,label,labelname,status,displayorder FROM ' . tablename('ewei_shop_goods_label') . "\r\n                WHERE uniacid=:uniacid " . $condition . ' order by id limit ' . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('SELECT count(1) FROM ' . tablename('ewei_shop_goods_label') . (' WHERE uniacid=:uniacid ' . $condition), $params);
 		$pager = pagination2($total, $pindex, $psize);
 		include $this->template();
@@ -51,8 +51,7 @@ class Label_EweiShopV2Page extends WebPage
 		$uniacid = intval($_W['uniacid']);
 
 		if (!empty($id)) {
-			$item = pdo_fetch('SELECT id,uniacid,label,labelname,status,displayorder FROM ' . tablename('ewei_shop_goods_label') . '
-                    WHERE id=:id and uniacid=:uniacid limit 1 ', array(':id' => $id, ':uniacid' => $uniacid));
+			$item = pdo_fetch('SELECT id,uniacid,label,labelname,status,displayorder FROM ' . tablename('ewei_shop_goods_label') . "\r\n                    WHERE id=:id and uniacid=:uniacid limit 1 ", array(':id' => $id, ':uniacid' => $uniacid));
 
 			if (json_decode($item['labelname'], true)) {
 				$labelname = json_decode($item['labelname'], true);
@@ -67,7 +66,7 @@ class Label_EweiShopV2Page extends WebPage
 				$_GPC['labelname'] = array();
 			}
 
-			$data = array('label' => trim($_GPC['label']), 'labelname' => serialize(array_filter($_GPC['labelname'])), 'status' => intval($_GPC['status']), 'displayorder' => intval($_GPC['displayorder']));
+			$data = array('label' => trim($_GPC['label']), 'labelname' => serialize(array_filter($_GPC['labelname'])), 'status' => intval($_GPC['status']));
 
 			if (!empty($item)) {
 				pdo_update('ewei_shop_goods_label', $data, array('id' => $item['id']));

@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 function order_sort($a, $b)
 {
 	if ($a['createtime'] == $b['createtime']) {

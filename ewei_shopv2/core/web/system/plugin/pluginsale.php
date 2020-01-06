@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -42,16 +41,8 @@ class Pluginsale_EweiShopV2Page extends SystemPage
 			$params[':keyword'] = '%' . $keyword . '%';
 		}
 
-		$list = pdo_fetchall('SELECT gl.*,w.name as wname,p.name as pname,p.thumb,p.iscom,o.username,o.pluginid as opluginid,o.price,o.logno,o.price,o.paytype FROM ' . tablename('ewei_shop_system_plugingrant_log') . ' as gl
-                    left join ' . tablename('account_wechats') . ' as w on w.uniacid = gl.uniacid
-                    left join ' . tablename('ewei_shop_system_plugingrant_order') . ' as o on o.uniacid = gl.uniacid and o.logno = gl.logno
-                    left join ' . tablename('ewei_shop_plugin') . (' as p on p.id = gl.pluginid
-			        WHERE 1 ' . $condition . ' ORDER BY gl.id desc LIMIT ') . ($pindex - 1) * $psize . ',' . $psize, $params);
-		$total = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('ewei_shop_system_plugingrant_log') . ' as gl
-                    left join ' . tablename('account_wechats') . ' as w on w.uniacid = gl.uniacid
-                    left join ' . tablename('ewei_shop_system_plugingrant_order') . ' as o on o.uniacid = gl.uniacid and o.logno = gl.logno
-                    left join ' . tablename('ewei_shop_plugin') . (' as p on p.id = gl.pluginid
-			        WHERE 1 ' . $condition . ' '), $params);
+		$list = pdo_fetchall('SELECT gl.*,w.name as wname,p.name as pname,p.thumb,p.iscom,o.username,o.pluginid as opluginid,o.price,o.logno,o.price,o.paytype FROM ' . tablename('ewei_shop_system_plugingrant_log') . " as gl\n                    left join " . tablename('account_wechats') . " as w on w.uniacid = gl.uniacid\n                    left join " . tablename('ewei_shop_system_plugingrant_order') . " as o on o.uniacid = gl.uniacid and o.logno = gl.logno\n                    left join " . tablename('ewei_shop_plugin') . (" as p on p.id = gl.pluginid\n\t\t\t        WHERE 1 " . $condition . ' ORDER BY gl.id desc LIMIT ') . ($pindex - 1) * $psize . ',' . $psize, $params);
+		$total = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('ewei_shop_system_plugingrant_log') . " as gl\n                    left join " . tablename('account_wechats') . " as w on w.uniacid = gl.uniacid\n                    left join " . tablename('ewei_shop_system_plugingrant_order') . " as o on o.uniacid = gl.uniacid and o.logno = gl.logno\n                    left join " . tablename('ewei_shop_plugin') . (" as p on p.id = gl.pluginid\n\t\t\t        WHERE 1 " . $condition . ' '), $params);
 		$pager = pagination2($total, $pindex, $psize);
 		include $this->template();
 	}

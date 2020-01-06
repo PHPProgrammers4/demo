@@ -19,6 +19,13 @@
 <!--快递 发货-->
 {ifp 'order.op.send'}
     <a class="btn btn-primary btn-xs" data-toggle="ajaxModal"  href="{php echo webUrl('order/op/send', array('id' => $item['id']))}">确认发货</a>
+<br>
+{if $item['1688_status'] != 2 }
+<a class="btn btn-primary btn-xs" data-toggle="ajaxPost"  href="{php echo webUrl('order/op/submit_1688', array('id' => $item['id']))}">1688确认收款</a>
+{else}
+<span style="color:#4caf50">1688下单成功</span>
+
+{/if}
 {/if}
 {else}
 {if $item['isverify']==1}
@@ -29,7 +36,7 @@
 {else}
 <!--自提 确认取货-->
 {ifp 'order.op.fetch'}
-<a class="btn btn-primary btn-xs" data-toggle='ajaxPost'  href="{php echo webUrl('order/op/fetch', array('id' => $item['id']))}" data-confirm="确认{if !empty($item['ccard'])}充值{else}取货{/if}吗？">确认{if !empty($item['ccard'])}充值{else}取货{/if}</a>
+<a class="btn btn-primary btn-xs" data-toggle='ajaxPost' href="{php echo webUrl('order/op/fetch', array('id' => $item['id']))}" data-confirm="确认{if !empty($item['ccard'])}充值{else}取货{/if}吗？">确认{if !empty($item['ccard'])}充值{else}取货{/if}</a>
 {/if}
 {/if}
 
@@ -75,7 +82,7 @@
 {elseif $item['statusvalue'] == 3}
 
 {/if}
-
+<a class="btn btn-primary btn-xs" data-toggle="ajaxPost"  href="{php echo webUrl('order/op/check_order_1688', array('id' => $item['id']))}">1688手动检查订单状态</a>
 
 
 

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 function qiniuClassLoader($class)
 {
 	$path = str_replace('\\', DIRECTORY_SEPARATOR, $class);

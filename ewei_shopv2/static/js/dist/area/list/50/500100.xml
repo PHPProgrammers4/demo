@@ -371,36 +371,6 @@
     <street name="万顺镇" code="500115137" />
 </county>
 <county name="綦江区" code="500222">
-    <street name="古南街道办事处" code="500222001" />
-    <street name="文龙街道办事处" code="500222002" />
-    <street name="三江街道办事处" code="500222003" />
-    <street name="万盛街道办事处" code="500222004" />
-    <street name="东林街道办事处" code="500222005" />
-    <street name="万东镇" code="500222100" />
-    <street name="南桐镇" code="500222101" />
-    <street name="青年镇" code="500222102" />
-    <street name="关坝镇" code="500222103" />
-    <street name="丛林镇" code="500222104" />
-    <street name="石林镇" code="500222105" />
-    <street name="金桥镇" code="500222106" />
-    <street name="黑山镇" code="500222107" />
-    <street name="石角镇" code="500222108" />
-    <street name="东溪镇" code="500222109" />
-    <street name="赶水镇" code="500222110" />
-    <street name="打通镇" code="500222111" />
-    <street name="石壕镇" code="500222112" />
-    <street name="永新镇" code="500222113" />
-    <street name="三角镇" code="500222114" />
-    <street name="隆盛镇" code="500222115" />
-    <street name="郭扶镇" code="500222116" />
-    <street name="篆塘镇" code="500222117" />
-    <street name="丁山镇" code="500222118" />
-    <street name="安稳镇" code="500222119" />
-    <street name="扶欢镇" code="500222120" />
-    <street name="永城镇" code="500222121" />
-    <street name="新盛镇" code="500222122" />
-    <street name="中峰镇" code="500222123" />
-    <street name="横山镇" code="500222124" />
 </county>
 <county name="潼南县" code="500223">
     <street name="桂林街道" code="500223001" />

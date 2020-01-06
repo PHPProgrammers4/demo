@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -48,8 +47,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 			$cardname = $item['title'];
 			$cardtitle = $room['title'];
 			$descname = '直播间介绍';
-			$search = array('\'<script[^>]*?>.*?</script>\'si', '\'<[\\/\\!]*?[^<>]*?>\'si', '\'([
-])[\\s]+\'', '\'&(quot|#34);\'i', '\'&(amp|#38);\'i', '\'&(lt|#60);\'i', '\'&(gt|#62);\'i', '\'&(nbsp|#160);\'i', '\'&(iexcl|#161);\'i', '\'&(cent|#162);\'i', '\'&(pound|#163);\'i', '\'&(copy|#169);\'i');
+			$search = array('\'<script[^>]*?>.*?</script>\'si', '\'<[\\/\\!]*?[^<>]*?>\'si', "'([\r\n])[\\s]+'", '\'&(quot|#34);\'i', '\'&(amp|#38);\'i', '\'&(lt|#60);\'i', '\'&(gt|#62);\'i', '\'&(nbsp|#160);\'i', '\'&(iexcl|#161);\'i', '\'&(cent|#162);\'i', '\'&(pound|#163);\'i', '\'&(copy|#169);\'i');
 			$replace = array('', '', '\\1', '"', '&', '<', '>', ' ', chr(161), chr(162), chr(163), chr(169), 'chr(\\1)');
 			$desctext = preg_replace($search, $replace, $room['introduce']);
 			$desctext = !empty($desctext) ? $desctext : '介绍未设置...';

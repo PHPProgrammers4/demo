@@ -76,8 +76,8 @@ class Order_EweiShopV2Page extends PluginWebPage {
             $page = "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
         }
 
-        $list = pdo_fetchall("SELECT o.id,o.orderno,o.status,og.option_name as optiontitle,o.expresssn,o.paytime,o.addressid,o.express,o.remark,o.is_team,o.pay_type,o.isverify,o.refundtime,o.price,o.creditmoney,o.refundstate,o.refundid,o.message,
-				o.freight,o.discount,o.creditmoney,o.createtime,o.success,o.deleted,o.address,o.message,o.openid,o.mobile,o.realname,g.thumb_url,og.option_name as optionname,
+        $list = pdo_fetchall("SELECT o.id,o.orderno,o.status,o.expresssn,o.paytime,o.addressid,o.express,o.remark,o.is_team,o.pay_type,o.isverify,o.refundtime,o.price,o.creditmoney,o.refundstate,o.refundid,o.message,
+				o.freight,o.discount,o.creditmoney,o.createtime,o.success,o.deleted,o.address,o.message,o.openid,g.thumb_url,og.option_name as optionname,
 				g.title,g.category,g.goodsnum,g.thumb,g.groupsprice,g.singleprice,g.price as gprice,g.goodssn,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress
 				FROM " . tablename('ewei_shop_groups_order') . " as o
 				left join ".tablename('ewei_shop_groups_goods')." as g on g.id = o.goodid
@@ -132,11 +132,6 @@ class Order_EweiShopV2Page extends PluginWebPage {
             }*/
         }
         $total = pdo_fetchcolumn("SELECT count(1) FROM " . tablename('ewei_shop_groups_order') ." as o
-				left join ".tablename('ewei_shop_groups_goods')." as g on g.id = o.goodid
-				left join " . tablename('ewei_shop_member') . " m on m.openid=o.openid and m.uniacid =  o.uniacid
-				left join " . tablename('ewei_shop_member_address') . " a on a.id=o.addressid
-				WHERE 1 {$condition} ", $params);
-        $totalmoney = pdo_fetchcolumn("SELECT ifnull(sum(o.price),0) FROM " . tablename('ewei_shop_groups_order') ." as o
 				left join ".tablename('ewei_shop_groups_goods')." as g on g.id = o.goodid
 				left join " . tablename('ewei_shop_member') . " m on m.openid=o.openid and m.uniacid =  o.uniacid
 				left join " . tablename('ewei_shop_member_address') . " a on a.id=o.addressid
@@ -205,8 +200,8 @@ class Order_EweiShopV2Page extends PluginWebPage {
                 $r['mrealname'] = $value['mrealname'];
                 $r['openid'] = $value['openid'];
                 $r['mmobile'] = $value['mmobile'];
-                $r['arealname'] = empty($value['addressdata']['realname']) ? $value['realname'] : $value['addressdata']['realname'];
-                $r['amobile']   = empty($value['addressdata']['mobile']) ? $value['mobile'] : $value['addressdata']['mobile'] ;
+                $r['arealname'] = $value['addressdata']['realname'];
+                $r['amobile'] = $value['addressdata']['mobile'];
                 $r['aprovince'] = $value['addressdata']['province'];
                 $r['acity'] = $value['addressdata']['city'];
                 $r['aarea'] = $value['addressdata']['area'];
@@ -324,8 +319,6 @@ class Order_EweiShopV2Page extends PluginWebPage {
         global $_W, $_GPC;
         $id = intval($_GPC['id']);
         $item = pdo_fetch("SELECT * FROM " . tablename('ewei_shop_groups_order') . " WHERE id = :id and uniacid=:uniacid", array(':id' => $id, ':uniacid' => $_W['uniacid']));
-        //$total = pdo_fetch("SELECT COUNT(*)".tablename('ewei_shop_groups_order')." WHERE id = :id and uniacid=:uniacid", array(':id' => $id, ':uniacid' => $_W['uniacid']));
-
         if (empty($item)) {
             if ($_W['isajax']) {
                 show_json(0, "未找到订单!");

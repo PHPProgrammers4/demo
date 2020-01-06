@@ -56,10 +56,6 @@ define(['core'], function (core) {
                         return
                     }
                 }
-                if (modal.getVal("password")!='' && modal.binded){
-                    obj.password = modal.getVal("password");
-                }
-
             }
             core.json('mmanage/member/detail', obj, function (json) {
                 if (json.status == 1) {

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -353,7 +352,7 @@ class Sms_EweiShopV2ComModel extends ComModel
 		$postData = http_build_query($postData);
 		$options = array(
 			'http' => array('method' => 'POST', 'header' => 'Content-type:application/x-www-form-urlencoded', 'content' => $postData, 'timeout' => 15 * 60)
-		);
+			);
 		$context = stream_context_create($options);
 		$result = file_get_contents($url, false, $context);
 

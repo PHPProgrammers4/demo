@@ -108,7 +108,7 @@
                 {if $_W['role'] != 'founder' && $plugin['isgrant']>0}
                 <div class="authorization">
                     <Script Language="JavaScript">
-                        /*Begin*/
+                        
                         var timedate = new Date({$plugin['permendtime']} * 1000);
                         var times = "研究生考试";
                         var now = new Date();
@@ -124,7 +124,7 @@
                             document.write("授权已过期");
                         }
                         ;
-                        /*End*/
+                        
                     </Script>
                 </div>
                     {elseif $_W['role'] != 'founder' && $plugin['isplugingrant']>0}

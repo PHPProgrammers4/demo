@@ -200,10 +200,10 @@
         display: inline-block;
         height: 1.25rem;
         line-height: 1.25rem;
-        padding:0 0.5rem;
+        padding:0 0.6rem;
         border-radius: 0.75rem;
         border: 1px solid #fff;
-        margin-right: 0.3rem;
+        margin-right: 0.5rem;
         opacity: 0.8;
         color: #fff;
         font-size: 0.65rem;
@@ -491,8 +491,9 @@
     </div>
 </div>
 
+{if $isgift}
 <input type="hidden" name="giftid" id="giftid" value="{$giftid}">
-<div class="fui-cell-group sm" {if $isgift<=0}style='display:none'{/if}>
+<div class="fui-cell-group sm ">
     <div class="fui-cell">
         {if count($gifts)>1}
         <div class='fui-cell-text fui-cell-giftclick'>
@@ -508,7 +509,7 @@
         <div class='fui-cell-remark'></div>
     </div>
 </div>
-
+{/if}
 {if $hasinvoice}
 <div class="fui-cell-group">
     <div class="fui-cell">
@@ -870,7 +871,7 @@
         <div class="fui-cell-group order-info noborder">
             <a class="fui-cell" id="btn-address">
                 <div class="fui-cell-text">
-                    <span class="icon icon-weixin1" style="margin-right: .3rem;color:#62b900;font-size:1rem"></span>从微信选择地址
+                    从微信选择地址
                 </div>
                 <div class="fui-cell-remark text-danger">
                 </div>

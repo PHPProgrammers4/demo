@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -25,17 +24,13 @@ class Pluginmanage_EweiShopV2Page extends SystemPage
 			$condition .= ' and gp.state=' . intval($_GPC['state']);
 		}
 
-		$list = pdo_fetchall('SELECT gp.*,p.identity,p.category,p.name as pname,p.version,p.author,p.status FROM ' . tablename('ewei_shop_system_plugingrant_plugin') . ' as gp
-                left join ' . tablename('ewei_shop_plugin') . (' as p on p.id = gp.pluginid
-                WHERE 1 ' . $condition . ' ORDER BY gp.displayorder desc,gp.id desc LIMIT ') . ($pindex - 1) * $psize . ',' . $psize, $params);
+		$list = pdo_fetchall('SELECT gp.*,p.identity,p.category,p.name as pname,p.version,p.author,p.status FROM ' . tablename('ewei_shop_system_plugingrant_plugin') . " as gp\n                left join " . tablename('ewei_shop_plugin') . (" as p on p.id = gp.pluginid\n                WHERE 1 " . $condition . ' ORDER BY gp.displayorder desc,gp.id desc LIMIT ') . ($pindex - 1) * $psize . ',' . $psize, $params);
 
 		foreach ($list as $key => $value) {
 			$list[$key]['data'] = unserialize($value['data']);
 		}
 
-		$total = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('ewei_shop_system_plugingrant_plugin') . ' as gp
-                left join ' . tablename('ewei_shop_plugin') . (' as p on p.id = gp.pluginid
-                WHERE 1 ' . $condition . ' '), $params);
+		$total = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('ewei_shop_system_plugingrant_plugin') . " as gp\n                left join " . tablename('ewei_shop_plugin') . (" as p on p.id = gp.pluginid\n                WHERE 1 " . $condition . ' '), $params);
 		$pager = pagination2($total, $pindex, $psize);
 		include $this->template();
 	}

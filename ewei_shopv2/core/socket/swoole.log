@@ -1,0 +1,9 @@
+[2019-05-01 11:09:09 #4357.0]	NOTICE	Server is shutdown now.
+[2019-05-01 11:09:09 #4357.0]	ERROR	swProcessPool_shutdown(:280): kill(4359) failed. Error: No such process[3].
+[2019-05-01 11:09:09 #4357.0]	ERROR	swProcessPool_shutdown(:280): kill(4362) failed. Error: No such process[3].
+[2019-05-01 11:09:09 #4357.0]	ERROR	swProcessPool_shutdown(:289): waitpid(4359) failed. Error: No child processes[10].
+[2019-05-01 11:09:09 #4357.0]	ERROR	swProcessPool_shutdown(:289): waitpid(4362) failed. Error: No child processes[10].
+[2019-05-01 11:10:36 #4152.0]	NOTICE	Server is shutdown now.
+[2019-08-02 23:16:14 #4351.0]	NOTICE	Server is shutdown now.
+[2019-08-24 18:03:54 #4450.0]	NOTICE	Server is shutdown now.
+[2019-08-24 19:01:57 #4693.0]	NOTICE	Server is shutdown now.

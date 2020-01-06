@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -220,12 +220,12 @@ class Index_EweiShopV2Page extends MmanageMobilePage
 			$dispatch_data = pdo_fetchall('select * from ' . tablename('ewei_shop_dispatch') . ' where uniacid=:uniacid and merchid=:merchid and enabled=1 order by displayorder desc', array(':uniacid' => $_W['uniacid'], ':merchid' => $merchid));
 			$levels = m('member')->getLevels();
 			$levels = array_merge(array(
-				array('id' => 0, 'levelname' => empty($_W['shopset']['shop']['levelname']) ? '默认会员' : $_W['shopset']['shop']['levelname'])
-			), $levels);
+	array('id' => 0, 'levelname' => empty($_W['shopset']['shop']['levelname']) ? '默认会员' : $_W['shopset']['shop']['levelname'])
+	), $levels);
 			$groups = m('member')->getGroups();
 			$groups = array_merge(array(
-				array('id' => 0, 'groupname' => '未分组')
-			), $groups);
+	array('id' => 0, 'groupname' => '未分组')
+	), $groups);
 			$catlevel = intval($_W['shopset']['category']['level']);
 			$category = m('shop')->getFullCategory(true, true);
 			$allcategory = m('shop')->getCategory();

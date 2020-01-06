@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -42,8 +41,7 @@ else if ($op == 'check') {
 					if (!is_file($entry) || md5_file($entry) != $file['hash']) {
 						$files[] = array('path' => $file['path'], 'download' => 0);
 						if (strexists($entry, 'template/mobile') && strexists($entry, '.html')) {
-							$templatefiles .= '/' . $file['path'] . '
-';
+							$templatefiles .= '/' . $file['path'] . "\r\n";
 						}
 					}
 				}
@@ -53,12 +51,10 @@ else if ($op == 'check') {
 			$log = base64_decode($ret['log']);
 
 			if (!empty($templatefiles)) {
-				$log = '<br/><b>模板变化:</b><br/>' . $templatefiles . '
-' . $log;
+				$log = '<br/><b>模板变化:</b><br/>' . $templatefiles . "\r\n" . $log;
 			}
 
-			exit(json_encode(array('result' => 1, 'version' => $ret['version'], 'filecount' => count($files), 'upgrade' => !empty($ret['upgrade']), 'log' => str_replace('
-', '<br/>', $log))));
+			exit(json_encode(array('result' => 1, 'version' => $ret['version'], 'filecount' => count($files), 'upgrade' => !empty($ret['upgrade']), 'log' => str_replace("\r\n", '<br/>', $log))));
 		}
 	}
 

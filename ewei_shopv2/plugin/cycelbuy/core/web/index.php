@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -39,8 +39,8 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$data = is_array($_GPC['data']) ? $_GPC['data'] : array();
 			$data['openids'] = empty($_GPC['openids']) && is_array($_GPC['openids']) ? '' : implode(',', $_GPC['openids']);
 			m('common')->updatePluginset(array(
-				'cycelbuy' => array('tm' => $data)
-			));
+	'cycelbuy' => array('tm' => $data)
+	));
 			plog('cycelbuy.notice.edit', '修改通知设置');
 			show_json(1);
 		}

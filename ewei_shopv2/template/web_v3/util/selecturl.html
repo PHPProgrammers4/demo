@@ -33,7 +33,6 @@
 			<h4 class="modal-title">{if $type == 'topmenu_data'}选择数据{else}选择链接{/if}</h4>
 		</div>
 		<div class="modal-body">
-			{if $platform != 'pc'}
 			<ul class="nav nav-tabs" id="selectUrlTab">
 				{if ($type != 'topmenu' && $type != 'topmenu_data') || $platform == 'wxapp'}
 				<li class="active"><a href="#sut_shop">商城</a></li>
@@ -44,7 +43,9 @@
 				<li class=""><a href="#sut_cate">商品分类</a></li>
 				{/if}
 				{/if}
-
+                 {if $platform=='wxapp'}
+				<li class=""><a href="#sut_diyurl">第三方链接</a></li>
+				{/if}
 				{if $platform=='wxapp' && $type != 'topmenu' && $type != 'topmenu_data' && $type != 'levellink'}
 				{if !empty($type)}
 					{if $type == 'menu' || $type == 'listmenu' || $type == 'picture' || $type == 'picturew' || $type='menu2'}
@@ -83,13 +84,12 @@
 				<li class="active"><a href="#sut_goods_data" class="sut_goods_data">商品</a></li>
 				<li class=""><a href="#sut_shop_data" class="sut_shop_data">门店</a></li>
 				{/if}
-				{if  $platform && p('friendcoupon') && $type != 'topmenu' && $type != 'topmenu_data' && $type != 'levellink' && $platform!='wxapp_tabbar'}
+				{if p('friendcoupon') && $type != 'topmenu' && $type != 'topmenu_data' && $type != 'levellink' && $platform!='wxapp_tabbar'}
 				<li class=""><a href="#sut_friendcoupon">{php echo m('plugin')->getName('friendcoupon')}</a></li>
 				{/if}
 
 
 			</ul>
-			{/if}
 			<div class="tab-content ">
 				{if ($type != 'topmenu' && $type != 'topmenu_data') || $platform == 'wxapp'}
 				<div class="tab-pane active" id="sut_shop">
@@ -116,12 +116,8 @@
 					{else}
 					{loop $allUrls $item}
 					<div class="page-head"><h4><i class="fa fa-folder-open-o"></i> {$item['name']}</h4></div>
-					{loop $item['list'] $child}
-					<nav data-href="{php echo $platform?$child['url_wxapp']:$child['url']}"
-						 aaa="{$platform}"
-						class="btn btn-default btn-sm"
-						title="{$child['name']}">{$child['name']}
-					</nav>
+						{loop $item['list'] $child}
+					<nav data-href="{php echo $platform?$child['url_wxapp']:$child['url']}" class="btn btn-default btn-sm" title="{$child['name']}">{$child['name']}</nav>
 						{/loop}
 					{/loop}
 					{/if}
@@ -201,7 +197,7 @@
 							<input type="text" placeholder="请在此输入APPID" id="select-diyxcx-kw" value="" class="form-control">
 							<nav id="select-diy-diyxcxid"></nav>
 						</div>
-						<div class="help-block text-danger">注意：必须是同一个公众号下的小程序appid，否则无法跳转,如果此处新添appid或更换appid，则需要重新发布审核</div>
+						<div class="help-block text-danger">注意：必须是同一个公众号下的小程序appid，否则无法跳转</div>
 					</div>
 					<div class="row" style="margin: 50px 80px 50px;">
 						<div class="input-group">

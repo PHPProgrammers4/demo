@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 global $_W;
 global $_GPC;
 require ES_CORE_PATH . 'functions.php';
@@ -28,7 +27,7 @@ $class_name = ucfirst($controller) . 'Controller';
 $class = new $class_name();
 
 if (method_exists($class, $action)) {
-	$class->{$action}();
+	$class->$action();
 	exit();
 }
 

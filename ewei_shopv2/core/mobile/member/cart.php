@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 echo '
 ';
 
@@ -364,7 +364,7 @@ class Cart_EweiShopV2Page extends MobileLoginPage
 			show_json(0, array('message' => '请先绑定手机', 'url' => mobileUrl('member/bind', NULL, true)));
 		}
 
-		if ($goods['isverify'] == 2 || $goods['type'] == 2 || $goods['type'] == 3) {
+		if ($goods['isverify'] == 2 || $goods['type'] == 2 || $goods['type'] == 3 || !empty($goods['cannotrefund'])) {
 			show_json(0, '此商品不可加入购物车<br>请直接点击立刻购买');
 		}
 
@@ -593,7 +593,7 @@ class Cart_EweiShopV2Page extends MobileLoginPage
 				$g['stock'] = $g['optionstock'];
 			}
 
-			if ($g['stock'] - $g['total'] < 0 && (!$g['optionid'] || $g['optionid'] && $g['stock'] != -1)) {
+			if ($g['stock'] - $g['total'] < 0) {
 				pdo_update('ewei_shop_member_cart', array('selected' => 0, 'total' => $g['stock']), array('id' => $g['id']));
 				$optionTitle = !empty($g['optiontitle']) ? $g['optiontitle'] : '';
 				show_json(0, $g['title'] . '<br/>' . $optionTitle . ' 库存不足!');

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -17,10 +16,6 @@ class Setticket_EweiShopV2Page extends WebPage
 			if (empty($id)) {
 				if (is_array($_GPC['couponid'])) {
 					$count = count($_GPC['couponid']);
-
-					if ($count < 1) {
-						show_json(0, '请选择优惠券！');
-					}
 
 					if ($count == 2) {
 						if ($_GPC['couponid'][0] == $_GPC['couponid'][1]) {
@@ -69,10 +64,6 @@ class Setticket_EweiShopV2Page extends WebPage
 				else {
 					if (is_array($_GPC['couponid'])) {
 						$count = count($_GPC['couponid']);
-
-						if ($count < 1) {
-							show_json(0, '请选择优惠券！');
-						}
 
 						if ($count == 2) {
 							if ($_GPC['couponid'][0] == $_GPC['couponid'][1]) {
@@ -125,16 +116,12 @@ class Setticket_EweiShopV2Page extends WebPage
 			}
 
 			if (empty($id)) {
-				$result = pdo_insert('ewei_shop_sendticket', $data);
+				pdo_insert('ewei_shop_sendticket', $data);
 				plog('sendticket.set', '设置发券内容');
 			}
 			else {
 				$params = array('id' => $id);
-				$result = pdo_update('ewei_shop_sendticket', $data, $params);
-			}
-
-			if (!$result) {
-				show_json(0, '保存失败,请重试！');
+				pdo_update('ewei_shop_sendticket', $data, $params);
 			}
 
 			show_json(1);

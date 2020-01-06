@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -22,7 +21,7 @@ class Sort_EweiShopV2Page extends WebPage
 			'cube'    => array('text' => '魔方栏', 'visible' => 1),
 			'banner'  => array('text' => '广告栏', 'visible' => 1),
 			'goods'   => array('text' => '推荐栏', 'visible' => 1)
-		);
+			);
 
 		if ($_W['ispost']) {
 			$datas = json_decode(html_entity_decode($_GPC['datas']), true);

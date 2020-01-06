@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -23,6 +23,8 @@ class Recharge_EweiShopV2Page extends MmanageMobilePage
 			}
 		}
 
+		$typestr = $type == 1 ? 'credit1' : 'credit2';
+		ca('finance.recharge.' . $typestr);
 		$member = m('member')->getMember($id);
 
 		if (empty($member)) {

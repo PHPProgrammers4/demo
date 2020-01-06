@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -294,7 +294,7 @@ class Pay_EweiShopV2Page extends PluginMobileLoginPage
 			}
 
 			$this->model->payResult($log['tid'], $type);
-			pdo_update('ewei_shop_member_card_order', array('paytype' => 'credit', 'status' => 1, 'paytime' => time(), 'finishtime' => time()), array('id' => $orderid));
+			pdo_update('ewei_shop_member_card', array('paytype' => 'credit', 'status' => 1, 'paytime' => time(), 'finishtime' => time()), array('id' => $orderid));
 
 			if ($_W['ispost']) {
 				show_json(1);

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 class Pinyin_EweiShopV2Model
 {
 	public function getPinyin($_String, $lstring, $flag = 1)

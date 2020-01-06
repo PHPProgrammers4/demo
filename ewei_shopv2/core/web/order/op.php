@@ -333,12 +333,6 @@ class Op_EweiShopV2Page extends WebPage {
 
             }
 
-            //加入好物圈收藏
-            $goodscircle = p('goodscircle');
-            if($goodscircle){
-                $goodscircle->updateOrder($item['openid'],$item['id']);
-            }
-
             plog('order.op.close', "订单关闭 ID: {$item['id']} 订单号: {$item['ordersn']}");
             show_json(1);
         }
@@ -442,12 +436,6 @@ class Op_EweiShopV2Page extends WebPage {
         //        任务中心单笔满额
         if(p('task')){
             p('task')->checkTaskProgress($item['price'],'order_full','',$item['openid']);
-        }
-
-        //加入好物圈收藏
-        $goodscircle = p('goodscircle');
-        if($goodscircle){
-            $goodscircle->updateOrder($item['openid'],$item['id']);
         }
 
         plog('order.op.finish', "订单完成 ID: {$item['id']} 订单号: {$item['ordersn']}");
@@ -630,12 +618,6 @@ class Op_EweiShopV2Page extends WebPage {
             p('commission')->checkOrderFinish($item['id']);
         }
 
-        //加入好物圈收藏
-        $goodscircle = p('goodscircle');
-        if($goodscircle){
-            $goodscircle->updateOrder($item['openid'],$item['id']);
-        }
-
         plog('order.op.fetch', $log);
         show_json(1);
     }
@@ -696,7 +678,7 @@ class Op_EweiShopV2Page extends WebPage {
                         }
                         //查询是否有未发货包裹
                         $send_goods = pdo_fetch("select * from ".tablename('ewei_shop_order_goods')."
-                        where orderid = ".$item['id']." and sendtype = 0 and single_refundstate<>9 and uniacid = ".$_W['uniacid']." limit 1 ");
+                        where orderid = ".$item['id']." and sendtype = 0 and uniacid = ".$_W['uniacid']." limit 1 ");
                         //如果包裹都发货，修改订单状态
                         if(empty($send_goods)){
                             $senddata['status'] = 2 ;
@@ -743,12 +725,6 @@ class Op_EweiShopV2Page extends WebPage {
                 m('order')->setStocksAndCredits($item['id'], 1);
             }
 
-            //加入好物圈收藏
-            $goodscircle = p('goodscircle');
-            if($goodscircle){
-                $goodscircle->updateOrder($item['openid'],$item['id']);
-            }
-
             //模板消息
             m('notice')->sendOrderMessage($item['id']);
             plog('order.op.send', "订单发货 ID: {$item['id']} 订单号: {$item['ordersn']} <br/>快递公司: {$_GPC['expresscom']} 快递单号: {$_GPC['expresssn']}");
@@ -761,8 +737,7 @@ class Op_EweiShopV2Page extends WebPage {
             //未发货商品
             $noshipped = pdo_fetchall('select og.id,g.title,g.thumb,og.sendtype,g.ispresell from ' . tablename('ewei_shop_order_goods') . ' og '
                 . ' left join ' . tablename('ewei_shop_goods') . ' g on g.id=og.goodsid '
-                . ' where og.uniacid=:uniacid and og.sendtype = 0 and og.orderid=:orderid and og.single_refundstate<>9 ', array(':uniacid' => $_W['uniacid'], ':orderid' => $item['id']));
-
+                . ' where og.uniacid=:uniacid and og.sendtype = 0 and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $item['id']));
             //已发货商品
             for($i=1;$i<=$item['sendtype'];$i++){
                 $shipped[$i]['sendtype'] = $i;
@@ -1013,7 +988,72 @@ class Op_EweiShopV2Page extends WebPage {
 
         $sql = "SELECT * FROM ".tablename('ewei_shop_order_peerpay_payinfo')." where pid=:pid";
         $list  = pdo_fetchall($sql, array(':pid'=>$peerpay['id']));
-
         include $this->template();
+    }
+    //手动检查订单
+    function check_order_1688(){
+        global $_W,$_GPC;
+        $order_id = $_GPC['id'];
+
+        $order = pdo_get('ewei_shop_order',array('id'=>$order_id));
+        $data = [];
+        $data['orderId'] = $order['1688_orderId'];
+        $data['webSite'] = '1688';
+        $url =  m('common')->post_alibaba_api($this->access_token, $this->appSecret, 'param2/1/com.alibaba.trade/alibaba.trade.get.buyerView/', $data);
+        $buyerView = m('common')->curl_post($data,$url);
+        $message = "";
+
+//        var_dump($buyerView['result']['nativeLogistics']);die;
+
+        foreach($buyerView['result']['nativeLogistics']['logisticsItems'] as $value){
+            //1 未发货 2 已发货 3 已收货 4 已经退货 5 部分发货 8 还未创建物流订单
+//            var_dump($value);
+            $message .= '快递公司：'.$value['logisticsCompanyName'].'<br>';
+            $message .= '快递单号：'.$value['logisticsBillNo'].'<br>';
+
+        }
+
+        foreach($buyerView['result']['productItems'] as $value){
+//            var_dump($value );
+            $message .= '订单状态 ：'.$value['statusStr'];
+        }
+
+
+        show_json(0,$message);
+    }
+
+
+    //1688确认付款
+    function submit_1688(){
+        global $_W,$_GPC;
+        $order_id = $_GPC['id'];
+        $order = pdo_get('ewei_shop_order',array('id'=>$order_id));
+        $data = [];
+        $data['orderId'] = $order['1688_orderId'];
+        $url =  m('common')->post_alibaba_api($this->access_token, $this->appSecret, 'param2/1/com.alibaba.trade/alibaba.trade.pay.protocolPay/', $data);
+        $adata = m('common')->curl_post($data,$url);
+        if($adata['success'] == true){
+            show_json(1);
+            pdo_update('ewei_shop_order',array('1688_status'=>'2'),array('id'=>$order_id));
+        }else{
+
+            $data = [];
+            $data['orderId'] = $order['1688_orderId'];
+            $data['webSite'] = '1688';
+            $url =  m('common')->post_alibaba_api($this->access_token, $this->appSecret, 'param2/1/com.alibaba.trade/alibaba.trade.get.buyerView/', $data);
+            $buyerView = m('common')->curl_post($data,$url);
+            if($buyerView['result']['tradeTerms'][0]['payStatus'] == '2'){
+                $result = pdo_update('ewei_shop_order',array('1688_status'=>'2'),array('id'=>$order_id));
+                show_json(1);
+            }
+
+            if($adata['code'] == '5006'){
+                show_json(0,'错误编号：['.$adata['code'].']'.$adata['message'].'(目前只支持担保交易的订单，请检查订单交易类型是否满足)');
+            }
+            show_json(0,'错误编号：['.$adata['code'].']'.$adata['message']);
+
+        }
+
+
     }
 }

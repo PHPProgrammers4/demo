@@ -171,13 +171,10 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
             if(empty($goods)){
                 $goods = array();
             }
-            /*
-             * 隐藏内容为显示图片为最新非缓存图片，因客户订单列表商品图片无法显示，已与杨洋沟通，先屏蔽
-             * */
-            /*foreach($goods as &$r){
+            foreach($goods as &$r){
                 $r['thumb'].="?t=".random(50);
             }
-            unset($r);*/
+            unset($r);
 
             $goods_list = array();
             if ($ismerch) {
@@ -185,7 +182,6 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
                 $merch_user = $getListUser['merch_user'];
 
                 foreach ($getListUser['merch'] as $k => $v) {
-                    $goods_list[$k]['shopname'] = "";
                     if (empty($merch_user[$k]['merchname'])) {
                         $goods_list[$k]['shopname'] = $_W['shopset']['shop']['name'];
                     }else{
@@ -194,7 +190,6 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
                     $goods_list[$k]['goods'] = $v;
                 }
             } else {
-                $goods_list[0]['shopname'] = "";
                 if ($merchid == 0) {
                     $goods_list[0]['shopname'] = $_W['shopset']['shop']['name'];
                 } else {
@@ -480,7 +475,7 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
 
         $goodsid_array =array();
         $goods = pdo_fetchall("select og.id,og.single_refundstate,og.sendtime,og.goodsid,og.price,g.title,og.title as gtitle,g.thumb,g.status, g.cannotrefund, og.total,g.credit,og.optionid,
-            og.optionname as optiontitle,g.isverify,g.storeids,g.type,og.seckill,g.isfullback,g.refund,g.returngoods,g.exchange,
+            og.optionname as optiontitle,g.isverify,g.storeids,og.seckill,g.isfullback,
             og.seckill_taskid{$diyformfields}{$condition1},og.prohibitrefund  from " . tablename('ewei_shop_order_goods') . " og "
             . " left join " . tablename('ewei_shop_goods') . " g on g.id=og.goodsid "
             . " where $scondition and og.uniacid=:uniacid ", $param);
@@ -521,14 +516,8 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
         unset($g);
         //商品是否支持退换货
         $goodsrefund = true;
-        $refundgoods = array(
-            'refund' => true,
-            'returngoods' => true,
-            'exchange' => true,
-        );
 
         if(!empty($goods)) {
-            $entity = true;//订单全部商品为实体商品
             foreach ($goods as &$g) {
                 $goodsid_array[] = $g['goodsid'];
                 if (!empty($g['optionid'])) {
@@ -537,50 +526,12 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
                         $g['thumb'] = $thumb;
                     }
                 }
-                if(empty($g['cannotrefund'])){
-                    $g['refund'] =  true ;
-                    $g['returngoods'] = true;
-                    $g['exchange'] = true;
-                }
-                /*虚拟商品，虚拟物品*/
-                if ((($g['type']==2 || $g['type']==3) && $g['isverify'] < 2 ) || $order['status'] <= 0){
-                    $g['refund'] =  false ;
-                    $g['returngoods'] = false;
-                    $g['exchange'] = false;
-                }
-                if($order['status']>=2){
-                    /*
-                     * 退款优化V1.10
-                     * 张洪利2019-09-16
-                     * */
-                    if(!empty($g['cannotrefund']) && empty($g['refund']) && empty($g['returngoods']) && empty($g['exchange'])){
-                        $goodsrefund =  false ;
-                    }
-                }
-                if($order['status']==1){
-                    /*
-                     * 退款优化V1.10
-                     * 张洪利2019-09-16
-                     * */
-                    if(!empty($g['cannotrefund']) && empty($g['refund'])){
-                        $goodsrefund =  false ;
-                    }
-                    $g['returngoods'] = false;
-                    $g['exchange'] = false;
-                }
-                $refundgoods['refund'] = empty($refundgoods['refund']) ? false :$g['refund'];
-                $refundgoods['returngoods'] = empty($refundgoods['returngoods']) ? false :$g['returngoods'];
-                $refundgoods['exchange'] = empty($refundgoods['exchange']) ? false :$g['exchange'];
-
-                /*判断所有商品全部为实体商品---核销实体商品订单退款*/
-                if($g['type']==1 && $entity = true){
-                    $entity = true;
+                if(!empty($g['cannotrefund']) && $order['status']==2){
+                    $goodsrefund = false;
                 }
             }
             unset($g);
         }
-        /*dump($goodsrefund);
-        die();*/
         $diyform_flag = 0;
 
         if ($diyform_plugin) {
@@ -711,9 +662,7 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
         $canreturn = false;
         //是否可以退款
         $tradeset = m('common')->getSysset('trade');
-        if ($order['status'] == 1 ){
-            $canrefund = $goodsrefund;
-        }elseif($order['status'] == 2) {
+        if ($order['status'] == 1 || $order['status'] == 2) {
             $canrefund = true;
             if ($order['status'] == 2 && $order['price'] == $order['dispatchprice']) {
                 if ($order['refundstate'] > 0) {
@@ -746,9 +695,6 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
                 }
             }
 
-        }elseif($order['status'] == -1 && $order['isverify'] == 1 && $entity){
-            /*过期、实体、核销商品可退款*/
-            $canrefund = true;
         }
 
         if (!empty($order['isnewstore']) && $order['status'] > 1) {
@@ -762,17 +708,6 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
         if(!$goodsrefund && $canrefund){
             $canrefund = false;
         }
-        /*dump($canrefund);
-        dump($refundgoods['refund']);
-        dump($refundgoods['returngoods']);
-        dump($refundgoods['exchange']);
-        die();*/
-        if($canrefund && ($refundgoods['refund'] || $refundgoods['returngoods'] || $refundgoods['exchange'])){
-            $canrefund = true;
-        }else{
-            $canrefund = false;
-        }
-
 
 
         if(p('ccard')) {
@@ -860,16 +795,6 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
         // 虚拟卡密
         if(!empty($order['virtual']) && !empty($order['virtual_str'])){
             $ordervirtual = m('order')->getOrderVirtual($order);
-            foreach ($ordervirtual as $ordervirtualindex=>$ordervirtualitem){
-                    foreach ($ordervirtualitem as $ordervirtualrow){
-                        $virtualpreg = '/(http|https)(.)*([a-z0-9\-\.\_])+/i';
-                        if (preg_match($virtualpreg, $ordervirtualrow['value'])){
-                            $order['islink'] = 1;
-                        }else{
-                            $order['islink'] = 0;
-                        }
-                    }
-            }
             $virtualtemp = pdo_fetch('SELECT linktext, linkurl,description FROM '. tablename('ewei_shop_virtual_type'). ' WHERE id=:id AND uniacid=:uniacid LIMIT 1', array(':id'=>$order['virtual'], ':uniacid'=>$_W['uniacid']));
         }
 
@@ -905,14 +830,6 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
             $is_single_refund=true;
         }else{
             $is_single_refund=false;
-        }
-        /*if(count($goods)==1 && !$is_single_refund){
-            $order['canrefund'] = false;
-        }*/
-        /*dump($order['canrefund']);
-        die();*/
-        if ($order['paytype']==-1){
-            $order['canrefund'] = false;
         }
 
         include $this->template();
@@ -975,18 +892,7 @@ paytype,expresssn,refundstate,dispatchtype,verifyinfo,merchid,isparent,iscycelbu
             $order['expresssn'] = $goods[0]['expresssn'];
             $order['expresscom'] = $goods[0]['expresscom'];
         }
-        $user['mobile'] = '';
-        if ($order['express'] == 'shunfeng') {
-            if (empty($order['addressid'])) {
-                $user = unserialize($order['carrier']);
-            } else {
-                $user = iunserializer($order['address']);
-                if (!is_array($user)) {
-                    $user = pdo_fetch("SELECT * FROM " . tablename('ewei_shop_member_address') . " WHERE id = :id and uniacid=:uniacid", array(':id' => $item['addressid'], ':uniacid' => $_W['uniacid']));
-                }
-            }
-        }
-        $expresslist = m('util')->getExpressList($order['express'], $order['expresssn'], $user['mobile']);
+        $expresslist = m('util')->getExpressList($order['express'], $order['expresssn']);
 
         include $this->template();
     }

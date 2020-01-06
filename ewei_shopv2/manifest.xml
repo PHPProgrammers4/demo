@@ -3,7 +3,7 @@
 	<application setting="false">
 		<name><![CDATA[人人商城V3]]></name>
 		<identifie><![CDATA[ewei_shopv2]]></identifie>
-		<version><![CDATA[3.17.11]]></version>
+		<version><![CDATA[3.12.63]]></version>
 		<type><![CDATA[business]]></type>
 		<ability><![CDATA[人人商城(分销),多用户分权，淘宝商品一键转换，多种插件支持。]]></ability>
 		<description><![CDATA[人人商城(分销)，多项信息模板，强大的自定义规格设置]]></description>

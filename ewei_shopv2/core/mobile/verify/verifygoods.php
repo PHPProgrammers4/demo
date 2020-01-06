@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -21,10 +20,7 @@ class Verifygoods_EweiShopV2Page extends MobilePage
 			$this->message('未查询到记次时商品或核销码已失效,请核对核销码!', '', 'error');
 		}
 
-		$item = pdo_fetch('select vg.*,g.id as goodsid ,g.title,g.subtitle,g.thumb,vg.storeid from ' . tablename('ewei_shop_verifygoods') . '   vg
-		 inner join ' . tablename('ewei_shop_order_goods') . ' og on vg.ordergoodsid = og.id
-		 inner join ' . tablename('ewei_shop_goods') . ' g on og.goodsid = g.id
-		 where  vg.id =:id and  vg.verifycode=:verifycode and vg.uniacid=:uniacid and vg.invalid =0 limit 1', array(':id' => $id, ':uniacid' => $_W['uniacid'], ':verifycode' => $verifycode));
+		$item = pdo_fetch('select vg.*,g.id as goodsid ,g.title,g.subtitle,g.thumb,vg.storeid  from ' . tablename('ewei_shop_verifygoods') . "   vg\r\n\t\t inner join " . tablename('ewei_shop_order_goods') . " og on vg.ordergoodsid = og.id\r\n\t\t inner join " . tablename('ewei_shop_goods') . " g on og.goodsid = g.id\r\n\t\t where  vg.id =:id and  vg.verifycode=:verifycode and vg.uniacid=:uniacid and vg.invalid =0 limit 1", array(':id' => $id, ':uniacid' => $_W['uniacid'], ':verifycode' => $verifycode));
 
 		if (empty($item)) {
 			$this->message('未查询到记次时商品或核销码已失效,请核对核销码!', '', 'error');

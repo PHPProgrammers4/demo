@@ -10,7 +10,7 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class Single_Refund_EweiShopV2Page extends AppMobilePage {
 
@@ -21,15 +21,16 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
         $uniacid = $_W['uniacid'];
 
         //订单商品
-        $order = pdo_fetch('select o.id,o.price,o.couponprice,o.iscycelbuy,o.status,o.virtual,o.isverify,o.refundstate,o.finishtime,o.deductprice,o.deductcredit2,o.dispatchprice,o.deductenough,o.merchdeductenough,g.cannotrefund,g.refund,g.returngoods,g.exchange,g.type,og.single_refundid,og.single_refundstate,og.single_refundtime,og.realprice as og_realprice,o.grprice,og.consume,o.ispackage,og.sendtime from ' . tablename('ewei_shop_order') .' o '
+        $order = pdo_fetch('select o.id,o.price,o.couponprice,o.iscycelbuy,o.status,o.virtual,o.isverify,o.refundstate,o.finishtime,o.deductprice,o.deductcredit2,o.dispatchprice,o.deductenough,o.merchdeductenough,g.cannotrefund,og.single_refundid,og.single_refundstate,og.single_refundtime,og.realprice as og_realprice,o.grprice,og.consume,o.ispackage,og.sendtime from ' . tablename('ewei_shop_order') .' o '
             . ' left join ' . tablename('ewei_shop_order_goods') . ' og on og.orderid=o.id'
             . ' left join ' . tablename('ewei_shop_goods') . ' g on g.id=og.goodsid'
             . ' where og.id=:ogid and o.openid=:openid and o.uniacid=:uniacid'
             , array(':ogid' => $order_goodsid,':openid' => $openid,':uniacid' => $uniacid));
+
 //        dump(iunserializer($order['consume']));die;
 
         if (empty($order)) {
-            return app_error(AppError::$OrderNotFound);
+            app_error(AppError::$OrderNotFound);
         }
 
         $_err = '';
@@ -59,20 +60,10 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
         if(!empty($fullback_goods_count)){
             $_err = '全返订单,无法进行单商品退款';
         }
-        $refundgoods = array(
-            'refund' => $order['refund'] ? true : false,
-            'returngoods' => $order['returngoods'] ? true : false,
-            'exchange' => $order['exchange'] ? true : false,
-        );
-        //虚拟商品完成订单
-        if($order['status']>=3 && $order['type']==2 ){
-            $refundgoods['returngoods'] = false;
-            $refundgoods['exchange'] = false;
-        }
 
-        if ($order['status'] <= 0) {
-            $_err = '订单未付款或已关闭，不能申请退款!';
-        } elseif($order['status']==2 && !empty($order['cannotrefund']) && empty($order['refund']) && empty($order['returngoods']) && empty($order['exchange']) ) {
+        if ($order['status'] == 0) {
+            $_err = '订单未付款，不能申请退款!';
+        } elseif($order['status']==2 && !empty($order['cannotrefund'])) {
             $_err = '此商品不可退换货!';
         }elseif($order['status'] == 3) {
             if (!empty($order['virtual']) || $order['isverify'] == 1) {
@@ -91,29 +82,9 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
                 }
             }
         }
-        $refund = pdo_fetch("select id,orderid from ".tablename('ewei_shop_order_refund')." where uniacid = :uniacid and orderid = :orderid and ordergoodsids in (:goodsid) and status > 0 limit 1 ",array(':uniacid'=>$uniacid,':orderid'=>$order['id'],':goodsid'=>$order_goodsid));
-
-        if(!empty($refund)){
-            $_err = '此订单已完成维权，不能申请退款!';
-        }
 
         if (!empty($_err)) {
-            return app_error(AppError::$OrderCanNotRefund, $_err);
-        }
-        $rtypeArr = array();
-        if($order['cannotrefund'] ){
-            $rtypeArr = array(
-                0 => $refundgoods['refund'] ? '退款(仅退款不退货)':'',
-                1 => $refundgoods['returngoods'] ? '退货退款':'',
-                2 => $refundgoods['exchange'] ? '换货':'',
-            );
-            $rtypeArr = array_filter($rtypeArr);
-        }else{
-            $rtypeArr = array(
-                '退款(仅退款不退货)',
-                '退货退款',
-                '换货'
-            );
+            app_error(AppError::$OrderCanNotRefund, $_err);
         }
 
         //订单所有商品 关联 退款表
@@ -162,7 +133,6 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
 
         return array(
             'uniacid' => $uniacid,
-            'rtypeArr' => $rtypeArr ,
             'openid' => $_W['openid'],
             'order_goodsid' => $order_goodsid,
             'order' => $order,
@@ -220,7 +190,7 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
 
         $express_list = m('express')->getExpressList();
 
-        return app_json(array(
+        app_json(array(
             'title' => ($order['status']==1?'退款':'售后').'申请',
             'refundtype' => $refund['rtype'],
             'refundreason' => ($refund['rtype']=='2'?'换货':'退款').'原因',
@@ -229,7 +199,6 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
             'content' => isset($refund['content'])?$refund['content']:'',
             'order'=>$order,
             'refund'=>$refund,
-            'rtypeArr'=>$rtypeArr,
             'images'=>is_array($refund['imgs'])?$refund['imgs']:array(),
             'imgs'=>!empty($images)?$images:array(),
             'express_list'=>$express_list,
@@ -244,17 +213,17 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
         global $_W, $_GPC;
         extract($this->globalData());
         if ($order['single_refundstate'] == '9'){
-            return app_error(AppError::$OrderCanNotRefund, '商品维权已经处理完毕');
+            app_error(AppError::$OrderCanNotRefund, '商品维权已经处理完毕');
         }
         $price = floatval($_GPC['price']);
         $rtype = intval($_GPC['rtype']);
         if ($rtype != 2) {
             if (empty($price) && $order['deductprice'] == 0) {
-                return app_error(AppError::$OrderCanNotRefund, '退款金额不能为0元');
+                app_error(AppError::$OrderCanNotRefund, '退款金额不能为0元');
             }
 
             if (bccomp($price,$order['single_refundprice'],2)==1 ) {
-                return app_error(AppError::$OrderCanNotRefund,'退款金额不能超过' . $order['single_refundprice'] . '元');
+                app_error(AppError::$OrderCanNotRefund,'退款金额不能超过' . $order['single_refundprice'] . '元');
             }
         }
 
@@ -294,7 +263,7 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
 
         //模板消息
         m('notice')->sendOrderMessage($order['id'], true);
-        return app_json();
+        app_json();
     }
 
     //取消
@@ -328,7 +297,7 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
             pdo_update('ewei_shop_order', array('refundstate' => 0,'refundtime'=>0), array('id' => $order['id'], 'uniacid' => $uniacid));
         }
 
-        return app_json();
+        app_json();
     }
 
     //填写快递单号
@@ -337,10 +306,10 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
         global $_W, $_GPC;
         extract($this->globalData());
         if (empty($single_refundid)) {
-            return app_error(AppError::$ParamsError, '参数错误');
+            app_error(AppError::$ParamsError, '参数错误');
         }
         if (empty($_GPC['expresssn'])) {
-            return app_error(AppError::$ParamsError, '请填写快递单号');
+            app_error(AppError::$ParamsError, '请填写快递单号');
         }
         $refund = array(
             'status'=>4,
@@ -350,7 +319,7 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
             'sendtime'=>time()
         );
         pdo_update('ewei_shop_order_single_refund', $refund, array('id' => $single_refundid, 'uniacid' => $uniacid));
-        return app_json();
+        app_json();
     }
 
     //收到换货商品
@@ -362,7 +331,7 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
         $refund =  pdo_fetch("select * from " . tablename('ewei_shop_order_single_refund') . ' where id=:id and ordergoodsid=:ordergoodsid and uniacid=:uniacid limit 1'
             , array(':id' => $single_refundid,':ordergoodsid' => $order_goodsid,':uniacid' => $uniacid,));
         if (empty($refund)) {
-            return app_error(AppError::$OrderNotFound, '换货申请未找到');
+            app_error(AppError::$OrderNotFound, '换货申请未找到');
         }
 
         $time = time();
@@ -383,7 +352,7 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
             //更新订单维权时间
             pdo_update('ewei_shop_order', array('refundtime' => $time), array('id' => $order['id'], 'uniacid' => $uniacid));
         }
-        return app_json();
+        app_json();
 
     }
 
@@ -398,6 +367,6 @@ class Single_Refund_EweiShopV2Page extends AppMobilePage {
         $expresscom = trim($_GPC['expresscom']);
         $expresslist = m('util')->getExpressList($express, $expresssn);
 
-        return app_json(array('list'=>$expresslist));
+        app_json(array('list'=>$expresslist));
     }
 }

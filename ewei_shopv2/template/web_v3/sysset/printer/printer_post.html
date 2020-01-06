@@ -44,7 +44,7 @@
                     {else}
                     <div class='form-control-static'>{$printer[$list['type']]}</div>
                     {/if}
-                    <div class="help-block">选择打印机类型,目前已支持打印机 : 365的T58K -- 飞鹅的FP-58W -- 易联云的K3</div>
+                    <div class="help-block">选择打印机类型,目前已支持打印机 : 365的T58K -- 飞鹅的FP-58W -- 智放云的K3</div>
                 </div>
             </div>
 
@@ -276,7 +276,7 @@
 </div>
 </div>
 
-<!--易联云打印机-->
+<!--智放云打印机-->
 <div id="printer_yilianyun" class="printer" {if $list['type']!='2'}style="display: none"{/if}>
 <div class="form-group">
     <label class="col-lg control-label" >终端号</label>
@@ -360,7 +360,7 @@
 </div>
 </div>
 
-<!--易联云新版接口打印机-->
+<!--智放云新版接口打印机-->
 <div id="printer_yilianyun_new" class="printer" {if $list['type']!='4'}style="display: none"{/if}>
 <div class="form-group">
     <label class="col-lg control-label" >终端号</label>
@@ -444,7 +444,7 @@
 </div>
 </div>
 
-<!--易联云AUTH2.0接口打印机-->
+<!--智放云AUTH2.0接口打印机-->
 <div id="printer_yilianyun_auth2" class="printer" {if $list['type']!='6'}style="display: none"{/if}>
     <div class="form-group">
         <label class="col-lg control-label" >终端号</label>
@@ -477,7 +477,7 @@
         {ifp 'sysset.printer.printer_add'||'sysset.printer.printer_edit'}
         <div class="col-sm-9 title" style='padding-right:0' >
             <input type="text" name="printer_yilianyun_auth2[partner]" class="form-control" value="{$printer_yilianyun_auth2['partner']}"/>
-            <span class='help-block'>应用id（易联云开发者中心应用管理里获取）,须为自有型应用</span>
+            <span class='help-block'>应用id（智放云开发者中心应用管理里获取）,须为自有型应用</span>
         </div>
         {else}
         <div class="col-sm-3">

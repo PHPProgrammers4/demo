@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -290,14 +290,14 @@ class List_EweiShopV2Page extends WebPage
 			22 => array('css' => 'warning', 'name' => '支付宝支付'),
 			23 => array('css' => 'warning', 'name' => '银联支付'),
 			3  => array('css' => 'primary', 'name' => '货到付款')
-		);
+			);
 		$orderstatus = array(
 			-1 => array('css' => 'default', 'name' => '已关闭'),
 			0  => array('css' => 'danger', 'name' => '待付款'),
 			1  => array('css' => 'info', 'name' => '待发货'),
 			2  => array('css' => 'warning', 'name' => '待收货'),
 			3  => array('css' => 'success', 'name' => '已完成')
-		);
+			);
 		$is_merch = array();
 		$is_merchname = 0;
 
@@ -688,7 +688,7 @@ class List_EweiShopV2Page extends WebPage
 				array('title' => '核销门店', 'field' => 'storeinfo', 'width' => 36),
 				array('title' => '订单自定义信息', 'field' => 'order_diyformdata', 'width' => 36),
 				array('title' => '商品自定义信息', 'field' => 'goods_diyformdata', 'width' => 36)
-			);
+				);
 			if (!empty($agentid) && 0 < $level) {
 				$columns[] = array('title' => '分销级别', 'field' => 'level', 'width' => 24);
 				$columns[] = array('title' => '分销佣金', 'field' => 'commission', 'width' => 24);

@@ -15,111 +15,111 @@ define(['jquery'], function ($) {
         }
         return url
     };
-    biz.selector =  {
-        select: function (params) {
+	biz.selector =  {
+		select: function (params) {
 
-            params = $.extend({}, params || {});
-            var name = params.name===undefined?'default':params.name;
-            var modalid = name +"-selector-modal";
-            modalObj =$('#' +modalid);
-            if( modalObj.length <=0 ){
-                var modal = '<div id="' +modalid +'"  class="modal fade" tabindex="-1" style="z-index: 2060">';
-                modal += '<div class="modal-dialog" style="width: 920px;">';
-                modal += '<div class="modal-content">';
-                modal += '<div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>数据选择器</h3></div>';
-                modal += '<div class="modal-body" >';
-                modal += '<div class="row">';
-                modal += '<div class="input-group">';
-                modal += '<input type="text" class="form-control" name="keyword" id="' + name +'_input" placeholder="' + ( params.placeholder===undefined?'':params.placeholder) + '" />';
-                modal += '<span class="input-group-btn"><button type="button" class="btn btn-default" onclick="biz.selector.search(this, \'' + name + '\');">搜索</button></span>';
-                modal += '</div>';
-                modal += '</div>';
-                modal += '<div class="content" style="padding-top:5px;" data-name="' + name +'"></div>';
-                modal += '</div>';
-                modal += '<div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>';
-                modal += '</div>';
-                modal += '</div>';
-                modal += '</div>';
+			params = $.extend({}, params || {});
+			var name = params.name===undefined?'default':params.name;
+			var modalid = name +"-selector-modal";
+			modalObj =$('#' +modalid);
+			if( modalObj.length <=0 ){
+				var modal = '<div id="' +modalid +'"  class="modal fade" tabindex="-1" style="z-index: 2060">';
+				modal += '<div class="modal-dialog" style="width: 920px;">';
+				modal += '<div class="modal-content">';
+				modal += '<div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>数据选择器</h3></div>';
+				modal += '<div class="modal-body" >';
+				modal += '<div class="row">';
+				modal += '<div class="input-group">';
+				modal += '<input type="text" class="form-control" name="keyword" id="' + name +'_input" placeholder="' + ( params.placeholder===undefined?'':params.placeholder) + '" />';
+				modal += '<span class="input-group-btn"><button type="button" class="btn btn-default" onclick="biz.selector.search(this, \'' + name + '\');">搜索</button></span>';
+				modal += '</div>';
+				modal += '</div>';
+				modal += '<div class="content" style="padding-top:5px;" data-name="' + name +'"></div>';
+				modal += '</div>';
+				modal += '<div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>';
+				modal += '</div>';
+				modal += '</div>';
+				modal += '</div>';
 
-                modalObj = $(modal);
-                modalObj.on('show.bs.modal',function(){
-                    if(params.autosearch=='1') {
-                        $.get(params.url, {
-                            keyword: ''
-                        }, function (dat) {
-                            $('.content', modalObj).html(dat);
-                        });
-                    };
-                });
-            };
-            modalObj.modal('show');
-        }
-        , search:function(searchbtn, name){
-            var input = $(searchbtn).closest('.modal').find('#' + name + '_input');
-            var selector = $("#" + name + '_selector');
-            var needkeywords = true;
-            if( selector.data('nokeywords')=='1') {
-                needkeywords = false;
-            };
+				modalObj = $(modal);
+				modalObj.on('show.bs.modal',function(){
+					if(params.autosearch=='1') {
+						$.get(params.url, {
+							keyword: ''
+						}, function (dat) {
+							$('.content', modalObj).html(dat);
+						});
+					};
+				});
+			};
+			modalObj.modal('show');
+		}
+		, search:function(searchbtn, name){
+			var input = $(searchbtn).closest('.modal').find('#' + name + '_input');
+			var selector = $("#" + name + '_selector');
+			var needkeywords = true;
+			if( selector.data('nokeywords')=='1') {
+				needkeywords = false;
+			};
 
-            var keyword = $.trim( input.val() );
-            if(keyword=='' && needkeywords ){
-                input.focus();
-                return;
-            }
+			var keyword = $.trim( input.val() );
+			if(keyword=='' && needkeywords ){
+				input.focus();
+				return;
+			}
 
-            var modalObj =  $('#' +name +"-selector-modal");
-            $('.content' ,modalObj).html("正在搜索....");
+			var modalObj =  $('#' +name +"-selector-modal");
+			$('.content' ,modalObj).html("正在搜索....");
 
-            $.get( selector.data('url'), {
-                keyword: keyword
-            }, function(dat){
-                $('.content' ,modalObj).html(dat);
-            });
-        }
-        , remove: function (obj,name ) {
-            var selector = $("#" + name + '_selector');
-            var css = selector.data('type') =='image'?'.multi-item':'.multi-audio-item';
-            if(selector.data('type') =='image'){
-                css = ".multi-item";
-            }else if(selector.data('type') =='coupon'){
-                css = ".multi-product-item";
-            }else if(selector.data('type') =='coupon_cp'){
-                css = ".multi-product-item";
-            }else if(selector.data('type') =='coupon_share'){
-                css = ".multi-product-item";
-            }else if(selector.data('type') =='coupon_shares'){
-                css = ".multi-product-item";
-            }else{
-                css = ".multi-audio-item";
-            }
-            $(obj).closest(css).remove();
-            biz.selector.refresh(name);
-        }
-        , set: function (obj, data) {
-
-
+			$.get( selector.data('url'), {
+				keyword: keyword
+			}, function(dat){
+				$('.content' ,modalObj).html(dat);
+			});
+		}
+		, remove: function (obj,name ) {
+			var selector = $("#" + name + '_selector');
+			var css = selector.data('type') =='image'?'.multi-item':'.multi-audio-item';
+			if(selector.data('type') =='image'){
+				css = ".multi-item";
+			}else if(selector.data('type') =='coupon'){
+				css = ".multi-product-item";
+			}else if(selector.data('type') =='coupon_cp'){
+				css = ".multi-product-item";
+			}else if(selector.data('type') =='coupon_share'){
+				css = ".multi-product-item";
+			}else if(selector.data('type') =='coupon_shares'){
+				css = ".multi-product-item";
+			}else{
+				css = ".multi-audio-item";
+			}
+			$(obj).closest(css).remove();
+			biz.selector.refresh(name);
+		}
+		, set: function (obj, data) {
 
 
-            var name = $(obj).closest('.content').data('name');
-            var modalObj =  $('#' +name +"-selector-modal");
-            var selector  =  $('#' +name +"_selector");
 
-            var container = $('.container',selector);
-            var key = selector.data('key') || 'id',
-                text = selector.data('text') || 'title',
-                thumb = selector.data('thumb') || 'thumb',
-                multi = selector.data('multi') || 0,
-                type = selector.data('type') || 'image',
-                callback = selector.data('callback') || '',
-                css = type=='image'?'.multi-item':'.multi-audio-item';
 
-            if ($( css + '[data-' +key +'="' + data[key] + '"]',container).length > 0) {
-                if( multi  === 0){
-                    modalObj.modal('hide');
-                }
-                return;
-            }
+			var name = $(obj).closest('.content').data('name');
+			var modalObj =  $('#' +name +"-selector-modal");
+			var selector  =  $('#' +name +"_selector");
+
+			var container = $('.container',selector);
+			var key = selector.data('key') || 'id',
+					text = selector.data('text') || 'title',
+					thumb = selector.data('thumb') || 'thumb',
+					multi = selector.data('multi') || 0,
+					type = selector.data('type') || 'image',
+					callback = selector.data('callback') || '',
+					css = type=='image'?'.multi-item':'.multi-audio-item';
+
+			if ($( css + '[data-' +key +'="' + data[key] + '"]',container).length > 0) {
+				if( multi  === 0){
+					modalObj.modal('hide');
+				}
+				return;
+			}
 
             if(type=='coupon_cp'){
                 if($(".setticket").length >= 3){
@@ -142,130 +142,130 @@ define(['jquery'], function ($) {
                 }
             }
 
-            var id  = multi===0? name: name+"[]";
-            var html ="";
-            if(type=='image'){
-                html +='<div class="multi-item" data-' + key+'="' + data[key] + '" data-name="' +name + '">';
-                html += '<img class="img-responsive img-thumbnail" src="' + data[thumb] + '" onerror="this.src=\'../addons/ewei_shopv2/static/images/nopic.png\'" style="width:100px;height:100px;">';
-                html += '<div class="img-nickname">' + data[text] + '</div>';
-                html += '<input type="hidden" value="' + data[key] + '" name="' + id +'">';
-                html += '<em onclick="biz.selector.remove(this,\'' + name +'\')"  class="close">×</em>';
-                html += '</div>';
-            } else if(type=='coupon'){
-                html += "<tr class='multi-product-item' data-"+ key+"='"+ data[key] + "'>";
-                html += "<input type='hidden' class='form-control img-textname' readonly='' value='"+data[text]+"'>";
-                html += "<input type='hidden' value='"+ data[key]+"' name='couponid[]'>";
-                html += "<td style='width:80px;'><img src='"+data[thumb]+"' style='width:70px;border:1px solid #ccc;padding:1px'></td>";
-                html += "<td style='width:220px;'>"+data[text]+"</td>";
-                html += "<td><input class='form-control valid' type='text' value='' name='coupontotal"+data[key]+"'></td>";
-                html += "<td><input class='form-control valid' type='text' value='' name='couponlimit"+data[key]+"'></td>";
-                html += "<td style='width:80px;'><button class='btn btn-default' onclick='biz.selector.remove(this,\"" + name +"\")' type='button'><i class='fa fa-remove'></i></button></td></tr>";
-            }else if(type=='coupon_cp'){
-                html += "<tr class='multi-product-item setticket' data-"+ key+"='"+ data[key] + "'>";
-                html += "<input type='hidden' class='form-control img-textname' readonly='' value='"+data[text]+"'>";
-                html += "<input type='hidden' value='"+ data[key]+"' name='couponid[]'>";
-                html += "<td style='width:80px;'><img src='"+data[thumb]+"' style='width:70px;border:1px solid #ccc;padding:1px'></td>";
-                html += "<td style='width:220px;'>"+data[text]+"</td>";
-                html += "<td></td>";
-                html += "<td></td>";
-                html += "<td style='width:80px;'><button class='btn btn-default' onclick='biz.selector.remove(this,\"" + name +"\")' type='button'><i class='fa fa-remove'></i></button></td></tr>";
-            }else if(type=='coupon_share'){
-                html += "<tr class='multi-product-item shareticket' data-"+ key+"='"+ data[key] + "'>";
-                html += "<input type='hidden' class='form-control img-textname' readonly='' value='"+data[text]+"'>";
-                html += "<input type='hidden' value='"+ data[key]+"' name='couponid[]'>";
-                html += "<td style='width:80px;'><img src='"+data[thumb]+"' style='width:70px;border:1px solid #ccc;padding:1px'></td>";
-                html += "<td style='width:220px;'>"+data[text]+"</td>";
-                html += "<td></td>";
-                html += "<td><input class='form-control valid' type='text' value='1' name='couponnum"+data[key]+"'></td>";
-                html += "<td style='width:80px;'><button class='btn btn-default' onclick='biz.selector.remove(this,\"" + name +"\")' type='button'><i class='fa fa-remove'></i></button></td></tr>";
-            }else if(type=='coupon_shares'){
-                html += "<tr class='multi-product-item sharesticket' data-"+ key+"='"+ data[key] + "'>";
-                html += "<input type='hidden' class='form-control img-textname' readonly='' value='"+data[text]+"'>";
-                html += "<input type='hidden' value='"+ data[key]+"' name='couponids[]'>";
-                html += "<td style='width:80px;'><img src='"+data[thumb]+"' style='width:70px;border:1px solid #ccc;padding:1px' class='img_share'></td>";
-                html += "<td style='width:220px;'>"+data[text]+"</td>";
-                html += "<td></td>";
-                html += "<td><input class='form-control valid' type='text' value='1' name='couponsnum"+data[key]+"'></td>";
-                html += "<td style='width:80px;'><button class='btn btn-default' onclick='biz.selector.remove(this,\"" + name +"\")' type='button'><i class='fa fa-remove'></i></button></td></tr>";
-            }else{
-                html+="<div class='multi-audio-item' data-" + key+"='" + data[key] + "' data-name='" + name + "'>";
-                html+="<div class='input-group'><input type='hidden' name='" + id  +"' value='" + data[key] +"'> ";
-                html+="<input type='text' class='form-control img-textname' readonly='' value='" +  data[text] +"'>";
-                html+="<div class='input-group-btn'><button class='btn btn-default' onclick='biz.selector.remove(this,\"" + name +"\")' type='button'><i class='fa fa-remove'></i></button></div></div></div>";
-            }
-            if(multi===0){
-                container.html(html);
-                modalObj.modal('hide');
-            } else{
-                container.append(html);
-            }
-            biz.selector.refresh(name);
+			var id  = multi===0? name: name+"[]";
+			var html ="";
+			if(type=='image'){
+				html +='<div class="multi-item" data-' + key+'="' + data[key] + '" data-name="' +name + '">';
+				html += '<img class="img-responsive img-thumbnail" src="' + data[thumb] + '" onerror="this.src=\'../addons/ewei_shopv2/static/images/nopic.png\'" style="width:100px;height:100px;">';
+				html += '<div class="img-nickname">' + data[text] + '</div>';
+				html += '<input type="hidden" value="' + data[key] + '" name="' + id +'">';
+				html += '<em onclick="biz.selector.remove(this,\'' + name +'\')"  class="close">×</em>';
+				html += '</div>';
+			} else if(type=='coupon'){
+				html += "<tr class='multi-product-item' data-"+ key+"='"+ data[key] + "'>";
+				html += "<input type='hidden' class='form-control img-textname' readonly='' value='"+data[text]+"'>";
+				html += "<input type='hidden' value='"+ data[key]+"' name='couponid[]'>";
+				html += "<td style='width:80px;'><img src='"+data[thumb]+"' style='width:70px;border:1px solid #ccc;padding:1px'></td>";
+				html += "<td style='width:220px;'>"+data[text]+"</td>";
+				html += "<td><input class='form-control valid' type='text' value='' name='coupontotal"+data[key]+"'></td>";
+				html += "<td><input class='form-control valid' type='text' value='' name='couponlimit"+data[key]+"'></td>";
+				html += "<td style='width:80px;'><button class='btn btn-default' onclick='biz.selector.remove(this,\"" + name +"\")' type='button'><i class='fa fa-remove'></i></button></td></tr>";
+			}else if(type=='coupon_cp'){
+				html += "<tr class='multi-product-item setticket' data-"+ key+"='"+ data[key] + "'>";
+				html += "<input type='hidden' class='form-control img-textname' readonly='' value='"+data[text]+"'>";
+				html += "<input type='hidden' value='"+ data[key]+"' name='couponid[]'>";
+				html += "<td style='width:80px;'><img src='"+data[thumb]+"' style='width:70px;border:1px solid #ccc;padding:1px'></td>";
+				html += "<td style='width:220px;'>"+data[text]+"</td>";
+				html += "<td></td>";
+				html += "<td></td>";
+				html += "<td style='width:80px;'><button class='btn btn-default' onclick='biz.selector.remove(this,\"" + name +"\")' type='button'><i class='fa fa-remove'></i></button></td></tr>";
+			}else if(type=='coupon_share'){
+				html += "<tr class='multi-product-item shareticket' data-"+ key+"='"+ data[key] + "'>";
+				html += "<input type='hidden' class='form-control img-textname' readonly='' value='"+data[text]+"'>";
+				html += "<input type='hidden' value='"+ data[key]+"' name='couponid[]'>";
+				html += "<td style='width:80px;'><img src='"+data[thumb]+"' style='width:70px;border:1px solid #ccc;padding:1px'></td>";
+				html += "<td style='width:220px;'>"+data[text]+"</td>";
+				html += "<td></td>";
+				html += "<td><input class='form-control valid' type='text' value='1' name='couponnum"+data[key]+"'></td>";
+				html += "<td style='width:80px;'><button class='btn btn-default' onclick='biz.selector.remove(this,\"" + name +"\")' type='button'><i class='fa fa-remove'></i></button></td></tr>";
+			}else if(type=='coupon_shares'){
+				html += "<tr class='multi-product-item sharesticket' data-"+ key+"='"+ data[key] + "'>";
+				html += "<input type='hidden' class='form-control img-textname' readonly='' value='"+data[text]+"'>";
+				html += "<input type='hidden' value='"+ data[key]+"' name='couponids[]'>";
+				html += "<td style='width:80px;'><img src='"+data[thumb]+"' style='width:70px;border:1px solid #ccc;padding:1px' class='img_share'></td>";
+				html += "<td style='width:220px;'>"+data[text]+"</td>";
+				html += "<td></td>";
+				html += "<td><input class='form-control valid' type='text' value='1' name='couponsnum"+data[key]+"'></td>";
+				html += "<td style='width:80px;'><button class='btn btn-default' onclick='biz.selector.remove(this,\"" + name +"\")' type='button'><i class='fa fa-remove'></i></button></td></tr>";
+			}else{
+				html+="<div class='multi-audio-item' data-" + key+"='" + data[key] + "' data-name='" + name + "'>";
+				html+="<div class='input-group'><input type='hidden' name='" + id  +"' value='" + data[key] +"'> ";
+				html+="<input type='text' class='form-control img-textname' readonly='' value='" +  data[text] +"'>";
+				html+="<div class='input-group-btn'><button class='btn btn-default' onclick='biz.selector.remove(this,\"" + name +"\")' type='button'><i class='fa fa-remove'></i></button></div></div></div>";
+			}
+			if(multi===0){
+				container.html(html);
+				modalObj.modal('hide');
+			} else{
+				container.append(html);
+			}
+			biz.selector.refresh(name);
 
-            if( callback!==''){
-                var callfunc = eval(callback);
-                if(callfunc!==undefined){
-                    callfunc(data, obj);
-                }
-            }
+			if( callback!==''){
+				var callfunc = eval(callback);
+				if(callfunc!==undefined){
+					callfunc(data, obj);
+				}
+			}
 
-        },refresh:function(name){
+		},refresh:function(name){
 
-            var titles = '';
-            var selector = $('#' + name + '_selector');
+			var titles = '';
+			var selector = $('#' + name + '_selector');
 
-            var type = selector.data('type') || 'image';
+			var type = selector.data('type') || 'image';
 
-            if(type=='image'){
-                $('.multi-item',selector).each(function () {
-                    titles += " " + $(this).find('.img-nickname').html() ;
-                    if( $('.multi-item',selector).length>1){
-                        titles+="; ";
-                    }
-                });
-            } else if(type=='coupon'){
-                $('.multi-product-item',selector).each(function () {
-                    titles += " " + $(this).find('.img-textname').val();
-                    if( $('.multi-product-item',selector).length>1){
-                        titles+="; ";
-                    }
-                });
-            }else if(type=='coupon_cp'){
-                $('.multi-product-item',selector).each(function () {
-                    titles += " " + $(this).find('.img-textname').val();
-                    if( $('.multi-product-item',selector).length>1){
-                        titles+="; ";
-                    }
-                });
-            }else if(type=='coupon_share'){
-                $('.multi-product-item',selector).each(function () {
-                    titles += " " + $(this).find('.img-textname').val();
-                    if( $('.multi-product-item',selector).length>1){
-                        titles+="; ";
-                    }
-                });
-            }else if(type=='coupon_shares'){
-                $('.multi-product-item',selector).each(function () {
-                    titles += " " + $(this).find('.img-textname').val();
-                    if( $('.multi-product-item',selector).length>1){
-                        titles+="; ";
-                    }
-                });
-            } else{
-                $('.multi-audio-item',selector).each(function () {
-                    titles += " " + $(this).find('.img-textname').val();
-                    if( $('.multi-audio-item',selector).length>1){
-                        titles+="; ";
-                    }
-                });
-            }
-
-
+			if(type=='image'){
+				$('.multi-item',selector).each(function () {
+					titles += " " + $(this).find('.img-nickname').html() ;
+					if( $('.multi-item',selector).length>1){
+						titles+="; ";
+					}
+				});
+			} else if(type=='coupon'){
+				$('.multi-product-item',selector).each(function () {
+					titles += " " + $(this).find('.img-textname').val();
+					if( $('.multi-product-item',selector).length>1){
+						titles+="; ";
+					}
+				});
+			}else if(type=='coupon_cp'){
+				$('.multi-product-item',selector).each(function () {
+					titles += " " + $(this).find('.img-textname').val();
+					if( $('.multi-product-item',selector).length>1){
+						titles+="; ";
+					}
+				});
+			}else if(type=='coupon_share'){
+				$('.multi-product-item',selector).each(function () {
+					titles += " " + $(this).find('.img-textname').val();
+					if( $('.multi-product-item',selector).length>1){
+						titles+="; ";
+					}
+				});
+			}else if(type=='coupon_shares'){
+				$('.multi-product-item',selector).each(function () {
+					titles += " " + $(this).find('.img-textname').val();
+					if( $('.multi-product-item',selector).length>1){
+						titles+="; ";
+					}
+				});
+			} else{
+				$('.multi-audio-item',selector).each(function () {
+					titles += " " + $(this).find('.img-textname').val();
+					if( $('.multi-audio-item',selector).length>1){
+						titles+="; ";
+					}
+				});
+			}
 
 
-            $('#' + name + "_text",selector).val(titles);
-        }
 
-    };
+
+			$('#' + name + "_text",selector).val(titles);
+		}
+
+	};
 
     biz.selector_new = {
         select: function (params) {

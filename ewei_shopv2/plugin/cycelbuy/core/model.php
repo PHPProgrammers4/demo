@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -101,13 +101,12 @@ if (!class_exists('CycelbuyModel')) {
 ';
 				$message = array(
 					'first'    => array('value' => $data['nickname'] . '修改了收货时间', 'color' => '#ff0000'),
+					'keyword2' => array('title' => '处理进度', 'value' => '修改收货时间通知', 'color' => '#000000'),
+					'keyword3' => array('title' => '处理内容', 'value' => $data['nickname'] . '修改了收货时间', 'color' => '#000000'),
 					'keyword1' => array('title' => '业务类型', 'value' => '会员通知', 'color' => '#000000'),
-					'keyword2' => array('title' => '业务内容', 'value' => $data['nickname'] . '修改了收货时间', 'color' => '#000000'),
-					'keyword3' => array('title' => '处理结果', 'value' => '修改收货时间通知', 'color' => '#000000'),
-					'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 					'remark'   => array('value' => '
 感谢您的支持', 'color' => '#000000')
-				);
+					);
 				$datas[] = array('name' => '昵称', 'value' => $data['nickname']);
 				$datas[] = array('name' => '订单编号', 'value' => $data['ordersn']);
 				$datas[] = array('name' => '新收货时间', 'value' => $data['goods']);
@@ -132,13 +131,12 @@ if (!class_exists('CycelbuyModel')) {
 ';
 				$message = array(
 					'first'    => array('value' => $data['nickname'] . '修改了收货地址！', 'color' => '#ff0000'),
+					'keyword2' => array('title' => '处理进度', 'value' => '修改收货地址通知', 'color' => '#000000'),
+					'keyword3' => array('title' => '处理内容', 'value' => $data['nickname'] . '修改了收货地址', 'color' => '#000000'),
 					'keyword1' => array('title' => '业务类型', 'value' => '会员通知', 'color' => '#000000'),
-					'keyword2' => array('title' => '业务内容', 'value' => $data['nickname'] . '修改了收货地址', 'color' => '#000000'),
-					'keyword3' => array('title' => '处理结果', 'value' => '修改收货地址通知', 'color' => '#000000'),
-					'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 					'remark'   => array('value' => '
 感谢您的支持', 'color' => '#000000')
-				);
+					);
 				$datas[] = array('name' => '昵称', 'value' => $data['nickname']);
 				$datas[] = array('name' => '新收货地址', 'value' => $data['newaddress']);
 				$datas[] = array('name' => '时间', 'value' => date('Y-m-d H:i:s', $data['paytime']));
@@ -165,7 +163,7 @@ if (!class_exists('CycelbuyModel')) {
 					'keyword1' => array('title' => '业务类型', 'value' => '会员通知', 'color' => '#000000'),
 					'remark'   => array('value' => '
 感谢您的支持', 'color' => '#000000')
-				);
+					);
 				$toopenid = $openid;
 				$datas[] = array('name' => '昵称', 'value' => $data['nickname']);
 				$datas[] = array('name' => '新收货时间', 'value' => $data['newdate']);
@@ -184,13 +182,12 @@ if (!class_exists('CycelbuyModel')) {
 ';
 				$message = array(
 					'first'    => array('value' => '亲爱的' . $member['nickname'] . '，您的收货地址修改完成', 'color' => '#ff0000'),
+					'keyword2' => array('title' => '处理进度', 'value' => '修改收货地址通知', 'color' => '#000000'),
+					'keyword3' => array('title' => '处理内容', 'value' => '您的收货地址修改已完成', 'color' => '#000000'),
 					'keyword1' => array('title' => '业务类型', 'value' => '会员通知', 'color' => '#000000'),
-					'keyword2' => array('title' => '业务内容', 'value' => '您的收货地址修改已完成', 'color' => '#000000'),
-					'keyword3' => array('title' => '处理结果', 'value' => '修改收货地址通知', 'color' => '#000000'),
-					'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 					'remark'   => array('value' => '
 感谢您的支持', 'color' => '#000000')
-				);
+					);
 				$toopenid = $openid;
 				$datas[] = array('name' => '昵称', 'value' => $member['nickname']);
 				$datas[] = array('name' => '新收货地址', 'value' => $data['newaddress']);
@@ -221,13 +218,12 @@ if (!class_exists('CycelbuyModel')) {
 请及时安排发货';
 					$message = array(
 						'first'    => array('value' => '您有订单需要发货，请及时安排！', 'color' => '#ff0000'),
+						'keyword2' => array('title' => '处理进度', 'value' => '订单发货通知', 'color' => '#000000'),
+						'keyword3' => array('title' => '处理内容', 'value' => '订单发货通知', 'color' => '#000000'),
 						'keyword1' => array('title' => '业务类型', 'value' => '会员通知', 'color' => '#000000'),
-						'keyword2' => array('title' => '业务内容', 'value' => '订单发货通知', 'color' => '#000000'),
-						'keyword3' => array('title' => '处理结果', 'value' => '订单发货通知', 'color' => '#000000'),
-						'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 						'remark'   => array('value' => '
 感谢您的支持', 'color' => '#000000')
-					);
+						);
 					$datas[] = array('name' => '订单编号', 'value' => $data['ordersn']);
 					$datas[] = array('name' => '订单金额', 'value' => $data['price']);
 					$datas[] = array('name' => '收货人', 'value' => $address['realname']);

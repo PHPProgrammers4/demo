@@ -68,11 +68,6 @@ class Create_EweiShopV2Page extends PluginMobileLoginPage {
                 }
             }
         }
-        
-        // 抽奖商品抽奖前不考虑运费
-        if ($goods['type'] == '1') {
-            $goods['dispatch'] = 0;
-        }
 
         //h5app支付参数 by lgt
         $sysSet = m('common')->getSysset();

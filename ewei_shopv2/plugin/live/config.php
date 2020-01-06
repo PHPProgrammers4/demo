@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -21,17 +20,17 @@ return array(
 				'title' => '其他',
 				'items' => array(
 					array('title' => '通信服务', 'route' => 'service')
-				)
-			),
+					)
+				),
 			array(
 				'title' => '设置',
 				'items' => array(
 					array('title' => '入口设置', 'route' => 'cover'),
 					array('title' => '基础设置', 'route' => 'setting')
+					)
 				)
 			)
 		)
-	)
-);
+	);
 
 ?>

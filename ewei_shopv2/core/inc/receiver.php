@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -48,8 +47,8 @@ class Receiver extends WeModuleReceiver
 				else {
 					$totalagent = pdo_fetchcolumn('select count(*) from' . tablename('ewei_shop_member') . ' where uniacid =' . $_W['uniacid'] . ' and isagent =1');
 					$totalmember = pdo_fetchcolumn('select count(*) from' . tablename('ewei_shop_member') . ' where uniacid =' . $_W['uniacid']);
-					$redis->set($redis_key1, $totalagent, array('nx', 'ex' => '3600'));
-					$redis->set($redis_key2, $totalmember, array('nx', 'ex' => '3600'));
+					$redis->set($redis_key1, $totalagent, array(0 => 'nx', 'ex' => '3600'));
+					$redis->set($redis_key2, $totalmember, array(0 => 'nx', 'ex' => '3600'));
 				}
 			}
 		}

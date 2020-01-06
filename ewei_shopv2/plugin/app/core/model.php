@@ -1,16 +1,8 @@
 <?php
-
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if(!defined('IN_IA')) {
     exit('Access Denied');
 }
-
+define("SITE_ID",base64_encode($_SERVER["HTTP_HOST"]));
 if(!class_exists('AppModel')) {
 
     class AppModel extends PluginModel {
@@ -19,6 +11,16 @@ if(!class_exists('AppModel')) {
         protected $plugin = array();
         protected $ordernum = array();
         protected $commission = array();
+		 public function getAuth1()
+		{
+			return $this->getAuth('&ismanage=1');
+		}
+		public function getRelease1($authid)
+		{
+			return $this->getRelease($authid,'&ismanage=1');
+		}								    
+		private $staticurl = array('index', 'shop', 'goods', 'member', 'sale', 'account', 'commission');
+		private $loginPage = array('member', 'order', 'commission', 'sale.coupon', 'groups.orders', 'groups.team');						   
 
         /**
          * 小程序微信支付
@@ -389,10 +391,13 @@ if(!class_exists('AppModel')) {
                 if(is_array($page['data']['page']) && !empty($page['data']['page']['icon'])) {
                     $page['data']['page']['icon'] = tomedia($page['data']['page']['icon']);
                 }
+
                 if(!empty($page['data']['items'])) {
+
                     foreach ($page['data']['items'] as $itemid => &$item) {
                         // 获取商品信息
                         $item = $this->goodsData($item, $mobile);
+
                         if($mobile) {
                             $item = $this->rpx($item);
                             $item = $this->mediaData($item);
@@ -582,133 +587,11 @@ if(!class_exists('AppModel')) {
                                 } else {
                                     unset($page['data']['items'][$itemid]);
                                 }
-                            }elseif($item['id'] == 'seckillgroup') {
-                                $item['data'] = plugin_run('seckill::getTaskSeckillInfo');
-
-                            }elseif($item['id'] == 'merchgroup' && p('merch')) {
-                                //TODO
-                                if ($item['params']['merchdata'] == '0') {
-                                    // 更新商户信息
-                                    if (!empty($item['data']) && is_array($item['data'])) {
-                                        $merchids = array();
-                                        foreach ($item['data'] as $index => $data) {
-                                            if (!empty($data['merchid'])) {
-                                                $merchids[] = $data['merchid'];
-                                            }
-                                        }
-                                    }
-                                    if (!empty($merchids) && is_array($merchids)) {
-                                        $item['data'] = array();
-                                        $newmerchids = implode(',', $merchids);
-                                        $merchs = pdo_fetchall("select id, merchname, logo, status, `desc` from " . tablename('ewei_shop_merch_user') . " where id in( $newmerchids ) and status=1 and uniacid=:uniacid order by  field (id," . $newmerchids . ")", array(':uniacid' => $_W['uniacid']));
-                                        if (!empty($merchs) && is_array($merchs)) {
-                                            foreach ($merchids as $merchid) {
-                                                foreach ($merchs as $index => $merch) {
-                                                    if ($merch['id'] == $merchid) {
-                                                        $childid = rand(1000000000, 9999999999);
-                                                        $childid = 'C' . $childid;
-                                                        if (empty($merch['logo'])){
-                                                            $merch['logo'] = tomedia('addons/ewei_shopv2/plugin/diypage/static/images/default/logo.jpg');
-                                                        }
-                                                        $item['data'][$childid] = array(
-                                                            'name' => $this->replace_quotes($merch['merchname']),
-                                                            'desc' => $this->replace_quotes($merch['desc']),
-                                                            'thumb' => tomedia($merch['logo']),
-                                                            'merchid' => $merch['id'],
-                                                        );
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                } elseif ($item['params']['merchdata'] == '1') {
-                                    if (!empty($item['params']['cateid'])) {
-                                        $category = pdo_fetch('select id, `catename`, status from ' . tablename('ewei_shop_merch_category') . ' where id=:id and uniacid=:uniacid limit 1 ', array(':id' => $item['params']['cateid'], ':uniacid' => $_W['uniacid']));
-                                    }
-                                    if (!empty($category)) {
-                                        $item['params']['catename'] = $category['catename'];
-                                    } else {
-                                        $item['params']['catename'] = '';
-                                        $item['params']['cateid'] = '';
-                                    }
-                                    if (empty($category['status'])) {
-                                        $item['data'] = array();
-                                    }
-                                    if (!empty($category) && !empty($category['status'])) {
-                                        $merchs = pdo_fetchall("select id, merchname, logo, status, `desc` from " . tablename('ewei_shop_merch_user') . " where cateid=:cateid and status=1 and uniacid=:uniacid order by isrecommand desc ", array(':uniacid' => $_W['uniacid'], ':cateid' => $item['params']['cateid']));
-                                        if (!empty($merchs) && is_array($merchs)) {
-                                            $item['data'] = array();
-                                            foreach ($merchs as $index => $merch) {
-                                                $childid = rand(1000000000, 9999999999);
-                                                $childid = 'C' . $childid;
-                                                if (empty($merch['logo'])){
-                                                    $merch['logo'] = tomedia('addons/ewei_shopv2/plugin/diypage/static/images/default/logo.jpg');
-                                                }
-                                                $item['data'][$childid] = array(
-                                                    'name' => $this->replace_quotes($merch['merchname']),
-                                                    'desc' => $this->replace_quotes($merch['desc']),
-                                                    'thumb' => tomedia($merch['logo']),
-                                                    'merchid' => $merch['id'],
-                                                );
-                                            }
-                                        }
-                                    }
-                                } elseif ($item['params']['merchdata'] == '2') {
-                                    if (!empty($item['params']['groupid'])) {
-                                        // 查询分组信息
-                                        $group = pdo_fetch('select id, groupname, status from ' . tablename('ewei_shop_merch_group') . ' where id=:id and uniacid=:uniacid limit 1 ', array(':id' => $item['params']['groupid'], ':uniacid' => $_W['uniacid']));
-                                        if (!empty($group)) {
-                                            $item['params']['groupname'] = $group['groupname'];
-                                        } else {
-                                            $item['params']['groupname'] = '';
-                                            $item['params']['groupid'] = '';
-                                        }
-                                    }
-                                    if (empty($group['status'])) {
-                                        $item['data'] = array();
-                                    }
-                                    if (!empty($group) && !empty($group['status'])) {
-                                        $merchs = pdo_fetchall("select id, merchname, logo, status, `desc` from " . tablename('ewei_shop_merch_user') . " where groupid=:groupid and status=1 and uniacid=:uniacid order by isrecommand desc ", array(':uniacid' => $_W['uniacid'], ':groupid' => $item['params']['groupid']));
-                                        if (!empty($merchs) && is_array($merchs)) {
-                                            $item['data'] = array();
-                                            foreach ($merchs as $index => $merch) {
-                                                $childid = rand(1000000000, 9999999999);
-                                                $childid = 'C' . $childid;
-                                                if (empty($merch['logo'])){
-                                                    $merch['logo'] = tomedia('addons/ewei_shopv2/plugin/diypage/static/images/default/logo.jpg');
-                                                }
-                                                $item['data'][$childid] = array(
-                                                    'name' => $this->replace_quotes($merch['merchname']),
-                                                    'desc' => $this->replace_quotes($merch['desc']),
-                                                    'thumb' => tomedia($merch['logo']),
-                                                    'merchid' => $merch['id'],
-                                                );
-                                            }
-                                        }
-                                    }
-                                } elseif ($item['params']['merchdata'] == '3') {
-                                    $merchs = pdo_fetchall("select id, merchname, logo, status, `desc` from " . tablename('ewei_shop_merch_user') . " where isrecommand=1 and status=1 and uniacid=:uniacid order by isrecommand desc ", array(':uniacid' => $_W['uniacid']));
-
-                                    if (!empty($merchs) && is_array($merchs)) {
-                                        $item['data'] = array();
-                                        $merchnum = (int)$item['params']['merchnum'];
-                                        foreach ($merchs as $index => $merch) {
-                                            if ($merchnum <= $index) break;
-                                            $childid = rand(1000000000, 9999999999);
-                                            $childid = 'C' . $childid;
-                                            if (empty($merch['logo'])){
-                                                $merch['logo'] = tomedia('addons/ewei_shopv2/plugin/diypage/static/images/default/logo.jpg');
-                                            }
-                                            $item['data'][$childid] = array(
-                                                'name' => $this->replace_quotes($merch['merchname']),
-                                                'desc' => $this->replace_quotes($merch['desc']),
-                                                'thumb' => tomedia($merch['logo']),
-                                                'merchid' => $merch['id'],
-                                            );
-                                        }
-                                    }
-                                }
                             }
+                            elseif($item['id'] == 'seckillgroup') {
+                                $item['data'] = plugin_run('seckill::getTaskSeckillInfo');
+                            }
+
                         } else {
                             // 获取商品分类/商品分组
                             $item = $this->goodsCG($item);
@@ -722,14 +605,6 @@ if(!class_exists('AppModel')) {
             }
 
             return $page;
-        }
-
-        public function replace_quotes($str){
-            if(!empty($str)) {
-                $str = str_replace('"', "", htmlspecialchars_decode($str, ENT_QUOTES));
-                $str = str_replace("'", "", htmlspecialchars_decode($str, ENT_QUOTES));
-            }
-            return $str;
         }
 
         public function calculate($str = null, $pagetype = false){
@@ -988,13 +863,10 @@ if(!class_exists('AppModel')) {
                         }
                     }
                     if(!empty($goodsids) && is_array($goodsids)) {
-
                         $goodsids = array_filter($goodsids);
                         $newgoodsids = implode(',', $goodsids);
-
                         $goods = pdo_fetchall("select id, title, subtitle, thumb, minprice, ispresell, presellprice, sales, salesreal, total, showlevels, showgroups, bargain,hascommission,nocommission,commission,commission1_rate,commission1_rate,marketprice,commission1_pay,maxprice, productprice, video,`type`,presellstart,preselltimestart,presellend,preselltimeend from " . tablename('ewei_shop_goods') . " where id in( $newgoodsids ) and status=1 and deleted=0 and checked=0 and uniacid=:uniacid order by displayorder desc ", array(':uniacid' => $_W['uniacid']));
-
-array_walk($goods, function (&$goodsItem) {
+                        array_walk($goods, function (&$goodsItem) {
                             $in_time = true;
                             if($goodsItem['presellstart'] && $goodsItem['preselltimestart'] > time() ){
                                 //未开始预售
@@ -1114,46 +986,33 @@ array_walk($goods, function (&$goodsItem) {
                             $goods[$key]['seetitle'] = $set['seetitle'];
                         }
                     }
-                    //var_dump($goods);
-
-
-
                     if(empty($item['params']['goodsdata'])) {
-
                         foreach ($item['data'] as $childid => $childgoods) {
-                            $current_good= pdo_get('ewei_shop_goods',array('id'=>$childgoods['gid'],'uniacid'=>$_W['uniacid']));
-                            $result = m('goods')->visit($current_good, $this->member);
-                            if(!$result) {
-                                unset($item['data'][$childid]);
-                                unset($childgoods);
-                            }
                             foreach ($goods as $index => $good) {
-                                if (isset($childgoods) && !empty($childgoods))
-                                {
-                                    if($good['id'] == $childgoods['gid']) {
-                                        $item['data'][$childid] = array(
-                                            'gid' => $good['id'],
-                                            'title' => $good['title'],
-                                            'subtitle' => $good['subtitle'],
-                                            'price' => $good['minprice'],
-                                            'thumb' => $good['thumb'],
-                                            'total' => $good['total'],
-                                            'productprice' => $good['productprice'],
-                                            'ctype' => $good['type'],
-                                            'sales' => $good['sales'] + intval($good['salesreal']), //销量
-                                            'video' => $good['video'],
-                                            'seecommission' => $good['seecommission'],
-                                            'cansee' => $cansee ? $good['cansee'] : $cansee,
-                                            'seetitle' => $good['seetitle'],
-                                            'bargain' => $good['bargain'], //砍价
-                                        );
+                                if($good['id'] == $childgoods['gid']) {
+                                    if($mobile && !m('goods')->visit($good, $this->member)) {
+                                        continue;
                                     }
+                                    $item['data'][$childid] = array(
+                                        'gid' => $good['id'],
+                                        'title' => $good['title'],
+                                        'subtitle' => $good['subtitle'],
+                                        'price' => $good['minprice'],
+                                        'thumb' => $good['thumb'],
+                                        'total' => $good['total'],
+                                        'productprice' => $good['productprice'],
+                                        'ctype' => $good['type'],
+                                        'sales' => $good['sales'] + intval($good['salesreal']), //销量
+                                        'video' => $good['video'],
+                                        'seecommission' => $good['seecommission'],
+                                        'cansee' => $cansee ? $good['cansee'] : $cansee,
+                                        'seetitle' => $good['seetitle'],
+                                        'bargain' => $good['bargain'], //砍价
+                                    );
                                 }
-
                             }
                         }
-                    }
-                    else {
+                    } else {
                         $item['data'] = array();
                         foreach ($goods as $key => $value) {
                             if($value['hasoption']==1) {
@@ -1189,11 +1048,6 @@ array_walk($goods, function (&$goodsItem) {
                         }
 
                         foreach ($goods as $index => $good) {
-                            $checkresult = m('goods')->visit($good, $this->member);
-                            if(!$checkresult)
-                            {
-                                continue;
-                            }
                             $childid = 'C' . rand(1000000000, 9999999999);
                             $item['data'][$childid] = array(
                                 'gid' => $good['id'],
@@ -1213,61 +1067,9 @@ array_walk($goods, function (&$goodsItem) {
                             );
                         }
                     }
-                }
 
-
-
-            }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            else if ($item['id'] == 'groupsgoods') {
-                $item['data'] = array();
-                $limit = $item['params']['goodsnum'];
-                $condition = ' g.uniacid = :uniacid ';
-                $condition .= " and g.deleted = 0 and g.stock > 0 and g.status = 1 ";
-                $params = array(':uniacid' => $_W['uniacid']);
-
-                $sql = 'SELECT c.*,g.* FROM ' . tablename('ewei_shop_groups_goods') . " AS g
-                                LEFT JOIN ". tablename('ewei_shop_groups_category') ." AS c ON g.category = c.id
-                                where  1 = 1 and {$condition} ORDER BY g.displayorder DESC,g.id DESC LIMIT " .$limit;
-                $list = pdo_fetchall($sql, $params);
-                foreach ($list as $index => $goods) {
-                    $showgoods = m('goods')->visit($goods, $this->member);
-                    if(!empty($showgoods)) {
-                        $childid = rand(1000000000, 9999999999);
-                        $childid = 'C' . $childid;
-                        $item['data'][$childid] = array(
-                            'thumb' => $goods['thumb'],
-                            'title' => $goods['title'],
-                            'subtitle' => $goods['subtitle'],
-                            'price' => $goods['groupsprice'],
-                            'gid' => $goods['id'],
-                            'total' => $goods['stock'],
-                            'seecommission' => $goods['seecommission'],
-                            'cansee' => $goods['cansee'],
-                            'seetitle' => $goods['seetitle'],
-                            'productprice' => $goods['price'],
-                            'is_ladder' => $goods['is_ladder'],
-                            'groupnum' => $goods['groupnum']
-                        );
-                    }
                 }
             }
-
             return $item;
         }
         function getCommission($goods,$level,$set)
@@ -1275,7 +1077,7 @@ array_walk($goods, function (&$goodsItem) {
 
             global $_W;
             $commission = 0;
-            if($level == 'false'){
+            if($level =='false'){
                 return $commission;
             }
             if ($goods['hascommission'] == 1) {
@@ -1305,9 +1107,7 @@ array_walk($goods, function (&$goodsItem) {
                                 }
                             }
                         }
-
-                        $commission = count($price_all) == 0 ? 0 : max($price_all) ;
-
+                        $commission = max($price_all, 0);
                     }
                 }
             } else {
@@ -1330,7 +1130,7 @@ array_walk($goods, function (&$goodsItem) {
                 return $level;
             }
             $member = m('member')->getMember($openid);
-            if (empty($member['isagent']) || $member['status'] == 0 || $member['agentblack'] ==1) {
+            if (empty($member['isagent']) || $member['status']==0 || $member['agentblack'] ==1) {
                 return $level;
             }
             $level = pdo_fetch('select * from ' . tablename('ewei_shop_commission_level') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $member['agentlevel']));
@@ -1461,116 +1261,212 @@ array_walk($goods, function (&$goodsItem) {
          * 获取授权状态
          * @return array
          */
-        public function getAuth(){
-            global $_W;
+         public function getAuth($uri = '')
+		{
+			global $_W;
+			$siteid = intval($_W['setting']['site']['key']);
 
-            $siteid = intval($_W['setting']['site']['key']);
-            if(empty($siteid)) {
-                return error(-1, '站点未注册');
-            }
-            /*
-            $wechat = pdo_fetch("SELECT `key` FROM " . tablename('account_wechats') . " WHERE uniacid=:uniacid LIMIT 1 ", array(':uniacid' => $_W['uniacid']));
-            $appid = !empty($wechat)? $wechat['key']: '';
-            */
+															
+			if (empty($siteid)) {
+				//return error(-1, '站点未注册');
+			}
+			  
+																																							   
+														 
+			  
 
-            load()->func('communication');
-            $request = ihttp_get(EWEI_SHOPV2_AUTH_WXAPP . "xcxapi/auth-xcx-info/validate?site_id={$siteid}&uniacid={$_W['uniacid']}");
+										  
+																																	  
 
-            if($request['code'] != 200) {
-                return error(-1, '信息查询失败！稍后重试');
-            }
-            if(empty($request['content'])) {
-                return error(-1, '信息查询失败！稍后重试(nodata)');
-            }
-            $content = json_decode($request['content'], true);
+			load()->func('communication');
+																																	
+			 
+											
+																			  
+			 
+															  
 
-            if(!is_array($content)) {
-                return error(-1, '信息查询失败！稍后重试(dataerror)');
-            }
-            if($content['status'] != 1) {
-                return error(-1, $content['errmsg']);
-            }
-            if(is_array($content['data'])) {
-                return $content['data'];
-            }
-        }
+									 
+																				 
+			 
+										 
+													 
+			 
+											
+										
+			 
+		 
 
-        /**
+			$request = ihttp_get(EWEI_SHOPV2_AUTH_WXAPP . 'index/index/getAuth.html?site_id=' . SITE_ID . '&uniacid=' . $_W['uniacid'].$uri);
+
+			if ($request['code'] != 200) {
+				return error(-1, '信息查询失败！稍后重试');
+			}
+
+
+			if (empty($request['content'])) {
+				return error(-1, '信息查询失败！稍后重试(nodata)');
+			}
+
+
+			$content = json_decode($request['content'], true);
+
+			if (!is_array($content)) {
+				return error(-1, '信息查询失败！稍后重试(dataerror)');
+			}
+
+
+			if ($content['status'] != 1) {
+				return error(-1, $content['errmsg']);
+			}
+
+
+			if (is_array($content['data'])) {
+				return $content['data'];
+			}
+
+		}
+
+		/**
          * 获取版本信息
          * @param $authid
          * @return array
          */
-        public function getRelease($authid){
-            if(empty($authid)) {
-                return error(-1, 'authid为空');
-            }
-            load()->func('communication');
-            $request = ihttp_get(EWEI_SHOPV2_AUTH_WXAPP . "xcxapi/auth-xcx-info/view?id={$authid}");
+		public function getRelease($authid,$uri='')
+		{
+			global $_W;
+			if (empty($authid)) {
+				return error(-1, 'authid为空');
+			}
+										  
+																																					  
 
-            if($request['code'] != 200) {
-                return error(-1, '接口通信失败');
-            }
-            if(empty($request['content'])) {
-                return error(-1, '接口未返回信息(1)');
-            }
-            $content = json_decode($request['content'], true);
+										 
+													   
+			 
+											
+															 
+			 
+															  
 
-            if(!is_array($content)) {
-                return error(-1, '接口未返回信息(2)');
-            }
-            if($content['status'] != 1) {
-                return error(-1, $content['errmsg']);
-            }
-            if(is_array($content['data'])) {
-                return $content['data'];
-            }
-        }
+			load()->func('communication');
+															 
+			 
+										 
+													 
+			 
+											
+										
+			 
+		 
 
-        /**
+
+			$request = ihttp_get(EWEI_SHOPV2_AUTH_WXAPP . 'index/index/getRelease2.html?site_id=' . SITE_ID . '&uniacid=' . $_W['uniacid'].$uri);
+
+			if ($request['code'] != 200) {
+				return error(-1, '接口通信失败');
+			}
+
+
+			if (empty($request['content'])) {
+				return error(-1, '接口未返回信息(1)');
+			}
+
+
+			$content = json_decode($request['content'], true);
+
+			if (!is_array($content)) {
+				return error(-1, '接口未返回信息(2)');
+			}
+
+
+			if ($content['status'] != 1) {
+				return error(-1, $content['errmsg']);
+			}
+
+
+			if (is_array($content['data'])) {
+				return $content['data'];
+			}
+
+		}
+
+		/**
          * 获取全部列表
          * @return mixed
          */
-        public function getReleaseList(){
-            global $_W;
+		public function getReleaseList()
+		{
+			global $_W;
+			$siteid = intval($_W['setting']['site']['key']);
 
-            $siteid = intval($_W['setting']['site']['key']);
-            if(empty($siteid)) {
-                return error(-1, '站点未注册');
-            }
+															
+			if (empty($siteid)) {
+				return error(-1, '站点未注册');
+			}
 
-            load()->func('communication');
-            $request = ihttp_get(EWEI_SHOPV2_AUTH_WXAPP . "xcxapi/auth-xcx-info/list?site_id={$siteid}&uniacid={$_W['uniacid']}");
+										  
+																																  
 
-            if($request['code'] != 200) {
-                return error(-1, '接口通信失败');
-            }
-            if(empty($request['content'])) {
-                return error(-1, '接口未返回信息(1)');
-            }
-            $content = json_decode($request['content'], true);
+			load()->func('communication');
+			$request = ihttp_get(EWEI_SHOPV2_AUTH_WXAPP . 'xcxapi/auth-xcx-info/list?site_id=' . $siteid . '&uniacid=' . $_W['uniacid']);
+			 
+											
+															 
+			 
+															  
 
-            if(!is_array($content)) {
-                return error(-1, '接口未返回信息(2)');
-            }
-            if($content['status'] != 1) {
-                return error(-1, $content['errmsg']);
-            }
-            if(is_array($content['data'])) {
-                return $content['data'];
-            }
-        }
+									 
+															 
+			 
+			if ($request['code'] != 200) {
+				return error(-1, '接口通信失败');
+			 
+											
+										
+			 
+			}
+											
+										
+			 
+		 
 
-        /**
+
+			if (empty($request['content'])) {
+				return error(-1, '接口未返回信息(1)');
+			}
+
+
+			$content = json_decode($request['content'], true);
+
+			if (!(is_array($content))) {
+				return error(-1, '接口未返回信息(2)');
+			}
+
+
+			if ($content['status'] != 1) {
+				return error(-1, $content['errmsg']);
+			}
+
+
+			if (is_array($content['data'])) {
+				return $content['data'];
+			}
+
+		}
+
+		/**
          * 获取更新日志
          * @param int $page
          * @return mixed
          */
-        public function getReleaseLog($page = 1, $psize = 10){
-            load()->func('communication');
-            $request = ihttp_get(EWEI_SHOPV2_AUTH_URL . "wxapp_log?pindex={$page}&psize={$psize}");
-            $content = json_decode($request['content'], true);
-            return $content;
-        }
+		public function getReleaseLog($page = 1, $psize = 10)
+		{
+			load()->func('communication');
+			$request = ihttp_get(EWEI_SHOPV2_AUTH_URL . 'wxapp_log?pindex=' . $page . '&psize=' . $psize);
+			$content = json_decode($request['content'], true);
+			return $content;
+		}
 
         /**
          * 处理接口文件
@@ -1642,7 +1538,7 @@ array_walk($goods, function (&$goodsItem) {
 
         /*原生APP********************************************************************************************/
 
-        private $staticurl = array('index', 'shop', 'goods', 'member', 'sale', 'account', 'commission');
+        /*private $staticurl = array('index', 'shop', 'goods', 'member', 'sale', 'account', 'commission');
         // 需登录页面
         private $loginPage = array(
             "member",
@@ -1651,7 +1547,7 @@ array_walk($goods, function (&$goodsItem) {
             "sale.coupon",
             "groups.orders",
             "groups.team",
-        );
+        );*/
 
         //获取appid，appsecret
         public function createAuth(){

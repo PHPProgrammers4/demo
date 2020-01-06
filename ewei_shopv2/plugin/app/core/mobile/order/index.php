@@ -10,7 +10,7 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class Index_EweiShopV2Page extends AppMobilePage
 {
@@ -35,12 +35,14 @@ class Index_EweiShopV2Page extends AppMobilePage
 
     function get_list()
     {
+
         global $_W, $_GPC;
         $uniacid = $_W['uniacid'];
         $openid = $_W['openid'];
         if(empty($openid)){
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
+
         $pindex = max(1, intval($_GPC['page']));
         $psize = 10;
         $show_status = $_GPC['status'];
@@ -54,15 +56,15 @@ class Index_EweiShopV2Page extends AppMobilePage
         //多商户
         $merchdata = $this->merchData();
         extract($merchdata);
+
         $condition .= " and merchshow=0 ";
+
         if ($show_status != '') {
             $show_status = intval($show_status);
+
             switch ($show_status) {
                 case 0:
                     $condition .= ' and status=0 and paytype!=3';
-                    break;
-                case 1:
-                    $condition .= ' AND ( status = 1 or (status=0 and paytype=3) )';
                     break;
                 case 2:
                     $condition .= ' and (status=2 or status=0 and paytype=3)';
@@ -73,12 +75,10 @@ class Index_EweiShopV2Page extends AppMobilePage
                 case 5:
                     $condition .= " and userdeleted=1 ";
                     break;
-                case 6:
-                    $condition .= " and userdeleted=0 ";
-                    break;
                 default:
                     $condition .= ' and status=' . intval($show_status);
             }
+
             if ($show_status != 5) {
                 $condition .= " and userdeleted=0 ";
             }
@@ -88,7 +88,7 @@ class Index_EweiShopV2Page extends AppMobilePage
 
         $com_verify = com('verify');
 
-        $list = pdo_fetchall("select id,ordersn,price,userdeleted,isparent,refundstate,paytype,status,addressid,refundid,isverify,dispatchtype,verifytype,verifyinfo,verifycode,iscomment,iscycelbuy,verified,createtime from " . tablename('ewei_shop_order') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
+        $list = pdo_fetchall("select id,ordersn,price,userdeleted,isparent,refundstate,paytype,status,addressid,refundid,isverify,dispatchtype,verifytype,verifyinfo,verifycode,iscomment,iscycelbuy,verified from " . tablename('ewei_shop_order') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
         $total = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_order') . " where 1 {$condition}", $params);
 
         $refunddays = intval($_W['shopset']['trade']['refunddays']);
@@ -112,13 +112,12 @@ class Index_EweiShopV2Page extends AppMobilePage
             }
 
             //所有商品
-            $sql = "SELECT og.id,og.goodsid,og.total,g.title,g.thumb,g.type, og.price,og.optionname as optiontitle,op.marketprice,g.marketprice as gprice,og.optionid,op.specs,g.merchid,g.status,og.single_refundid,og.single_refundstate FROM " . tablename('ewei_shop_order_goods') . " og "
+            $sql = "SELECT og.id,og.goodsid,og.total,g.title,g.thumb,g.type, og.price,og.optionname as optiontitle,og.optionid,op.specs,g.merchid,g.status,og.single_refundid,og.single_refundstate FROM " . tablename('ewei_shop_order_goods') . " og "
                 . " left join " . tablename('ewei_shop_goods') . " g on og.goodsid = g.id "
                 . " left join " . tablename('ewei_shop_goods_option') . " op on og.optionid = op.id "
                 . " where $scondition order by og.id asc";
 
             $goods = pdo_fetchall($sql, $param);
-
             $goods = set_medias($goods,array('thumb'));
 
             $ismerch = 0;
@@ -149,10 +148,6 @@ class Index_EweiShopV2Page extends AppMobilePage
                 }
                 if($r['type']==5){
                     $isonlyverifygoods = true;
-                }
-
-                if(empty($r['marketprice'])){
-                    $r['marketprice'] = $r['gprice'];
                 }
             }
             unset($r);
@@ -202,18 +197,17 @@ class Index_EweiShopV2Page extends AppMobilePage
 //            print_r($row['goods']);exit;
 
             $statuscss = "text-cancel";
-            $nextstatus='';
+
             switch ($row['status']) {
                 case "-1":
                     $status = "已取消";
                     break;
                 case "0":
                     if ($row['paytype'] == 3) {
+
                         $status = "待发货";
-                        $nextstatus ="确认收货";
                     } else {
                         $status = "待付款";
-                        $nextstatus ="立即付款";
                     }
                     $statuscss = "text-cancel";
                     break;
@@ -222,7 +216,6 @@ class Index_EweiShopV2Page extends AppMobilePage
                         $status = "使用中";
                     } else if (empty($row['addressid'])) {
                         $status = "待取货";
-                        $nextstatus ="确认收货";
                     } else {
                         $status = "待发货";
                     }
@@ -231,7 +224,6 @@ class Index_EweiShopV2Page extends AppMobilePage
                 case "2":
                     $status = "待收货";
                     $statuscss = "text-danger";
-                    $nextstatus ="确认收货";
                     break;
                 case "3":
                     if (empty($row['iscomment'])) {
@@ -239,7 +231,7 @@ class Index_EweiShopV2Page extends AppMobilePage
                             $status = "已完成";
                         } else {
                             $status = empty($_W['shopset']['trade']['closecomment']) ? "待评价" : "已完成";
-                            $nextstatus ="去评价";
+
                         }
                     } else {
                         $status = "交易完成";
@@ -248,7 +240,6 @@ class Index_EweiShopV2Page extends AppMobilePage
                     break;
             }
             $row['statusstr'] = $status;
-            $row['nextstatus'] = $nextstatus;
             $row['statuscss'] = $statuscss;
             if ($row['refundstate'] > 0 && !empty($row['refundid'])) {
 
@@ -351,14 +342,8 @@ class Index_EweiShopV2Page extends AppMobilePage
         }
         unset($row);
 
-        //同步购物车至收藏
-        $can_sync_goodscircle = false;
-        $goodscircle_set = m('common')->getPluginset('goodscircle');
-        if(p('goodscircle') && $goodscircle_set['order']){
-            $can_sync_goodscircle = true;
-        }
 
-       return app_json(array( 'list' => $list, 'pagesize' => $psize, 'total' => $total ,'page'=>$pindex,'can_sync_goodscircle'=>$can_sync_goodscircle));
+        app_json(array( 'list' => $list, 'pagesize' => $psize, 'total' => $total ,'page'=>$pindex));
     }
 
     function detail()
@@ -370,7 +355,7 @@ class Index_EweiShopV2Page extends AppMobilePage
         $orderid = intval($_GPC['id']);
         $ispeerpay = m('order')->checkpeerpay($orderid);//检查是否是代付订单
         if (empty($orderid) || empty($openid)) {
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
 
         $order = pdo_fetch("select * from " . tablename('ewei_shop_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1'
@@ -392,13 +377,13 @@ class Index_EweiShopV2Page extends AppMobilePage
         $isonlyverifygoods =   m('order')->checkisonlyverifygoods($order['id']);;
 
         if (empty($order)) {
-            return app_error(AppError::$OrderNotFound);
+            app_error(AppError::$OrderNotFound);
         }
         if ($order['merchshow'] == 1) {
-            return app_error(AppError::$OrderNotFound);
+            app_error(AppError::$OrderNotFound);
         }
         if ($order['userdeleted'] == 2) {
-            return app_error(AppError::$OrderNotFound);
+            app_error(AppError::$OrderNotFound);
         }
         //多商户
         $merchdata = $this->merchData();
@@ -427,20 +412,12 @@ class Index_EweiShopV2Page extends AppMobilePage
         $gn=0;
         $nog=0;
 
-        $goods = pdo_fetchall("select og.id as ordergoodsid,og.single_refundstate,og.sendtime,g.id,g.type, og.goodsid,og.price,g.title,g.thumb,g.status,og.total,g.credit,og.optionid,og.optionname as optiontitle,g.isverify,g.isfullback,g.refund,g.cannotrefund,g.returngoods,g.exchange,g.storeids{$diyformfields}  from " . tablename('ewei_shop_order_goods') . " og "
+        $goods = pdo_fetchall("select og.id as ordergoodsid,og.single_refundstate,og.sendtime,g.id,g.type, og.goodsid,og.price,g.title,g.thumb,g.status,og.total,g.credit,og.optionid,og.optionname as optiontitle,g.isverify,g.isfullback,g.storeids{$diyformfields}  from " . tablename('ewei_shop_order_goods') . " og "
             . " left join " . tablename('ewei_shop_goods') . " g on g.id=og.goodsid "
             . " where $scondition and og.uniacid=:uniacid ", $param);
         $goods = set_medias($goods,array('thumb'));
-        //商品是否支持退换货
-        $goodsrefund = true;
-        $refundgoods = array(
-            'refund' => true,
-            'returngoods' => true,
-            'exchange' => true,
-        );
         if (!empty($goods)) {
             $isfullback=false;
-            $entity = true;//订单全部商品为实体商品
             foreach ($goods as &$g) {
                 if($g['isfullback']){
                     $isfullback=true;
@@ -463,44 +440,6 @@ class Index_EweiShopV2Page extends AppMobilePage
                         $g['thumb'] = $thumb;
                     }
                 }
-                if(empty($g['cannotrefund'])){
-                    $g['refund'] =  true ;
-                    $g['returngoods'] = true;
-                    $g['exchange'] = true;
-                }
-                /*虚拟商品，虚拟物品*/
-                if ((($g['type']==2 || $g['type']==3) && $g['isverify'] < 2 ) || $order['status'] <= 0){
-                    $g['refund'] =  false ;
-                    $g['returngoods'] = false;
-                    $g['exchange'] = false;
-                }
-                if($order['status']>=2){
-                    /*
-                     * 退款优化V1.10
-                     * 张洪利2019-09-16
-                     * */
-                    if(!empty($g['cannotrefund']) && empty($g['refund']) && empty($g['returngoods']) && empty($g['exchange'])){
-                        $goodsrefund =  false ;
-            }
-        }
-                if($order['status']==1){
-                    /*
-                     * 退款优化V1.10
-                     * 张洪利2019-09-16
-                     * */
-                    if(!empty($g['cannotrefund']) && empty($g['refund'])){
-                        $goodsrefund =  false ;
-                    }
-                    $g['returngoods'] = false;
-                    $g['exchange'] = false;
-                }
-                $refundgoods['refund'] = empty($refundgoods['refund']) ? false :$g['refund'];
-                $refundgoods['returngoods'] = empty($refundgoods['returngoods']) ? false :$g['returngoods'];
-                $refundgoods['exchange'] = empty($refundgoods['exchange']) ? false :$g['exchange'];
-                /*判断所有商品全部为实体商品---核销实体商品订单退款*/
-                if($g['type']==1 && $entity = true){
-                    $entity = true;
-                }
             }
         }
         $diyform_flag = 0;
@@ -509,11 +448,6 @@ class Index_EweiShopV2Page extends AppMobilePage
             foreach ($goods as &$g) {
                 $g['diyformfields'] = iunserializer($g['diyformfields']);
                 $g['diyformdata'] = iunserializer($g['diyformdata']);
-                foreach ($g['diyformfields'] as $k=> $v){
-                    if ($v['data_type'] == 5){
-                        $g['diyformdata'][$k][0] = tomedia($g['diyformdata'][$k][0]);
-                    }
-                }
                 unset($g);
             }
 
@@ -633,32 +567,21 @@ class Index_EweiShopV2Page extends AppMobilePage
         //$order['virtual_str'] = str_replace("\n", "<br/>", $order['virtual_str']);
 
         //是否可以退款
-        $canreturn = false;
         $tradeset = m('common')->getSysset('trade');
-        if ($order['status'] == 1 ){
-            $canrefund = $goodsrefund;
-        }elseif($order['status'] == 2) {
+        if ($order['status'] == 1 || $order['status'] == 2) {
             $canrefund = true;
             if ($order['status'] == 2 && $order['price'] == $order['dispatchprice']) {
                 if ($order['refundstate'] > 0) {
                     $canrefund = true;
                 } else {
                     $canrefund = false;
-                    //当产品余额抵扣所有金额的时候 允许换货
-                    if(!$goodsrefund){
-                        //当产品不允许退换货而且抵扣了所有金额之后不显示 退款
-                        $canreturn = false;
-                    }else{
-                        $canreturn = true;
                 }
-            }
             }
         } else if ($order['status'] == 3) {
             if ($order['isverify'] != 1 && empty($order['virtual'])) { //如果不是核销或虚拟物品，则可以退货
                 if ($order['refundstate'] > 0) {
                     $canrefund = true;
                 } else {
-
                     $refunddays = intval($tradeset['refunddays']);
 
                     if ($refunddays > 0) {
@@ -668,16 +591,8 @@ class Index_EweiShopV2Page extends AppMobilePage
                         }
                     }
                 }
-            }
 
-        }elseif($order['status'] == -1 && $order['isverify'] == 1 && $entity){
-            /*过期、实体、核销商品可退款*/
-            $canrefund = true;
-        }
-        if($canrefund && ($refundgoods['refund'] || $refundgoods['returngoods'] || $refundgoods['exchange'])){
-            $canrefund = true;
-        }else{
-            $canrefund = false;
+            }
         }
         $order['canrefund'] = $canrefund;
 
@@ -687,9 +602,6 @@ class Index_EweiShopV2Page extends AppMobilePage
         }else{
             $is_single_refund=false;
         }
-        /*if(count($goods)==1 && !$is_single_refund){
-            $order['canrefund'] = false;
-        }*/
 
         //如果发货，查找第一条物流
         $express = false;
@@ -781,9 +693,6 @@ class Index_EweiShopV2Page extends AppMobilePage
         }elseif ($order['status']==-1){
             $icon = 'e60e';
         }
-        if ($order['paytype']==-1){
-            $order['canrefund'] = false;
-        }
 
 
         $cycelbuy_periodic = explode(',',$order['cycelbuy_periodic']);
@@ -832,7 +741,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             'canrefund' => $order['canrefund'],
             'is_single_refund' => $is_single_refund,
 
-            'refundtext' => ($order['status'] == 1 ? '申请售后' : '申请售后') . (!empty($order['refundstate']) ? '中' : ''),
+            'refundtext' => ($order['status'] == 1 ? '申请退款' : '申请售后') . (!empty($order['refundstate']) ? '中' : ''),
             'refundtext_btn' => '',
 
             'cancancel' => !$order['userdeleted'] && !$order['status'],
@@ -851,8 +760,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             'icon'=>$icon,
             'city_express_state'=>$order['city_express_state'],
             'iscycelbuy' => $order['iscycelbuy'],
-            'isonlyverifygoods'=>$isonlyverifygoods,
-            'ramark' => empty($order['remark'])?'':$order['remark']
+            'isonlyverifygoods'=>$isonlyverifygoods
         );
         if($order['iscycelbuy'] == 1){
             $order['cycelComboPeriods'] = $cycelbuy_periodic[2];
@@ -912,9 +820,6 @@ class Index_EweiShopV2Page extends AppMobilePage
                 'price' => $g['price'],
                 'thumb' => tomedia($g['thumb']),
                 'total' => $g['total'],
-                'refund' => $g['refund'],
-                'returngoods' => $g['returngoods'],
-                'exchange' => $g['exchange'],
                 'isfullback' => $g['isfullback'],
                 'fullbackgoods' => $g['fullbackgoods'],
                 'status' => $g['status'],
@@ -1059,7 +964,7 @@ class Index_EweiShopV2Page extends AppMobilePage
         $result['use_membercard'] = $use_membercard;
         $result['membercard_info'] = $membercard_info;
 
-        return app_json($result);
+        app_json($result);
     }
 
     function express()
@@ -1072,23 +977,23 @@ class Index_EweiShopV2Page extends AppMobilePage
         $bundle = trim($_GPC['bundle']);
         $cycelid = intval($_GPC['cycelid']);
         if (empty($orderid) ) {
-            return app_error(AppError::$OrderNotFound);
+            app_error(AppError::$OrderNotFound);
         }
 
         if(!empty($cycelid)){
-            $order = pdo_fetch("select expresscom,expresssn,addressid,status,express,sendtype,address,carrier from ".tablename('ewei_shop_cycelbuy_periods') ." where id=:id and uniacid=:uniacid",array(':id'=>$cycelid,':uniacid'=>$uniacid));
+            $order = pdo_fetch("select expresscom,expresssn,addressid,status,express,sendtype from ".tablename('ewei_shop_cycelbuy_periods') ." where id=:id and uniacid=:uniacid",array(':id'=>$cycelid,':uniacid'=>$uniacid));
 
         }else{
-            $order = pdo_fetch("select expresscom,expresssn,addressid,status,express,sendtype,address,carrier from " . tablename('ewei_shop_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1'
+            $order = pdo_fetch("select expresscom,expresssn,addressid,status,express,sendtype from " . tablename('ewei_shop_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1'
                 , array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
             if (empty($order)) {
-                return app_error(AppError::$OrderNotFound);
+                app_error(AppError::$OrderNotFound);
             }
             if (empty($order['addressid'])) {
-                return app_error(AppError::$OrderNoExpress);
+                app_error(AppError::$OrderNoExpress);
             }
             if ($order['status'] < 2) {
-                return app_error(AppError::$OrderNoExpress);
+                app_error(AppError::$OrderNoExpress);
             }
         }
 
@@ -1130,18 +1035,6 @@ class Index_EweiShopV2Page extends AppMobilePage
             $order['expresssn'] = $goods[0]['expresssn'];
             $order['expresscom'] = $goods[0]['expresscom'];
         }
-        $user['mobile'] = '';
-        if ($order['express'] == 'shunfeng') {
-            if (empty($order['addressid'])) {
-                $user = unserialize($order['carrier']);
-            } else {
-                $user = iunserializer($order['address']);
-                if (!is_array($user)) {
-                    $user = pdo_fetch("SELECT * FROM " . tablename('ewei_shop_member_address') . " WHERE id = :id and uniacid=:uniacid", array(':id' => $item['addressid'], ':uniacid' => $_W['uniacid']));
-                }
-            }
-        }
-        
         $expresslist = m('util')->getExpressList($order['express'], $order['expresssn']);
         $status = '';
         if (!empty($expresslist)) {
@@ -1157,7 +1050,7 @@ class Index_EweiShopV2Page extends AppMobilePage
 
 
 
-        return app_json(array(
+        app_json(array(
             'com' => $order['expresscom'],
             'sn' => $order['expresssn'],
             'status' => $status,
@@ -1175,7 +1068,7 @@ class Index_EweiShopV2Page extends AppMobilePage
 
         $orderid = intval($_GPC['id']);
         if (empty($orderid)) {
-            return app_error(AppError::$OrderNotFound);
+            app_error(AppError::$OrderNotFound);
         }
 
         $cycelbuy_set = m('common') -> getSysset('cycelbuy');
@@ -1250,7 +1143,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             'applyforid' =>$applyfor['id'],
         );
 
-        return app_json($result);
+        app_json($result);
     }
 
     //获取周期购时间
@@ -1259,7 +1152,7 @@ class Index_EweiShopV2Page extends AppMobilePage
 
         $cycelid = intval($_GPC['cycelid']);
         if (empty($cycelid)) {
-            return app_error(AppError::$OrderNotFound);
+            app_error(AppError::$OrderNotFound);
         }
 
         $cycelSql = 'SELECT * FROM '.tablename('ewei_shop_cycelbuy_periods').' WHERE id=:cycelid AND uniacid=:uniacid';
@@ -1274,7 +1167,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             'receipttime' => date('Ymd',$cycelData['receipttime']),
         );
 
-        return app_json($result);
+        app_json($result);
     }
 
     //顺延时间
@@ -1344,7 +1237,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             'show' => 1,
             'showText' => '修改成功',
         );
-        return app_json($result);
+        app_json($result);
 
     }
 
@@ -1389,7 +1282,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             $result['isdispose'] = $address['isdispose'];
         }
 
-        return app_json($result);
+        app_json($result);
 
     }
 
@@ -1429,7 +1322,7 @@ class Index_EweiShopV2Page extends AppMobilePage
         }else{
             $is_submit = pdo_get( 'ewei_shop_address_applyfor' , array('orderid' => $orderid,'isdelete' => 0 ,'isdispose' => 0) );
             if( $is_submit ){
-                return app_json( 1 , '请勿重复提交' );
+                app_json( 1 , '请勿重复提交' );
             }
 
             //查询老地址
@@ -1440,9 +1333,9 @@ class Index_EweiShopV2Page extends AppMobilePage
         }
 
         if( $res != false ){
-            return app_json(0);
+            app_json(0);
         }else{
-            return app_json(1);
+            app_json(1);
         }
     }
 
@@ -1457,10 +1350,10 @@ class Index_EweiShopV2Page extends AppMobilePage
         $orderid = $_GPC['orderid'];
 
         if(empty($id)){
-            return app_json(0,array('message'=>'参数错误'));
+            app_json(0,array('message'=>'参数错误'));
         }
         if(empty($orderid)){
-            return app_json(0,array('message'=>'参数错误'));
+            app_json(0,array('message'=>'参数错误'));
         }
 
         $order= pdo_fetch("select * from " . tablename('ewei_shop_order') . ' where uniacid=:uniacid and id=:id  limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $orderid));
@@ -1499,9 +1392,9 @@ class Index_EweiShopV2Page extends AppMobilePage
 
 
             if(!empty($result)){
-                return app_json(1,array('message'=>'收货成功'));
+                app_json(1,array('message'=>'收货成功'));
             }else{
-                return app_json(0,array('message'=>'操作失败'));
+                app_json(0,array('message'=>'操作失败'));
             }
         }
 
@@ -1513,7 +1406,7 @@ class Index_EweiShopV2Page extends AppMobilePage
         $uniacid = $_W['uniacid'];
         $openid = $_W['openid'];
         if(empty($openid)){
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
 
         $pindex = max(1, intval($_GPC['page']));
@@ -1775,7 +1668,7 @@ class Index_EweiShopV2Page extends AppMobilePage
         unset($row);
 
 
-        return app_json(array( 'list' => $list, 'pagesize' => $psize, 'total' => $total ,'page'=>$pindex));
+        app_json(array( 'list' => $list, 'pagesize' => $psize, 'total' => $total ,'page'=>$pindex));
 
     }
 
@@ -1785,7 +1678,7 @@ class Index_EweiShopV2Page extends AppMobilePage
         $uniacid = intval($_W['uniacid']);
         if($_GPC['submit']){
             if(empty($refundid)){
-                return app_error(AppError::$ParamsError);
+                app_error(AppError::$ParamsError);
             }
 
             $refund = array(
@@ -1797,7 +1690,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             );
             $res = pdo_update('ewei_shop_order_refund', $refund, array('id' => $refundid, 'uniacid' => $uniacid));
             if($res){
-                return app_json();
+                app_json();
             }
         }
 
@@ -1816,7 +1709,7 @@ class Index_EweiShopV2Page extends AppMobilePage
                 }
             }
         }
-        return app_json(array(
+        app_json(array(
             'express' => $refund['express'],
             'expresscom' => $refund['expresscom'],
             'express_number' => $refund['expresssn'],
@@ -1831,7 +1724,7 @@ class Index_EweiShopV2Page extends AppMobilePage
         $uniacid = intval($_W['uniacid']);
         if($_GPC['submit']){
             if(empty($refundid)){
-                return app_error(AppError::$ParamsError);
+                app_error(AppError::$ParamsError);
             }
 
             $refund = array(
@@ -1843,7 +1736,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             );
             $res = pdo_update('ewei_shop_order_single_refund', $refund, array('id' => $refundid, 'uniacid' => $uniacid));
             if($res){
-                return app_json();
+                app_json();
             }
         }
 
@@ -1862,7 +1755,7 @@ class Index_EweiShopV2Page extends AppMobilePage
                 }
             }
         }
-        return app_json(array(
+        app_json(array(
             'express' => $refund['express'],
             'expresscom' => $refund['expresscom'],
             'express_number' => $refund['expresssn'],

@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -580,12 +580,7 @@ class Op_EweiShopV2Page extends MmanageMobilePage
 		$is_peerpay = m('order')->checkpeerpay($item['id']);
 
 		if (!empty($is_peerpay)) {
-			if ($_W['isajax']) {
-				show_json(0, '代付订单不能改价!');
-			}
-			else {
-				$this->message('代付订单不能改价');
-			}
+			show_json(0, '代付订单不能改价!');
 		}
 
 		if ($_W['ispost']) {
@@ -621,12 +616,7 @@ class Op_EweiShopV2Page extends MmanageMobilePage
 			}
 
 			if ($orderprice < 0) {
-				if ($_W['isajax']) {
-					show_json(0, '订单实际支付价格不能小于0元!');
-				}
-				else {
-					$this->message('订单实际支付价格不能小于0元');
-				}
+				show_json(0, '订单实际支付价格不能小于0元!');
 			}
 
 			foreach ($changegoodsprice as $ogid => $change) {
@@ -636,12 +626,7 @@ class Op_EweiShopV2Page extends MmanageMobilePage
 					$realprice = $og['realprice'] + $change;
 
 					if ($realprice < 0) {
-						if ($_W['isajax']) {
-							show_json(0, '单个商品不能优惠到负数');
-						}
-						else {
-							$this->message('单个商品不能优惠到负数');
-						}
+						show_json(0, '单个商品不能优惠到负数');
 					}
 				}
 			}
@@ -649,12 +634,7 @@ class Op_EweiShopV2Page extends MmanageMobilePage
 			$ordersn2 = $item['ordersn2'] + 1;
 
 			if (99 < $ordersn2) {
-				if ($_W['isajax']) {
-					show_json(0, '超过改价次数限额');
-				}
-				else {
-					$this->message('超过改价次数限额');
-				}
+				show_json(0, '超过改价次数限额');
 			}
 
 			$orderupdate = array();

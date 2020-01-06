@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -103,7 +102,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 			'cube'   => array('text' => '魔方栏', 'visible' => 1),
 			'banner' => array('text' => '广告栏', 'visible' => 1),
 			'goods'  => array('text' => '推荐栏', 'visible' => 1)
-		);
+			);
 		$shop = p('merch')->getSet('shop', $merchid);
 		$sorts = isset($shop['indexsort']) ? $shop['indexsort'] : $defaults;
 		$sorts['recommand'] = array('text' => '系统推荐', 'visible' => 1);

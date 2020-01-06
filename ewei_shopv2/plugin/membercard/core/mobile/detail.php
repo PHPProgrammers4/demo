@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -16,7 +16,7 @@ class Detail_EweiShopV2Page extends PluginMobilePage
 			$lists = $this->model->get_Allcard(1, 100);
 		}
 		else {
-			$lists = $this->model->get_Mycard('', 0, 100, 'all');
+			$lists = $this->model->get_Mycard('', 0, 100);
 		}
 
 		$card_list = array();

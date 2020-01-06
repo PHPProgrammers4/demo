@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -74,9 +74,10 @@ class MembercardModel extends PluginModel
 		return $result;
 	}
 
-	public function get_Mycard($openid = '', $page = 1, $psize = 20, $goodsids = array())
+	public function get_Mycard($openid = '', $page = 1, $psize = 20)
 	{
 		global $_W;
+		global $_GPC;
 		$pindex = max(1, intval($page));
 		$limit = ($pindex - 1) * $psize . ',' . $psize;
 		$openid = empty($openid) ? $_W['openid'] : $openid;
@@ -85,49 +86,18 @@ class MembercardModel extends PluginModel
 			return false;
 		}
 
-		$condition = ' and h.uniacid=:uniacid and h.isdelete = :isdelete and c.isdelete = :isdelete and h.openid = :openid ';
-		$list = array();
-		if (!empty($goodsids) && $goodsids != 'all') {
-			foreach ($goodsids as $value) {
-				$condition1 = $condition . 'and c.cardmodel = :cardmodel and  FIND_IN_SET(:goodsids, goodsids) ';
-				$params = array(':uniacid' => $_W['uniacid'], ':isdelete' => 0, ':openid' => $openid, ':goodsids' => $value, ':cardmodel' => 2);
-				$now_time = TIMESTAMP;
-				$condition1 .= ' and (h.expire_time=-1 or h.expire_time>' . $now_time . ')';
-				$temp_list = pdo_fetchall('SELECT c.*,h.openid,h.expire_time
-                                FROM ' . tablename('ewei_shop_member_card_history') . ' as h
-                                left join ' . tablename('ewei_shop_member_card') . (' as c on c.id = h.member_card_id
-                                WHERE 1 ' . $condition1 . '  ORDER BY h.receive_time DESC limit ' . $limit . ' '), $params);
-
-				if (!empty($temp_list)) {
-					$list = array_merge($list, $temp_list);
-				}
-			}
-		}
-
-		$params = array(':uniacid' => $_W['uniacid'], ':isdelete' => 0, ':openid' => $openid, ':cardmodel' => 1);
+		$condition = ' and h.uniacid=:uniacid and h.isdelete = :isdelete and c.isdelete = :isdelete and h.openid = :openid  ';
+		$params = array(':uniacid' => $_W['uniacid'], ':isdelete' => 0, ':openid' => $openid);
 		$now_time = TIMESTAMP;
-
-		if ($goodsids == 'all') {
-			$params = array(':uniacid' => $_W['uniacid'], ':isdelete' => 0, ':openid' => $openid);
-			$condition .= 'and (h.expire_time=-1 or h.expire_time>' . $now_time . ')';
-		}
-		else {
-			$params = array(':uniacid' => $_W['uniacid'], ':isdelete' => 0, ':openid' => $openid, ':cardmodel' => 1);
-			$condition .= 'and c.cardmodel = :cardmodel  and (h.expire_time=-1 or h.expire_time>' . $now_time . ')';
-		}
-
-		$temp_list = pdo_fetchall('SELECT c.*,h.openid,h.expire_time
-            FROM ' . tablename('ewei_shop_member_card_history') . ' as h
+		$condition .= ' and (h.expire_time=-1 or h.expire_time>' . $now_time . ')';
+		$list = pdo_fetchall('SELECT c.*,h.openid,h.expire_time
+				FROM ' . tablename('ewei_shop_member_card_history') . ' as h
+				left join ' . tablename('ewei_shop_member_card') . (' as c on c.id = h.member_card_id
+				WHERE 1 ' . $condition . '  ORDER BY h.receive_time DESC limit ' . $limit . ' '), $params);
+		$total = pdo_fetchcolumn('SELECT COUNT(h.id) 
+            FROM ' . tablename('ewei_shop_member_card_history') . ' as h 
             left join ' . tablename('ewei_shop_member_card') . (' as c on c.id = h.member_card_id
-            WHERE 1 ' . $condition . '  ORDER BY h.receive_time DESC limit ' . $limit . ' '), $params);
-
-		if (!empty($temp_list)) {
-			$list = array_merge($list, $temp_list);
-		}
-
-		$list = array_unique($list, SORT_REGULAR);
-		$list = array_values($list);
-		$total = count($list);
+            where 1  ' . $condition . ' limit 1'), $params);
 
 		if ($list) {
 			foreach ($list as $key => $val) {
@@ -362,14 +332,11 @@ class MembercardModel extends PluginModel
 		return $result;
 	}
 
-	public function querycoupon($couponid = array())
+	public function querycoupon($couponid)
 	{
 		global $_W;
 		global $_GPC;
 		$cpinfo = array();
-		if (!is_array($couponid) || empty($couponid)) {
-			return $cpinfo;
-		}
 
 		foreach ($couponid as $ck => $cv) {
 			$where = ' WHERE uniacid = :uniacid AND id = :id';

@@ -1,0 +1,189 @@
+{template '_header'}
+<style type='text/css'>
+    .trhead td {  background:#efefef;text-align: center}
+    .trbody td {  text-align: center; vertical-align:top;border-left:1px solid #f2f2f2;overflow: hidden; font-size:12px;}
+    .trorder { background:#f8f8f8;border:1px solid #f2f2f2;text-align:left;}
+    .ops { border-right:1px solid #f2f2f2; text-align: center;}
+
+    .wb-subnav{width:130px;}
+    .page-heading {
+        position: relative;
+        height: 50px;margin-bottom:20px;
+        background: #fff;
+        padding: 5px 0 5px 21px;
+        border-bottom: 1px solid #e5e5e5;
+    }
+    .page-heading h2 {
+        font-size: 16px;line-height:37px;
+    }
+    .set-store-set{
+        padding-top: 20px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #e7eaec;
+    }
+    .set-store-set li{
+        float: left;
+        margin-bottom: -1px;
+    }
+    .set-store-set li a{
+        padding: 10px 20px 10px 25px;
+        font-weight: 600;
+        color: #A7B1C2;
+        display: block;
+        font-size: 14px;
+    }
+    .set-store-set li.active a{
+        color: #555;
+        border: 1px solid #e7eaec;
+        border-bottom-color: transparent;
+        background-color: #fff;
+    }
+</style>
+
+<div class="page-heading">
+    <h2>平台对账</h2>
+
+
+</div>
+
+<form action="./index.php" method="get" class="form-horizontal table-search" role="form">
+    <input type="hidden" name="c" value="site" />
+    <input type="hidden" name="a" value="entry" />
+    <input type="hidden" name="m" value="ewei_shopv2" />
+    <input type="hidden" name="do" value="web" />
+    <input type="hidden" name="r" value="order.check{$st}" />
+    <input type="hidden" name="status" value="{$status}" />
+    <div class="page-toolbar row m-b-sm m-t-sm">
+        <div class="col-sm-7">
+
+            <div class="btn-group btn-group-sm" style='float:left'>
+                <button class="btn btn-default btn-sm"  type="button" data-toggle='refresh'><i class='fa fa-refresh'></i></button>
+
+            </div>
+
+
+            <div class='input-group input-group-sm'   > 
+                {if $_W['routes']=='order.check'}   
+                <a class='btn btn-primary btn-sm' href="javascript:" id="wx-order-query" style="margin-left: 15px"> 同步订单</a>  
+                <a href="javascript:" id="withdraw-apply" class="btn btn-sm btn-primary" style="margin-left: 15px">提现申请</a>
+                {/if}
+            </div>
+           
+        </div>
+
+
+        
+    </div>
+
+</form>
+
+<ul class="set-store-set clearfix">
+    <li {if $_W['routes']=='order.check'}class="active"{/if}><a href="{php echo webUrl('order/check')}">未对账</a></li>
+    <li {if $_W['routes']=='order.check.apply_list'}class="active"{/if}><a href="{php echo webUrl('order/check/apply_list')}">已提交</a></li>
+</ul>
+
+{if count($list)>0}
+<table class='table table-responsive' style='table-layout: fixed;'>
+    <tr style='background:#f8f8f8'>
+        
+        <td style='width:50px;'>ID</td>
+        <td style='width:100px;'>申请对账（元）</td>
+        <td style='width:100px;'>对账成功（元）</td>
+        <td style='width:80px;'>状态</td>
+        <td style='width:100px;'>申请时间</td>
+        <td style='width:50px;'>操作</td>
+
+    </tr>
+    {loop $list $item}
+    <tr class='trorder'>
+        
+        <td>{$item['id']}</td>
+        <td>{$item['total_money']}</td>
+        <td>{$item['check_money']}</td>
+        <td>
+            {if $item['status'] == 0}
+            <span>待处理</span>
+            {elseif $item['status'] == 1}
+            <span>已对账</span>
+            {elseif $item['status'] == 2}
+            <span>已提现</span>
+            {/if}
+        </td>
+        <td>{php echo date('Y-m-d H:i:s',$item['create_time'])}</td>
+        <td><a href="{php echo webUrl('order/check/apply_detail',array('id'=>$item['id']))}">详情</a></td>
+    </tr>
+    
+    {/loop}
+</table>
+<div style="text-align:right;width:100%;">
+    {$pager}
+</div>
+{else}
+
+<div class='panel panel-default'>
+    <div class='panel-body' style='text-align: center;padding:30px;'>
+        暂时没有任何订单!
+    </div>
+</div>
+{/if}
+
+<div class="notifications"></div>
+<link rel="stylesheet" type="text/css" href="{php echo EWEI_SHOPV2_LOCAL}static/css/check_order.css?v={php echo time();}">
+
+<div class="diy-layer-component">
+    <div class="cover-all"></div>
+    <div class="userinfo-box">
+        <div class="header-area">
+            <h3>提现申请</h3>
+            <a href="javascript:" class="close-box close-style">&times;</a>
+        </div>
+        <div class="userinfo-input">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">真实姓名</label>
+                <div class="col-sm-7 col-xs-12">
+                    <input type="text" name="real_name" id="real_name" class="form-control"  />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">身份证号</label>
+                <div class="col-sm-7 col-xs-12">
+                    <input type="text" name="id_number" id="id_number" class="form-control"  />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">openid</label>
+                <div class="col-sm-7 col-xs-12">
+                    <input type="text" name="openid" id="openid" class="form-control" readonly="" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-7 col-xs-12">
+                    <div class="qrcode-img">
+                        <p>请扫描二维码获取openid</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-4 control-label"></label>
+                <div class="col-sm-7">
+                    <a class='btn btn-primary btn-sm' href="javascript:" id="submit-apply" style="margin-left: 15px"> 确 认</a> 
+                    <a class='btn btn-default btn-sm close-box' href="javascript:" style="margin-left: 35px"> 取 消</a>   
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<script type="text/javascript">
+var load_image_url = "{php echo EWEI_SHOPV2_LOCAL}static/images/loading-0.gif";
+var orderquery_url = "{php echo webUrl('order/check/orderquery')}";
+var withdraw_apply_total = "{php echo $count}";
+var create_qrcode_url = "{php echo webUrl('order/check/create_qrcode')}";
+var check_userinfo_url = "{php echo webUrl('order/check/check_userinfo')}";
+var withdraw_apply_url = "{php echo webUrl('order/check/withdraw_apply')}";
+var ajax_query_data_url = "{php echo webUrl('order/check/ajax_query_data')}";
+</script>
+<script type="text/javascript" src="{php echo EWEI_SHOPV2_LOCAL}static/js/web/check_order.js?v={php echo time();}"></script>
+{template '_footer'}

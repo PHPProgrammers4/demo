@@ -49,41 +49,6 @@
     </div>
 </div>
 <div class="form-group">
-    <label class="col-lg control-label">会员卡模式</label>
-    <div class="col-sm-9">
-        <label class="radio-inline">
-            <input type="radio" name="cardmodel" value="1" {if $item['cardmodel'] != 2}checked{/if} {if !empty($item['id'])}disabled{/if} /> 所有商品
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="cardmodel" value="2" {if $item['cardmodel'] == 2}checked{/if} {if !empty($item['id'])}disabled{/if}/> 指定商品
-        </label>
-        <span class="help-block pointgoods" style="display: none">指定商品支持一张会员卡</span>
-    </div>
-</div>
-
-<div class="form-group" id='goodsdiv' style="display: none">
-    <label class="col-lg control-label"></label>
-    <div class="col-sm-9 col-xs-12">
-        <?php echo tpl_selector_new('goodsid',array(
-                            'preview'=>true,
-                            'readonly'=>true,
-                            'selectorid'=>'',
-                            'multi'=>1,
-                            'type'=>'card',
-                            'value'=>$package_goods['title'],
-                            'url'=>webUrl('membercard/cardmanage/querygoods'),
-                            'items'=>$res,
-                            'nokeywords'=>1,
-                            'autosearch'=>1,
-                            'buttontext'=>'选择商品',
-                            'placeholder'=>'请选择商品')
-                            )
-        ?>
-
-    </div>
-</div>
-
-<div class="form-group">
     <label class="col-lg control-label">折上折</label>
     <div class="col-sm-9">
         {ife 'membercard.cardmanage' $item}
@@ -131,7 +96,7 @@
     <label class="col-lg control-label">开卡赠送</label>
     <div class="col-sm-9 col-xs-12">
         {ife 'membercard.cardmanage' $item}
-        <label class="checkbox-inline"><input type="checkbox" name="is_card_points" value="1" {if !empty($item['is_card_points'])}checked="true"{/if} {if !empty($item['id'])}disabled{/if}  /> {php echo empty($data['credittext'])?'积分':$data['credittext']}</label>
+        <label class="checkbox-inline"><input type="checkbox" name="is_card_points" value="1" {if !empty($item['is_card_points'])}checked="true"{/if} {if !empty($item['id'])}disabled{/if}  /> 积分</label>
         {else}
         <div class='form-control-static'>
             {if !empty($item['is_card_points'])}积分{/if}
@@ -145,9 +110,9 @@
         {ife 'membercard.cardmanage' $item}
         <div class="input-group">
             <input type="text" name="card_points" class="form-control" data-rule-required="true" aria-required="true" value="{$item['card_points']}" {if !empty($item['id'])}readonly{/if} />
-            <span class="input-group-addon">{php echo empty($data['credittext'])?'积分':$data['credittext']}</span>
+            <span class="input-group-addon">积分</span>
         </div>
-        <span class='help-block'>开卡赠送的{php echo empty($data['credittext'])?'积分':$data['credittext']}数值</span>
+        <span class='help-block'>开卡赠送的积分数值</span>
         {else}
         <div class='form-control-static'>积分：{$item['card_points']} 分</div>
         {/if}
@@ -210,10 +175,10 @@
     <label class="col-lg control-label">每月领取</label>
     <div class="col-sm-9 col-xs-12">
         {ife 'membercard.cardmanage' $item}
-        <label class="checkbox-inline"><input type="checkbox" name="is_month_points" value="1" {if !empty($item['is_month_points'])}checked="true"{/if}  {if !empty($item['id'])}disabled{/if} /> {php echo empty($data['credittext'])?'积分':$data['credittext']}</label>
+        <label class="checkbox-inline"><input type="checkbox" name="is_month_points" value="1" {if !empty($item['is_month_points'])}checked="true"{/if}  {if !empty($item['id'])}disabled{/if} /> 积分</label>
         {else}
         <div class='form-control-static'>
-            {if !empty($item['is_month_points'])}{php echo empty($data['credittext'])?'积分':$data['credittext']}{/if}
+            {if !empty($item['is_month_points'])}积分{/if}
         </div>
         {/if}
     </div>
@@ -224,11 +189,11 @@
         {ife 'membercard.cardmanage' $item}
         <div class="input-group">
             <input type="text" name="month_points" class="form-control" data-rule-required="true" aria-required="true" value="{$item['month_points']}" {if !empty($item['id'])}readonly{/if} />
-            <span class="input-group-addon">{php echo empty($data['credittext'])?'积分':$data['credittext']}</span>
+            <span class="input-group-addon">积分</span>
         </div>
         <span class='help-block'>开卡后每个月可以领取积分数值</span>
         {else}
-        <div class='form-control-static'>{$item['month_points']} {php echo empty($data['credittext'])?'积分':$data['credittext']}</div>
+        <div class='form-control-static'>{$item['month_points']} 积分</div>
         {/if}
     </div>
 </div>
@@ -346,25 +311,6 @@ $(function(){
     $("button.btn.btn-default").hide();
     $('.card-item').css("pointerEvents","none")
     {/if}
-
-});
-
-if ($("*[name='cardmodel']:checked").val() == 1) {
-    $('#goodsdiv').hide();
-    $('.pointgoods').hide();
-} else {
-    $('#goodsdiv').show();
-    $('.pointgoods').show();
-}
-
-$("*[name='cardmodel']").click(function () {
-    if ($("*[name='cardmodel']:checked").val() == 1) {
-        $('#goodsdiv').hide();
-        $('.pointgoods').hide();
-    } else {
-        $('#goodsdiv').show();
-        $('.pointgoods').show();
-    }
 
 });
 

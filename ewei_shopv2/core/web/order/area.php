@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -250,11 +249,9 @@ class Area_EweiShopV2Page extends WebPage
 
 			if (1 < $count) {
 				print_r($count);
-				print_r('
-');
+				print_r("\n");
 				print_r($v['name']);
-				print_r('
-');
+				print_r("\n");
 			}
 		}
 	}
@@ -291,24 +288,16 @@ class Area_EweiShopV2Page extends WebPage
 	public function xml()
 	{
 		global $_W;
-		$xml = '<?xml version="1.0" encoding="utf-8"?>
- <address>
-<province name="请选择省份">
-	<city name="请选择城市">
-		<county name="请选择区域"/>
-	</city>
-</province>';
+		$xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n <address>\r\n<province name=\"请选择省份\">\r\n\t<city name=\"请选择城市\">\r\n\t\t<county name=\"请选择区域\"/>\r\n\t</city>\r\n</province>";
 		$list1 = $this->get_area_list(1);
 
 		foreach ($list1 as $k1 => $v1) {
-			$xml .= '
-';
+			$xml .= "\n";
 			$xml .= '<province name="' . $v1['name'] . '" code="' . $v1['code'] . '">';
 			$list2 = $this->get_child_list($v1['code']);
 
 			foreach ($list2 as $k2 => $v2) {
-				$xml .= '
-';
+				$xml .= "\n";
 				$xml .= '<city name="' . $v2['name'] . '" code="' . $v2['code'] . '">';
 				$list3 = $this->get_child_list($v2['code']);
 
@@ -319,23 +308,19 @@ class Area_EweiShopV2Page extends WebPage
 						continue;
 					}
 
-					$xml .= '
-';
+					$xml .= "\n";
 					$xml .= '<county name="' . $v3['name'] . '" code="' . $v3['code'] . '" />';
 				}
 
-				$xml .= '
-';
+				$xml .= "\n";
 				$xml .= '</city>';
 			}
 
-			$xml .= '
-';
+			$xml .= "\n";
 			$xml .= '</province>';
 		}
 
-		$xml .= '
-';
+		$xml .= "\n";
 		$xml .= '</address>';
 		print_r($xml);
 		exit();
@@ -351,11 +336,9 @@ class Area_EweiShopV2Page extends WebPage
 		foreach ($list2 as $k2 => $v2) {
 			$list3 = $this->get_child_list($v2['code']);
 			$xml = '<?xml version="1.0" encoding="utf-8"?>';
-			$xml .= '
-';
+			$xml .= "\n";
 			$xml .= '<address>';
-			$xml .= '
-';
+			$xml .= "\n";
 			$xml .= '<city name="' . $v2['name'] . '" code="' . $v2['code'] . '">';
 
 			foreach ($list3 as $k3 => $v3) {
@@ -365,27 +348,22 @@ class Area_EweiShopV2Page extends WebPage
 					continue;
 				}
 
-				$xml .= '
-';
+				$xml .= "\n";
 				$xml .= '<county name="' . $v3['name'] . '" code="' . $v3['code'] . '">';
 				$list4 = $this->get_child_list($v3['code']);
 
 				foreach ($list4 as $k4 => $v4) {
-					$xml .= '
-';
+					$xml .= "\n";
 					$xml .= '    <street name="' . $v4['name'] . '" code="' . $v4['code'] . '" />';
 				}
 
-				$xml .= '
-';
+				$xml .= "\n";
 				$xml .= '</county>';
 			}
 
-			$xml .= '
-';
+			$xml .= "\n";
 			$xml .= '</city>';
-			$xml .= '
-';
+			$xml .= "\n";
 			$xml .= '</address>';
 			$left = substr($v2['code'], 0, 2);
 			$styles = array();

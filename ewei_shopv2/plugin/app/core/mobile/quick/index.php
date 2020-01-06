@@ -11,7 +11,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class Index_EweiShopV2Page extends AppMobilePage
 {
@@ -36,22 +36,21 @@ class Index_EweiShopV2Page extends AppMobilePage
         } else {
             $data['cartList'] = $this->getAllCart(0, false);
         }
-       if(is_array($data['goodsArr'])){
-           foreach ($data['goodsArr'] as $k => $goodsInfo) {
-               foreach ($goodsInfo as $key => $value) {
-                   if (!empty($data['cartList'])) {
-                       $cartTotal = 0;
-                       foreach ($data['cartList']['list'] as $cartInfo) {
-                           if ($cartInfo['goodsid'] == $value['id']) {
-                               $cartTotal += $cartInfo['total'];
-                           }
-                       }
-                   }
-                   $data['goodsArr'][$k][$key]['cartTotal'] = $cartTotal;
-               }
-           }
-       }
-        return app_json($data);
+
+        foreach ($data['goodsArr'] as $k => $goodsInfo) {
+            foreach ($goodsInfo as $key => $value) {
+                if (!empty($data['cartList'])) {
+                    $cartTotal = 0;
+                    foreach ($data['cartList']['list'] as $cartInfo) {
+                        if ($cartInfo['goodsid'] == $value['id']) {
+                            $cartTotal += $cartInfo['total'];
+                        }
+                    }
+                }
+                $data['goodsArr'][$k][$key]['cartTotal'] = $cartTotal;
+            }
+        }
+        app_json($data);
     }
 
 
@@ -289,26 +288,15 @@ class Index_EweiShopV2Page extends AppMobilePage
         $member = m('member')->getMember($_W['openid']);
         if (!empty($member)) {
             $levelid = intval($member['level']);
-            $groupid = $member['groupid'];
-            $group_id_arr = explode(',',trim($member['groupid']));
-            $group_id_arr = array_filter($group_id_arr);
-            if($group_id_arr){
-                $temp = '';
-                foreach ($group_id_arr as $gid){
-                    $temp .= "or FIND_IN_SET( {$gid},showgroups)<>0 ";
-                }
-            }else{
-                $groupid = intval($groupid);
-                $temp = "or FIND_IN_SET( {$groupid},showgroups)<>0 ";
-            }
+            $groupid = intval($member['groupid']);
             $condition .= " and ( ifnull(showlevels,'')='' or FIND_IN_SET( {$levelid},showlevels)<>0 ) ";
-            $condition .= " and ( ifnull(showgroups,'')='' {$temp} )";
+            $condition .= " and ( ifnull(showgroups,'')='' or FIND_IN_SET( {$groupid},showgroups)<>0 ) ";
         } else {
             $condition .= " and ifnull(showlevels,'')='' ";
             $condition .= " and   ifnull(showgroups,'')='' ";
         }
 
-        $sql = "SELECT id,title,subtitle,thumb,minprice,marketprice,sales,salesreal,total,bargain,`type`,ispresell,presellend,preselltimeend,hasoption,total,maxbuy,minbuy,usermaxbuy,isverify,cannotrefund,diyformtype,diyformid,showsales,showtotal FROM " . tablename('ewei_shop_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
+        $sql = "SELECT id,title,subtitle,thumb,minprice,marketprice,sales,salesreal,total,bargain,`type`,ispresell,presellend,preselltimeend,hasoption,total,maxbuy,minbuy,usermaxbuy,isverify,cannotrefund,diyformtype,diyformid FROM " . tablename('ewei_shop_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
         $total = pdo_fetchcolumn("select count(*) from " . tablename('ewei_shop_goods') . " where 1 {$condition} ", $params);
 
         $list = pdo_fetchall($sql, $params);
@@ -373,7 +361,7 @@ class Index_EweiShopV2Page extends AppMobilePage
                 }
                 //是否可以加入购物车
                 $g['canAddCart'] = true;
-                if ($g['isverify'] == 2 || $g['type'] == 2 || $g['type'] == 3 || $g['type'] == 20 ) {
+                if ($g['isverify'] == 2 || $g['type'] == 2 || $g['type'] == 3 || $g['type'] == 20 || !empty($g['cannotrefund'])) {
                     $g['canAddCart'] = false;
                 }
                 // 删除不用字段
@@ -477,7 +465,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             }
         }
 
-        return app_json(1, $result);
+        app_json(1, $result);
     }
 
     /**
@@ -673,7 +661,7 @@ class Index_EweiShopV2Page extends AppMobilePage
         global $_W, $_GPC;
         $quickid = intval($_GPC['quickid']);
         $carts = $this->getAllCart($quickid, false);       // 获取购物车数据
-        return app_json($carts);
+        app_json($carts);
     }
 
     /**
@@ -694,7 +682,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             $arr['quickid'] = $quickid;
         }
         pdo_update($tablename, array("deleted" => 1), $arr);
-        return app_json(0);
+        app_json(0);
     }
 
     /**
@@ -712,11 +700,11 @@ class Index_EweiShopV2Page extends AppMobilePage
         $typeValue = $_GPC['typevalue'];
 //        $total = intval($_GPC['total']);
         if (empty($goodsid)) {
-            return app_error(AppError::$OrderCreateNoGoods);
+            app_error(AppError::$OrderCreateNoGoods);
         }
         $goods = pdo_fetch('select id,maxbuy,usermaxbuy,minbuy,total,marketprice,diyformid,diyformtype,diyfields, isverify, `type`,merchid, cannotrefund from ' . tablename('ewei_shop_goods') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $goodsid, ':uniacid' => $_W['uniacid']));
         if (empty($goods)) {
-            return app_error(AppError::$OrderCreateNoGoods);
+            app_error(AppError::$OrderCreateNoGoods);
         }
         if ($optionid > 0) {
             $optionInfo = pdo_fetch('select id,stock from' . tablename('ewei_shop_goods_option') . 'where id=:id limit 1', array(":id" => $optionid));
@@ -773,7 +761,7 @@ class Index_EweiShopV2Page extends AppMobilePage
                 }
             } elseif ($type == 'value') {
                 if ($typeValue == 0) {
-                    return app_error(AppError::$ParamsError);
+                    app_error(AppError::$ParamsError);
                 } else {
                     if ($goods['minbuy'] == 0) {
                         $total = intval($typeValue);
@@ -789,17 +777,17 @@ class Index_EweiShopV2Page extends AppMobilePage
             //判断最大购买量
             if ($goods['maxbuy'] > 0) {
                 if ($total > $goods['maxbuy']) {
-                    return app_error(AppError::$OrderCreateMaxBuyLimit);
+                    app_error(AppError::$OrderCreateMaxBuyLimit);
                 }
             }
             //判断库存
             if ($optionid > 0) {
                 if ($optionInfo['stock'] < $total) {
-                    return app_error(AppError::$OrderCreateStockError);
+                    app_error(AppError::$OrderCreateStockError);
                 }
             } else {
                 if ($goods['total'] < $total) {
-                    return app_error(AppError::$OrderCreateStockError);
+                    app_error(AppError::$OrderCreateStockError);
                 }
             }
             $data = array(
@@ -829,7 +817,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             $newsCartArray['goodstotal'] = $this->getGoodsTotal($cartArray['cartList']['list'], $goodsid);
             $newsCartArray['total'] = $cartArray['cartList']['total'];
             $newsCartArray['totalprice'] = $cartArray['cartList']['totalprice'];
-            return app_json($newsCartArray);
+            app_json($newsCartArray);
         } else {
             // 增加
             if ($type == 'add') {
@@ -852,7 +840,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             // 设置指定值
             elseif ($type == 'value') {
                 if ($typeValue <= 0) {
-                    return app_error(AppError::$ParamsError);
+                    app_error(AppError::$ParamsError);
                 }
                 else {
 //                    if($goods['minbuy']>0) {
@@ -871,17 +859,17 @@ class Index_EweiShopV2Page extends AppMobilePage
             //判断最大购买量
             if ($goods['maxbuy'] > 0) {
                 if ($data['total'] > $goods['maxbuy']) {
-                    return app_error(AppError::$OrderCreateMaxBuyLimit);
+                    app_error(AppError::$OrderCreateMaxBuyLimit);
                 }
             }
             //判断库存
             if ($optionid > 0) {
                 if ($optionInfo['stock'] < $data['total']) {
-                    return app_error(AppError::$OrderCreateStockError);
+                    app_error(AppError::$OrderCreateStockError);
                 }
             } else {
                 if ($goods['total'] < $data['total']) {
-                    return app_error(AppError::$OrderCreateStockError);
+                    app_error(AppError::$OrderCreateStockError);
                 }
             }
             if (empty($data['total'])) {
@@ -910,7 +898,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             }
             $newsCartArray['total'] = $cartArray['cartList']['total'];
             $newsCartArray['totalprice'] = $cartArray['cartList']['totalprice'];
-            return app_json($newsCartArray);
+            app_json($newsCartArray);
         }
         // 1. 获取quickid
         // 1.1. 如果为空则添加系统购物车

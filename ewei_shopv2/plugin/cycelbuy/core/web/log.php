@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -387,7 +387,7 @@ class Log_EweiShopV2Page extends PluginWebPage
 				array('title' => '快递状态', 'field' => 'dispatchstr', 'width' => 12),
 				array('title' => '参与时间', 'field' => 'createtime', 'width' => 30),
 				array('title' => '备注', 'field' => 'remarksaler', 'width' => 30)
-			);
+				);
 			m('excel')->export($list, array('title' => (empty($type) ? '兑换' : '抽奖') . '订单数据-' . date('Y-m-d-H-i', time()), 'columns' => $columns));
 		}
 

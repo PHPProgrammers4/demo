@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -542,17 +541,9 @@ class Index_EweiShopV2Page extends MobileLoginPage
 		global $_W;
 		global $_GPC;
 		$cardList = $_GPC['cardList'];
-		if ($cardList && !is_array($cardList)) {
-			$cardList = json_decode($cardList, true);
-		}
-
 		sleep(5);
 
 		foreach ($cardList as $card) {
-			if ($card && !is_array($card)) {
-				$card = json_decode($card, true);
-			}
-
 			if (com('wxcard')) {
 				com('wxcard')->wxCardUpdateQuantity($card['cardId']);
 			}

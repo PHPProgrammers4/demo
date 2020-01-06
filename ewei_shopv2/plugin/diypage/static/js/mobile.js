@@ -1,5 +1,5 @@
 define(['core', 'tpl'], function (core, tpl) {
-    var modal = {location: {lat: '0', lng: '0'},tabbar_index:0};
+    var modal = {location: {lat: '0', lng: '0'}};
     modal.init = function (params) {
         modal.initNotice();
         modal.initSwiper();
@@ -68,8 +68,7 @@ define(['core', 'tpl'], function (core, tpl) {
                     var activecolor = $(this).data('activecolor1');
                     var bgcolor = $(this).data('bgcolor1');
                     var activebgcolor = $(this).data('activebgcolor1');
-                    console.log(modal.tabbar_index)
-                    if(index == modal.tabbar_index){
+                    if(index == 0){
                         $(this).css({'background-color':activebgcolor,'border-color':activecolor,'color':activecolor});
                         var notskip = $(this).data('notskip');
                         var url = $(this).data('url');
@@ -80,19 +79,17 @@ define(['core', 'tpl'], function (core, tpl) {
                 });
             });
             $(document).on('click', '.tab-a', function () {
-                var $this = $(this);
-                var textcolor = $this.data('textcolor1');
-                var activecolor = $this.data('activecolor1');
-                var bgcolor = $this.data('bgcolor1');
-                var activebgcolor = $this.data('activebgcolor1');
-                modal.tabbar_index = $this.data('index');
-                $this.prevAll().css({'background-color':bgcolor,'border-color':"#fff",'color':textcolor}).removeClass('active');
-                $this.css({'background-color':activebgcolor,'border-color':activecolor,'color':activecolor}).addClass('active');
-                $this.nextAll().css({'background-color':bgcolor,'border-color':"#fff",'color':textcolor}).removeClass('active');
-                var notskip = $this.data('notskip');
-                var url = $this.data('url');
+                var textcolor = $(this).data('textcolor1');
+                var activecolor = $(this).data('activecolor1');
+                var bgcolor = $(this).data('bgcolor1');
+                var activebgcolor = $(this).data('activebgcolor1');
+                $(this).prevAll().css({'background-color':bgcolor,'border-color':"#fff",'color':textcolor}).removeClass('active');
+                $(this).css({'background-color':activebgcolor,'border-color':activecolor,'color':activecolor}).addClass('active');
+                $(this).nextAll().css({'background-color':bgcolor,'border-color':"#fff",'color':textcolor}).removeClass('active');
+                var notskip = $(this).data('notskip');
+                var url = $(this).data('url');
                 //console.log($(this).closest('.tabbar-num'));
-                var $this = $this.closest('.tabbar-num');
+                var $this = $(this).closest('.tabbar-num');
                 modal.initTabbar(notskip,url,$this);
             })
 
@@ -154,7 +151,6 @@ define(['core', 'tpl'], function (core, tpl) {
                         pagination: container + ' .swiper-pagination',
                         slidesPerView: view,
                         paginationClickable: true,
-                        loop : true,
                         autoHeight: true,
                         nextButton: container + ' .swiper-button-next',
                         prevButton: container + ' .swiper-button-prev',
@@ -202,7 +198,7 @@ define(['core', 'tpl'], function (core, tpl) {
                 map.plugin('AMap.Geolocation', function() {
                     var geolocation = new AMap.Geolocation({
                         enableHighAccuracy: true,//是否使用高精度定位，默认:true
-                        timeout: 5000,          //超过10秒后停止定位，默认：5s
+                        timeout: 10000,          //超过10秒后停止定位，默认：5s
                         maximumAge: 0,        //定位结果缓存0毫秒，默认：0(10min)
                     });
                     map.addControl(geolocation);

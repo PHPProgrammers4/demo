@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -270,7 +270,7 @@ class User_EweiShopV2Page extends DividendWebPage
 				array('title' => '成为分销商时间', 'field' => 'createtime', 'width' => 12),
 				array('title' => '审核状态', 'field' => 'createtime', 'width' => 12),
 				array('title' => '是否关注', 'field' => 'followstr', 'width' => 12)
-			);
+				);
 
 			if (p('diyform')) {
 				$columns[] = array('title' => '粉丝会员自定义信息', 'field' => 'member_diyformdata', 'width' => 36);

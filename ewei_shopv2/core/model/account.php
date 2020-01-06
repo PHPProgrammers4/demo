@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 class Account_EweiShopV2Model
 {
 	public function checkLogin()
@@ -60,7 +59,7 @@ class Account_EweiShopV2Model
 			$member['ewei_shopv2_member_hash'] = md5($member['pwd'] . $member['salt']);
 			$key = '__ewei_shopv2_member_session_' . $_W['uniacid'];
 			$cookie = base64_encode(json_encode($member));
-			isetcookie($key, $cookie, 30 * 86400);
+			isetcookie($key, $cookie, 7 * 86400);
 		}
 	}
 

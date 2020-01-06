@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -66,13 +65,7 @@ class Goods_EweiShopV2Page extends SeckillWebPage
 			$params[':keyword'] = '%' . $_GPC['keyword'] . '%';
 		}
 
-		$list = pdo_fetchall('select tg.id,tg.goodsid,tg.total, tg.taskid,tg.roomid, tg.timeid, tg.price, g.title,g.thumb, t.time ,task.title as tasktitle, r.title as roomtitle,g.hasoption,g.marketprice 
-from ' . tablename('ewei_shop_seckill_task_goods') . ' tg
-                  left join ' . tablename('ewei_shop_goods') . ' g on tg.goodsid = g.id
-                  left join ' . tablename('ewei_shop_seckill_task_room') . ' r on tg.roomid = r.id
-                  left join ' . tablename('ewei_shop_seckill_task_time') . ' t on tg.timeid = t.id
-                  left join ' . tablename('ewei_shop_seckill_task') . (' task on tg.taskid =task.id
-                  where 1 ' . $condition . '  group by tg.timeid,tg.goodsid order by t.time asc , tg.displayorder asc limit ') . ($pindex - 1) * $psize . ',' . $psize, $params);
+		$list = pdo_fetchall("select tg.id,tg.goodsid,tg.total, tg.taskid,tg.roomid, tg.timeid, tg.price, g.title,g.thumb, t.time ,task.title as tasktitle, r.title as roomtitle,g.hasoption,g.marketprice \r\nfrom " . tablename('ewei_shop_seckill_task_goods') . " tg\r\n                  left join " . tablename('ewei_shop_goods') . " g on tg.goodsid = g.id\r\n                  left join " . tablename('ewei_shop_seckill_task_room') . " r on tg.roomid = r.id\r\n                  left join " . tablename('ewei_shop_seckill_task_time') . " t on tg.timeid = t.id\r\n                  left join " . tablename('ewei_shop_seckill_task') . (" task on tg.taskid =task.id\r\n                  where 1 " . $condition . '  group by tg.timeid,tg.goodsid order by t.time asc , tg.displayorder asc limit ') . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$redis = redis();
 
 		foreach ($list as &$g) {
@@ -115,12 +108,7 @@ from ' . tablename('ewei_shop_seckill_task_goods') . ' tg
 		}
 
 		unset($g);
-		$total = count(pdo_fetchall('select tg.id from ' . tablename('ewei_shop_seckill_task_goods') . ' tg
-                  left join ' . tablename('ewei_shop_goods') . ' g on tg.goodsid = g.id
-                  left join ' . tablename('ewei_shop_seckill_task_room') . ' r on tg.roomid = r.id
-                  left join ' . tablename('ewei_shop_seckill_task_time') . ' t on tg.timeid = t.id
-                  left join ' . tablename('ewei_shop_seckill_task') . (' task on tg.taskid =task.id
-                  where 1 ' . $condition . '  group by tg.timeid,tg.goodsid order by t.time asc , tg.displayorder asc '), $params));
+		$total = count(pdo_fetchall('select tg.id from ' . tablename('ewei_shop_seckill_task_goods') . " tg\r\n                  left join " . tablename('ewei_shop_goods') . " g on tg.goodsid = g.id\r\n                  left join " . tablename('ewei_shop_seckill_task_room') . " r on tg.roomid = r.id\r\n                  left join " . tablename('ewei_shop_seckill_task_time') . " t on tg.timeid = t.id\r\n                  left join " . tablename('ewei_shop_seckill_task') . (" task on tg.taskid =task.id\r\n                  where 1 " . $condition . '  group by tg.timeid,tg.goodsid order by t.time asc , tg.displayorder asc '), $params));
 		$pager = pagination2($total, $pindex, $psize);
 		include $this->template();
 	}

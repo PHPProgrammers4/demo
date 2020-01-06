@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -13,7 +13,7 @@ class Index_EweiShopV2Page extends MobileLoginPage
 		$usermembercard = false;
 		$member = m('member')->getMember($_W['openid'], true);
 		if (p('membercard') && m('plugin')->permission('membercard')) {
-			$list_membercard = p('membercard')->get_Mycard('', 0, 100, 'all');
+			$list_membercard = p('membercard')->get_Mycard('', 0, 100);
 			$all_membercard = p('membercard')->get_Allcard(1, 100);
 			if (p('membercard') && $list_membercard['total'] <= 0 && $all_membercard['total'] <= 0) {
 				$usermembercard = false;

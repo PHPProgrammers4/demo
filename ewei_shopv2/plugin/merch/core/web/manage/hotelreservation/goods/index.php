@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -58,7 +57,7 @@ class Index_EweiShopV2Page extends MerchWebPage
 		$category = m('shop')->getFullCategory(true, true);
 		$levels = array(
 			array('id' => 0, 'key' => 'merch', 'levelname' => '促销价')
-		);
+			);
 		$com_virtual = com('virtual');
 
 		if ($_W['ispost']) {
@@ -448,10 +447,7 @@ class Index_EweiShopV2Page extends MerchWebPage
 			pdo_update('ewei_shop_goods', array('isdiscount_discounts' => $is_discounts_json), array('id' => $id));
 			if (0 < count($optionids) && $data['hasoption'] !== 0) {
 				pdo_query('delete from ' . tablename('ewei_shop_goods_option') . (' where goodsid=' . $id . ' and id not in ( ') . implode(',', $optionids) . ')');
-				$sql = 'update ' . tablename('ewei_shop_goods') . ' g set
-            g.minprice = (select min(marketprice) from ' . tablename('ewei_shop_goods_option') . (' where goodsid = ' . $id . '),
-            g.maxprice = (select max(marketprice) from ') . tablename('ewei_shop_goods_option') . (' where goodsid = ' . $id . ')
-            where g.id = ' . $id . ' and g.hasoption=1');
+				$sql = 'update ' . tablename('ewei_shop_goods') . " g set\r\n            g.minprice = (select min(marketprice) from " . tablename('ewei_shop_goods_option') . (' where goodsid = ' . $id . "),\r\n            g.maxprice = (select max(marketprice) from ") . tablename('ewei_shop_goods_option') . (' where goodsid = ' . $id . ")\r\n            where g.id = " . $id . ' and g.hasoption=1');
 				pdo_query($sql);
 			}
 			else {

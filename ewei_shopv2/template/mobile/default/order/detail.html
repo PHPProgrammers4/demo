@@ -127,7 +127,7 @@
 					{/if}
 
 					{if $order['refundstate'] > 0 && $order['refundstate']!=3}
-					(申请售后中)
+					({if $order['status'] ==1}申请退款{else}申请售后{/if}中)
 					{/if}
 
 					{if  $order['refundid'] !=0}
@@ -170,11 +170,7 @@
 				<div class="fui-according-content">
 					<div class="content-block">
 						<div class="fui-cell-group notop store-container">
-							{if $order['merchid'] > 0}
-							<a href="{php echo mobileUrl('store/detail',array('id'=>$store['id'], 'merchid'=>$order['merchid']))}" class="fui-cell">
-							{else}
 							<a href="{php echo mobileUrl('store/detail',array('id'=>$store['id']))}" class="fui-cell">
-							{/if}
 								<div class="fui-cell-icon">
 									<i class="icon icon-locationfill"></i>
 								</div>
@@ -313,7 +309,7 @@
 					<div style="color: #000">￥{php echo number_format($g['price']/$g['total'],2)}</div>
 					<div class="num">x{$g['total']}</div>
 
-					{if ($g['refund'] || $g['returngoods'] || $g['exchange']) && $is_single_refund}
+					{if ($order['canrefund'] || $canreturn) && $is_single_refund}
 						<div class="fui-cell-remark">
 							<div class="btn btn-sm btn-default-o" style="height: 22px;line-height: 20px;border-radius: 22px;font-size: 0.6rem;width: 2.7rem;padding: 0;text-align: center;" onclick="window.location.href='{php echo mobileUrl('order/single_refund', array('id'=>$g['id']))}'">
 								{if $g['single_refundstate']==8}
@@ -325,7 +321,7 @@
 								{elseif $g['single_refundstate']==2}
 									退货中
 								{elseif $g['single_refundstate']==0}
-									售后
+									{if $order['status']==1 && $g['sendtime']==0}退款{else}售后{/if}
 								{/if}
 							</div>
 						</div>
@@ -335,7 +331,7 @@
 			</a>
 			{if !empty($g['fullbackgoods'])}
 			<div class="fui-cell-group" {if $g['fullbackgoods']['minallfullbackallprice']<=0 && $g['fullbackgoods']['minallfullbackallratio']<=0}display: none;{/if}>
-			<a href="{php echo mobileUrl('member/fullback',array('orderid'=>$order['id']))}"  class="fui-cell">
+			<a href="{php echo mobileUrl('member/fullback')}"  class="fui-cell">
 				<div class="fui-cell-label">{php m('sale')->getFullBackText(true)}详情</div>
 				<div class="fui-cell-info">
 
@@ -343,9 +339,9 @@
 				<div class="fui-cell-remark">
 					<i class="icon icon-rechargefill" style="color: #ff6462;"></i>
 					{if $g['fullbackgoods']['type']>0}
-					{php m('sale')->getFullBackText(true)}  {php echo price_format($g['fullbackgoods']['minallfullbackallratio']*$g['total'],2)}%  ， {php echo price_format($g['fullbackgoods']['fullbackratio']*$g['total'],2)}% /天，共  {$g['fullbackgoods']['day']}  天
+					{php m('sale')->getFullBackText(true)}  {php echo price_format($g['fullbackgoods']['minallfullbackallratio'],2)}%  ， {php echo price_format($g['fullbackgoods']['fullbackratio'],2)}% /天，共  {$g['fullbackgoods']['day']}  天
 					{else}
-					{php m('sale')->getFullBackText(true)} &yen;{php echo price_format($g['fullbackgoods']['minallfullbackallprice']*$g['total'],2)}，&yen;{php echo price_format($g['fullbackgoods']['fullbackprice']*$g['total'],2)}/天，共 {$g['fullbackgoods']['day']} 天
+					{php m('sale')->getFullBackText(true)} &yen;{php echo price_format($g['fullbackgoods']['minallfullbackallprice'],2)}，&yen;{php echo price_format($g['fullbackgoods']['fullbackprice'],2)}/天，共 {$g['fullbackgoods']['day']} 天
 					{/if}
 				</div>
 			</a>
@@ -478,11 +474,7 @@
 		{loop $ordervirtualitem $ordervirtualrow}
 		<div class="fui-cell">
 			<div class="fui-cell-label">{$ordervirtualrow['key']}</div>
-			{if $order['islink'] == 1}
-			<div class="fui-cell-info" style="white-space: normal;word-wrap: break-word"><a href="{$ordervirtualrow['value']}">{$ordervirtualrow['value']}</a></div>
-			{else}
 			<div class="fui-cell-info" style="white-space: normal;word-wrap: break-word">{$ordervirtualrow['value']}</div>
-			{/if}
 		</div>
 		{/loop}
 		{if !empty($virtualtemp) && !empty($virtualtemp['linkurl'])}
@@ -753,13 +745,6 @@
 		{/if}
 	</div>
 
-	{if !empty($order['virtual']) && !empty($virtualtemp['description'])}
-	<div class='fui-cell-group' style="font-size: 0.7rem">
-		<div class='explain-title'>使用说明</div>
-		<div class='explain-content' style="white-space: pre-wrap;">{$virtualtemp['description']}</div>
-	</div>
-	{/if}
-
 	{if $order['invoicename']}
 	{php $invoice_info = m('sale')->parseInvoiceInfo($order['invoicename'])}
 	<div class="fui-cell-group noborder order-info">
@@ -852,9 +837,7 @@
 		{/if}
 
 		{if ($order['canrefund'] || $canreturn) && $order['refundstate']!=3}
-		<a data-nocache="true" class="btn btn-sm btn-default-o" href="{php echo mobileUrl('order/refund',array('id'=>$order['id']))}">
-			{if !empty($order['refundstate'])}查看{else}申请售后{/if}{if !empty($order['refundstate'])}进度{/if}
-		</a>
+		<a data-nocache="true" class="btn btn-sm btn-default-o" href="{php echo mobileUrl('order/refund',array('id'=>$order['id']))}">{if !empty($order['refundstate'])}查看{else}申请退款{/if}{if !empty($order['refundstate'])}进度{/if}</a>
 		{/if}
 
 		{if $order['refundstate'] > 0 && $refund['status']!=5 && $order['refundstate']!=3}

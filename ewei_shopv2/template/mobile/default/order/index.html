@@ -103,7 +103,7 @@
                     <%if order.iscycelbuy == 1%>
                     <span class='status noremark'>共 <span><%order.phaseNum%></span> 期商品 实付: <span class='text-danger'>&yen; <span class="bigprice"><%order.price%></span></span></span>
                     <%else%>
-                    <span class='status noremark'>共 <span><%order.goods_num%></span> 个商品 实付: <span class='text-danger'>&yen; <span class="bigprice"><%order.price%></span></span></span>
+                    <span class='status noremark'>共 <span><%order.goods.length%></span> 个商品 实付: <span class='text-danger'>&yen; <span class="bigprice"><%order.price%></span></span></span>
                     <%/if%>
                 </div>
             </a>

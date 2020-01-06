@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -19,13 +19,13 @@ class Batch_EweiShopV2Page extends PluginWebPage
 			22 => array('css' => 'warning', 'name' => '支付宝支付'),
 			23 => array('css' => 'warning', 'name' => '银联支付'),
 			3  => array('css' => 'primary', 'name' => '货到付款')
-		);
+			);
 		$orderstatus = array(
 			array('css' => 'danger', 'name' => '待付款'),
 			array('css' => 'info', 'name' => '待发货'),
 			array('css' => 'warning', 'name' => '待收货'),
 			array('css' => 'success', 'name' => '已完成')
-		);
+			);
 		if (empty($starttime) && empty($endtime)) {
 			$starttime = strtotime('-1 month');
 			$endtime = time();
@@ -153,14 +153,14 @@ class Batch_EweiShopV2Page extends PluginWebPage
 					22 => array('css' => 'warning', 'name' => '支付宝支付'),
 					23 => array('css' => 'warning', 'name' => '银联支付'),
 					3  => array('css' => 'primary', 'name' => '货到付款')
-				);
+					);
 				$orderstatus = array(
 					-1 => array('css' => 'default', 'name' => '已关闭'),
 					0  => array('css' => 'danger', 'name' => '待付款'),
 					1  => array('css' => 'info', 'name' => '待发货'),
 					2  => array('css' => 'warning', 'name' => '待收货'),
 					3  => array('css' => 'success', 'name' => '已完成')
-				);
+					);
 				$order_goods = pdo_fetchall('select g.id,g.title,g.shorttitle,g.thumb,g.unit,g.goodssn,og.optionid,og.goodssn as option_goodssn, g.productsn, g.weight, og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice,og.printstate,og.printstate2,og.id as ordergoodid from ' . tablename('ewei_shop_order_goods') . ' og ' . ' left join ' . tablename('ewei_shop_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.merchid=0 and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
 
 				foreach ($order_goods as $ii => $order_good) {
@@ -387,14 +387,14 @@ class Batch_EweiShopV2Page extends PluginWebPage
 				22 => array('css' => 'warning', 'name' => '支付宝支付'),
 				23 => array('css' => 'warning', 'name' => '银联支付'),
 				3  => array('css' => 'primary', 'name' => '货到付款')
-			);
+				);
 			$orderstatus = array(
 				-1 => array('css' => 'default', 'name' => '已关闭'),
 				0  => array('css' => 'danger', 'name' => '待付款'),
 				1  => array('css' => 'info', 'name' => '待发货'),
 				2  => array('css' => 'warning', 'name' => '待收货'),
 				3  => array('css' => 'success', 'name' => '已完成')
-			);
+				);
 
 			foreach ($orders as $i => $order) {
 				if (!empty($order['address_send'])) {

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -55,14 +54,14 @@ class Goods_trans_EweiShopV2Page extends MerchWebPage
 		if ($_GPC['export'] == 1) {
 			mca('statistics.goods_trans.export');
 			m('excel')->export($list, array(
-				'title'   => '商品转化率报告-' . date('Y-m-d-H-i', time()),
-				'columns' => array(
-					array('title' => '商品名称', 'field' => 'title', 'width' => 24),
-					array('title' => '浏览量', 'field' => 'viewcount', 'width' => 12),
-					array('title' => '购买数', 'field' => 'buycount', 'width' => 12),
-					array('title' => '转化率(%)', 'field' => 'percent', 'width' => 12)
-				)
-			));
+	'title'   => '商品转化率报告-' . date('Y-m-d-H-i', time()),
+	'columns' => array(
+		array('title' => '商品名称', 'field' => 'title', 'width' => 24),
+		array('title' => '浏览量', 'field' => 'viewcount', 'width' => 12),
+		array('title' => '购买数', 'field' => 'buycount', 'width' => 12),
+		array('title' => '转化率(%)', 'field' => 'percent', 'width' => 12)
+		)
+	));
 			mplog('statistics.goods_trans.export', '导出商品转化率报告');
 		}
 

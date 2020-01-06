@@ -111,24 +111,9 @@
 <script language="javascript">
     myrequire(['../../plugin/app/static/js/diy.min','tpl','web/biz'],function(modal,tpl){
         window.tpl = tpl;
-        console.log({$json});
         modal.init({$json});
     });
-    function callbackMerch (data) {
-        myrequire(['../../plugin/app/static/js/diy.min'],function(modal) {
-            modal.callbackMerch(data);
-        });
-    }
-    function callbackMerchCategory (data) {
-        myrequire(['../../plugin/app/static/js/diy.min'],function(modal) {
-            modal.callbackMerchCategory(data);
-        });
-    }
-    function callbackMerchGroup (data) {
-        myrequire(['../../plugin/app/static/js/diy.min'],function(modal) {
-            modal.callbackMerchGroup(data);
-        });
-    }
+
     function callbackGoods(data) {
         myrequire(['../../plugin/app/static/js/diy.min'],function(modal) {
             modal.callbackGoods(data);
@@ -154,7 +139,6 @@
             modal.callbackData(data);
         });
     }
-
 </script>
 
 {template '_footer'}

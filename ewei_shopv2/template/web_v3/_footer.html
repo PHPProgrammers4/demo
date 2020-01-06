@@ -56,10 +56,10 @@
             if (util.cookie.get('checkeweishopv2upgrade_sys')) {
                 return;
             }
-            $.post('{php echo webUrl("system/auth/upgrade_new/check")}',{check:0}, function (ret) {
+            $.post('{php echo webUrl("system/auth/upgrade/check")}',{check:0}, function (ret) {
                 if (ret && ret.status == '1') {
                     var result = ret.result;
-                    if (result.files.length>0 || result.database.length>0 || result.upgrades.length>0) {
+                    if (result.filecount > 0 || result.database || result.upgrades) {
                         $('#headingFive').find('.systips').show();
                         if($('#headingFive').attr('aria-expanded')=='false'){
                             $('#headingFive').click();

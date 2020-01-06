@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -202,10 +201,7 @@ class Tmessage_EweiShopV2Page extends WebPage
 
 			unset($v);
 			$value['contents'] = $matches[0];
-			$result['template_list'][$key]['content'] = str_replace(array('
-
-', '
-'), '<br />', $value['content']);
+			$result['template_list'][$key]['content'] = str_replace(array("\n\n", "\n"), '<br />', $value['content']);
 		}
 
 		unset($value);

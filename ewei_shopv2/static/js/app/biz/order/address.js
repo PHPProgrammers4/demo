@@ -1,1 +1,183 @@
-eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--){d[e(c)]=k[c]||e(c)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('2q([\'1i\',\'1x\'],f(1i,1x){3 I={};I.1S=f(1J){3 1K=[\'16.1G\'];4(1J.1V){1K=[\'16.1G\',\'16.1P\']}$(L).1q(\'1p\',\'#y-w\',f(){1W.1O({1N:f(d){$("#Q").7(d.1L);$(\'#H\').7(d.1Q);$(\'#w\').7(d.1R);$(\'#e\').7(d.A+" "+d.z+" "+d.1z);3 A=d.A,z=d.z,O=d.1z;3 1e=0,c=0,h=0;3 1C=\'../10/1a/19/13/1g/1c/1T.1b?v=5\';17=W(1C);4(k.1d){t=17.1U("w").T}G{t=17.T[0].j("V")}4(t.a>0){u(3 C=0;C<t.a;C++){V=t[C];4(V.b("K")==A&&A!=E&&A.1h().a>0){1e=V.b("x");S=t[C].j("1v");u(3 D=0;D<S.a;D++){4(S[D].b("K")==z&&z!=E&&z.1h().a>0){c=S[D].b("x");9=t[C].j("1v")[D].j("9");u(3 J=0;J<9.a;J++){4(9[J].b("K")==O&&O!=E&&O.1h().a>0){h=9[J].b("x")}}}}}}}3 8=1f(c,h);$(\'#6\').1M({1Y:\'请选择所在街道\',6:1,8:8,1Z:f(2f){3 18=$(\'#6\').n(\'8-14\');$(\'#6\').n(\'8-15\',18)}});$("#e").n("8-1s",1e+" "+c+" "+h);$("#y-s").n("12","y-1o")}})});$(L).1q(\'1p\',\'#y-1o\',f(){4($(2g).n(\'s\')){g}4($(\'#Q\').P()){p.q.r("请填写收件人");g}3 1l=/(境外地区)+/.N($(\'#e\').7());3 1k=/(台湾)+/.N($(\'#e\').7());3 1r=/(澳门)+/.N($(\'#e\').7());3 1n=/(香港)+/.N($(\'#e\').7());4(1l||1k||1r||1n){4($(\'#H\').P()){p.q.r("请填写手机号码");g}}G{4(!$(\'#H\').2h()){p.q.r("请填写正确手机号码");g}}4($(\'#e\').P()){p.q.r("请填写所在地区");g}4($(\'#w\').P()){p.q.r("请填写详细地址");g}$(\'#y-s\').1I(\'正在处理...\').n(\'s\',1);k.11={Q:$(\'#Q\').7(),H:$(\'#H\').7(),w:$(\'#w\').7(),e:$(\'#e\').7(),6:$(\'#6\').7(),18:$(\'#6\').n(\'8-15\'),15:$(\'#e\').n(\'8-1s\'),1t:$(\'#1t\').2i(\':2j\')?1:0};1i.F(\'2k/w/s\',{12:$(\'#1F\').7(),2e:k.11},f(F){$(\'#y-s\').1I(\'保存地址\').2l(\'s\');k.11.12=F.1A.1F;4(F.2m==1){p.q.r(\'保存成功!\');$("#2n").1X("2o","2p");2d.2c()}G{p.q.r(F.1A.2b)}},1E,1E)})};I.1f=f(c,R){3 M=c.1w(0,2);3 X=\'../10/1a/19/13/1g/1c/1B/\'+M+\'/\'+c+\'.1b\';3 U=I.W(X);3 l=U.T[0].j("9");3 8=[];4(l.a>0){u(3 i=0;i<l.a;i++){3 9=l[i];3 h=9.b("x");4(h==R){3 B=9.j("6");u(3 m=0;m<B.a;m++){3 6=B[m];8.1m({"1u":6.b(\'K\'),"14":6.b(\'x\'),"1j":[]})}}}}g 8};k.W=f(Y){3 o=E;4(k.1d){o=1H 1d("2a.29");o.28=1y;o.27(Y)||o.26(Y)}G 4(L.1D&&L.1D.25){3 Z=1H k.24();Z.23("22",Y,1y);Z.21(E);o=Z.20}G{o=E}g o};k.1f=f(c,R){3 M=c.1w(0,2);3 X=\'../10/1a/19/13/1g/1c/1B/\'+M+\'/\'+c+\'.1b\';3 U=W(X);3 l=U.T[0].j("9");3 8=[];4(l.a>0){u(3 i=0;i<l.a;i++){3 9=l[i];3 h=9.b("x");4(h==R){3 B=9.j("6");u(3 m=0;m<B.a;m++){3 6=B[m];8.1m({"1u":6.b(\'K\'),"14":6.b(\'x\'),"1j":[]})}}}}g 8};g I});',62,151,'|||var|if||street|val|data|county|length|getAttribute|city_code|res|areas|function|return|county_code||getElementsByTagName|window|CityList||attr|xmlDom|FoxUI|toast|show|submit|TopnodeList|for||address|code|btn|cityName|provinceName|streetlist|province_index|citys_index|null|json|else|mobile|modal|county_index|name|document|left|test|countyName|isEmpty|realname|area_code|citys|childNodes|xmlCityDoc|province|loadXmlFile|xmlUrl|xmlFile|xmlhttp|addons|editAddressData|id|js|value|datavalue|foxui|xmlDoc|streetdatavalue|static|ewei_shopv2|xml|area|ActiveXObject|province_code|loadStreetData|dist|trim|core|children|taiwan|jingwai|push|xianggang|submitadd|click|on|aomen|strvalue|isdefault|text|city|substring|tpl|false|countryName|result|list|xmlfile|implementation|true|addressid|picker|new|html|params|reqParams|userName|cityPicker|success|openAddress|citydatanew|telNumber|detailInfo|initPost|AreaNew|selectSingleNode|new_area|wx|css|title|onClose|responseXML|send|GET|open|XMLHttpRequest|createDocument|loadXML|load|async|XMLDOM|Microsoft|message|reload|location|addressdata|self|this|isMobile|is|checked|member|removeAttr|status|addaddress|display|none|define'.split('|'),0,{}))
+define(['core', 'tpl'], function (core, tpl) {
+    var modal = {};
+    modal.initPost = function (params) {
+        var reqParams = ['foxui.picker'];
+        if (params.new_area) {
+            reqParams = ['foxui.picker', 'foxui.citydatanew']
+        }
+        $(document).on('click', '#btn-address', function () {
+            wx.openAddress({
+                success: function (res) {
+                    $("#realname").val(res.userName);
+                    $('#mobile').val(res.telNumber);
+                    $('#address').val(res.detailInfo);
+                    $('#areas').val(res.provinceName + " " + res.cityName + " " + res.countryName);
+                    var provinceName = res.provinceName, cityName = res.cityName, countyName = res.countryName;
+                    var province_code = 0, city_code = 0, county_code = 0;
+                    var xmlfile = '../addons/ewei_shopv2/static/js/dist/area/AreaNew.xml?v=5';
+                    xmlDoc = loadXmlFile(xmlfile);
+                    if (window.ActiveXObject) {
+                        TopnodeList = xmlDoc.selectSingleNode("address").childNodes
+                    } else {
+                        TopnodeList = xmlDoc.childNodes[0].getElementsByTagName("province")
+                    }
+                    if (TopnodeList.length > 0) {
+                        for (var province_index = 0; province_index < TopnodeList.length; province_index++) {
+                            province = TopnodeList[province_index];
+                            if (province.getAttribute("name") == provinceName && provinceName != null && provinceName.trim().length > 0) {
+                                province_code = province.getAttribute("code");
+                                citys = TopnodeList[province_index].getElementsByTagName("city");
+                                for (var citys_index = 0; citys_index < citys.length; citys_index++) {
+                                    if (citys[citys_index].getAttribute("name") == cityName && cityName != null && cityName.trim().length > 0) {
+                                        city_code = citys[citys_index].getAttribute("code");
+                                        county = TopnodeList[province_index].getElementsByTagName("city")[citys_index].getElementsByTagName("county");
+                                        for (var county_index = 0; county_index < county.length; county_index++) {
+                                            if (county[county_index].getAttribute("name") == countyName && countyName != null && countyName.trim().length > 0) {
+                                                county_code = county[county_index].getAttribute("code")
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    var data = loadStreetData(city_code, county_code);
+                    $('#street').cityPicker({
+                        title: '请选择所在街道', street: 1, data: data, onClose: function (self) {
+                            var streetdatavalue = $('#street').attr('data-value');
+                            $('#street').attr('data-datavalue', streetdatavalue);
+                        }
+                    });
+                    $("#areas").attr("data-strvalue", province_code + " " + city_code + " " + county_code);
+                    $("#btn-submit").attr("id", "btn-submitadd");
+                }
+            })
+        });
+        $(document).on('click', '#btn-submitadd', function () {
+            if ($(this).attr('submit')) {
+                return
+            }
+            if ($('#realname').isEmpty()) {
+                FoxUI.toast.show("请填写收件人");
+                return
+            }
+            var jingwai = /(境外地区)+/.test($('#areas').val());
+            var taiwan = /(台湾)+/.test($('#areas').val());
+            var aomen = /(澳门)+/.test($('#areas').val());
+            var xianggang = /(香港)+/.test($('#areas').val());
+            if (jingwai || taiwan || aomen || xianggang) {
+                if ($('#mobile').isEmpty()) {
+                    FoxUI.toast.show("请填写手机号码");
+                    return
+                }
+            } else {
+                if (!$('#mobile').isMobile()) {
+                    FoxUI.toast.show("请填写正确手机号码");
+                    return
+                }
+            }
+            if ($('#areas').isEmpty()) {
+                FoxUI.toast.show("请填写所在地区");
+                return
+            }
+            if ($('#address').isEmpty()) {
+                FoxUI.toast.show("请填写详细地址");
+                return
+            }
+
+            $('#btn-submit').html('正在处理...').attr('submit', 1);
+            window.editAddressData = {
+                realname: $('#realname').val(),
+                mobile: $('#mobile').val(),
+                address: $('#address').val(),
+                areas: $('#areas').val(),
+                street: $('#street').val(),
+                streetdatavalue: $('#street').attr('data-datavalue'),
+                datavalue: $('#areas').attr('data-strvalue'),
+                isdefault: $('#isdefault').is(':checked') ? 1 : 0
+            };
+
+            core.json('member/address/submit', {
+                id: $('#addressid').val(),
+                addressdata: window.editAddressData
+            }, function (json) {
+                $('#btn-submit').html('保存地址').removeAttr('submit');
+                window.editAddressData.id = json.result.addressid;
+                if (json.status == 1) {
+                    FoxUI.toast.show('保存成功!');
+                    $("#addaddress").css("display", "none");
+                    location.reload()
+                } else {
+                    FoxUI.toast.show(json.result.message)
+                }
+            }, true, true)
+        })
+    };
+    modal.loadStreetData = function (city_code, area_code) {
+        var left = city_code.substring(0, 2);
+        var xmlUrl = '../addons/ewei_shopv2/static/js/dist/area/list/' + left + '/' + city_code + '.xml';
+        var xmlCityDoc = modal.loadXmlFile(xmlUrl);
+        var CityList = xmlCityDoc.childNodes[0].getElementsByTagName("county");
+        var data = [];
+        if (CityList.length > 0) {
+            for (var i = 0; i < CityList.length; i++) {
+                var county = CityList[i];
+                var county_code = county.getAttribute("code");
+                if (county_code == area_code) {
+                    var streetlist = county.getElementsByTagName("street");
+                    for (var m = 0; m < streetlist.length; m++) {
+                        var street = streetlist[m];
+                        data.push({
+                            "text": street.getAttribute('name'),
+                            "value": street.getAttribute('code'),
+                            "children": []
+                        })
+                    }
+                }
+            }
+        }
+        return data
+    };
+    window.loadXmlFile = function (xmlFile) {
+        var xmlDom = null;
+        if (window.ActiveXObject) {
+            xmlDom = new ActiveXObject("Microsoft.XMLDOM");
+            xmlDom.async = false;
+            xmlDom.load(xmlFile) || xmlDom.loadXML(xmlFile)
+        } else if (document.implementation && document.implementation.createDocument) {
+            var xmlhttp = new window.XMLHttpRequest();
+            xmlhttp.open("GET", xmlFile, false);
+            xmlhttp.send(null);
+            xmlDom = xmlhttp.responseXML
+        } else {
+            xmlDom = null
+        }
+        return xmlDom
+    };
+    window.loadStreetData = function (city_code, area_code) {
+        var left = city_code.substring(0, 2);
+        var xmlUrl = '../addons/ewei_shopv2/static/js/dist/area/list/' + left + '/' + city_code + '.xml';
+        var xmlCityDoc = loadXmlFile(xmlUrl);
+        var CityList = xmlCityDoc.childNodes[0].getElementsByTagName("county");
+        var data = [];
+        if (CityList.length > 0) {
+            for (var i = 0; i < CityList.length; i++) {
+                var county = CityList[i];
+                var county_code = county.getAttribute("code");
+                if (county_code == area_code) {
+                    var streetlist = county.getElementsByTagName("street");
+                    for (var m = 0; m < streetlist.length; m++) {
+                        var street = streetlist[m];
+                        data.push({
+                            "text": street.getAttribute('name'),
+                            "value": street.getAttribute('code'),
+                            "children": []
+                        })
+                    }
+                }
+            }
+        }
+        return data
+    };
+    return modal
+});

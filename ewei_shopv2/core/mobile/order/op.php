@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -15,40 +15,8 @@ class Op_EweiShopV2Page extends MobileLoginPage
 	{
 		global $_W;
 		global $_GPC;
-		global $_S;
 		$orderid = intval($_GPC['id']);
-		$peerid = intval($_GPC['id']);
-		$uniacid = $_W['uniacid'];
-		$refundid = intval($_GPC['refundid']);
-		$order = pdo_fetch('select id,ordersn,openid,status,deductcredit,deductcredit2,deductprice,couponid,isparent,`virtual`,`virtual_info`,merchid from ' . tablename('ewei_shop_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $_W['uniacid'], ':openid' => $_W['openid']));
-
-		if (empty($refundid)) {
-			$refundid = $order['refundid'];
-		}
-
-		if (!empty($refundid)) {
-			$refund = pdo_fetch('select * from ' . tablename('ewei_shop_order_refund') . ' where id=:id limit 1', array(':id' => $refundid));
-		}
-
-		$peerpay = pdo_fetch('select p.*,o.openid from ' . tablename('ewei_shop_order_peerpay') . ' p join ' . tablename('ewei_shop_order') . ' o on o.id=p.orderid where p.orderid=:id and p.uniacid=:uniacid limit 1', array(':id' => $peerid, ':uniacid' => $uniacid));
-		$peerpay_info = pdo_fetchall('select * from ' . tablename('ewei_shop_order_peerpay_payinfo') . ' where pid=:pid', array(':pid' => $peerpay['id']));
-		$peerpay_info1 = (double) pdo_fetchcolumn('select SUM(price) price from ' . tablename('ewei_shop_order_peerpay_payinfo') . ' where pid=:pid limit 1', array(':pid' => $peerpay['id']));
-		$rate_price = round($peerpay['peerpay_realprice'] - $peerpay_info1, 2);
-
-		if (0 < $rate_price) {
-			$shopset = $_S['shop'];
-
-			foreach ($peerpay_info as $v) {
-				if ($v['paytype'] == 1) {
-					m('member')->setCredit($v['openid'], 'credit2', $v['price'], array(0, $shopset['name'] . ('退款: ' . $v['price'] . '元 代付订单号: ') . $order['ordersn']));
-				}
-				else {
-					if ($v['paytype'] == 21) {
-						m('finance')->refund($v['openid'], $v['tid'], $refund['refundno'] . $v['id'], $v['price'] * 100, $v['price'] * 100, !empty($order['apppay']) ? true : false);
-					}
-				}
-			}
-		}
+		$order = pdo_fetch('select id,1688_orderId,ordersn,openid,status,deductcredit,deductcredit2,deductprice,couponid,isparent,`virtual`,`virtual_info`,merchid from ' . tablename('ewei_shop_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $_W['uniacid'], ':openid' => $_W['openid']));
 
 		if (empty($order)) {
 			show_json(0, '订单未找到');
@@ -101,6 +69,23 @@ class Op_EweiShopV2Page extends MobileLoginPage
 			}
 		}
 
+		$data = [];
+        $data['webSite'] = '1688';
+		$data['tradeID'] = $order['1688_orderId'];
+        $data['cancelReason'] = 'other';
+        $data['remark'] = trim($_GPC['remark']);
+
+		$url =  m('common')->post_alibaba_api($this->access_token, $this->appSecret, 'param2/1/com.alibaba.trade/alibaba.trade.cancel/', $data);
+
+        $adata = m('common')->curl_post($data,$url);
+
+//        var_dump($adata);die;
+
+        if($adata['success'] != true){
+            show_json(0, '取消失败');
+		}
+
+
 		pdo_update('ewei_shop_order', array('status' => -1, 'canceltime' => time(), 'closereason' => trim($_GPC['remark'])), array('id' => $order['id'], 'uniacid' => $_W['uniacid']));
 
 		if (!empty($order['isparent'])) {
@@ -142,11 +127,7 @@ class Op_EweiShopV2Page extends MobileLoginPage
 		pdo_update('ewei_shop_order', array('status' => 3, 'finishtime' => time(), 'refundstate' => 0), array('id' => $order['id'], 'uniacid' => $_W['uniacid']));
 		m('order')->setStocksAndCredits($orderid, 3, true);
 		m('order')->fullback($orderid);
-		$memberSetting = m('common')->getSysset('member');
-		if ((int) $memberSetting['upgrade_condition'] === 1 || empty($memberSetting['upgrade_condition'])) {
-			m('member')->upgradeLevel($order['openid'], $orderid);
-		}
-
+		m('member')->upgradeLevel($order['openid'], $orderid);
 		m('order')->setGiveBalance($orderid, 1);
 
 		if (com('coupon')) {

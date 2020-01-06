@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -17,8 +17,8 @@ return array(
 			array('title' => '会员卡管理', 'route' => 'cardmanage'),
 			array('title' => '领取记录', 'route' => 'getrecord'),
 			array('title' => '删除记录', 'route' => 'delrecord')
+			)
 		)
-	)
-);
+	);
 
 ?>

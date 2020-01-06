@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -104,20 +103,20 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 
 			unset($row);
 			m('excel')->export($list, array(
-				'title'   => '结算单-' . time(),
-				'columns' => array(
-					array('title' => 'ID', 'field' => 'id', 'width' => 12),
-					array('title' => '结算类型', 'field' => 'paytype', 'width' => 12),
-					array('title' => '单号', 'field' => 'billno', 'width' => 24),
-					array('title' => '日期', 'field' => 'days', 'width' => 12),
-					array('title' => '订单数', 'field' => 'ordercount', 'width' => 12),
-					array('title' => '订单金额', 'field' => 'ordermoney', 'width' => 12),
-					array('title' => '股东数', 'field' => 'partnercount', 'width' => 12),
-					array('title' => '预计分红', 'field' => 'bonusmoney', 'width' => 12),
-					array('title' => '最终分红', 'field' => 'bonusmoney_send', 'width' => 12),
-					array('title' => '状态', 'field' => 'statusstr', 'width' => 12)
-				)
-			));
+	'title'   => '结算单-' . time(),
+	'columns' => array(
+		array('title' => 'ID', 'field' => 'id', 'width' => 12),
+		array('title' => '结算类型', 'field' => 'paytype', 'width' => 12),
+		array('title' => '单号', 'field' => 'billno', 'width' => 24),
+		array('title' => '日期', 'field' => 'days', 'width' => 12),
+		array('title' => '订单数', 'field' => 'ordercount', 'width' => 12),
+		array('title' => '订单金额', 'field' => 'ordermoney', 'width' => 12),
+		array('title' => '股东数', 'field' => 'partnercount', 'width' => 12),
+		array('title' => '预计分红', 'field' => 'bonusmoney', 'width' => 12),
+		array('title' => '最终分红', 'field' => 'bonusmoney_send', 'width' => 12),
+		array('title' => '状态', 'field' => 'statusstr', 'width' => 12)
+		)
+	));
 		}
 
 		$total = pdo_fetchcolumn('select count(*) from' . tablename('ewei_shop_globonus_bill') . ('  where 1 ' . $condition), $params);
@@ -171,22 +170,22 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 
 			unset($row);
 			m('excel')->export($list, array(
-				'title'   => '结算单股东数据-' . $data['billno'],
-				'columns' => array(
-					array('title' => 'ID', 'field' => 'id', 'width' => 12),
-					array('title' => '单号', 'field' => 'payno', 'width' => 12),
-					array('title' => '昵称', 'field' => 'nickname', 'width' => 12),
-					array('title' => '姓名', 'field' => 'realname', 'width' => 12),
-					array('title' => '手机号', 'field' => 'mobile', 'width' => 12),
-					array('title' => '微信号', 'field' => 'weixin', 'width' => 12),
-					array('title' => 'openid', 'field' => 'openid', 'width' => 24),
-					array('title' => '等级', 'field' => 'levelname', 'width' => 12),
-					array('title' => '计算分红', 'field' => 'money', 'width' => 12),
-					array('title' => '实际分红', 'field' => 'realmoney', 'width' => 12),
-					array('title' => '最终分红', 'field' => 'paymoney', 'width' => 12),
-					array('title' => '打款时间', 'field' => 'paytime', 'width' => 12)
-				)
-			));
+	'title'   => '结算单股东数据-' . $data['billno'],
+	'columns' => array(
+		array('title' => 'ID', 'field' => 'id', 'width' => 12),
+		array('title' => '单号', 'field' => 'payno', 'width' => 12),
+		array('title' => '昵称', 'field' => 'nickname', 'width' => 12),
+		array('title' => '姓名', 'field' => 'realname', 'width' => 12),
+		array('title' => '手机号', 'field' => 'mobile', 'width' => 12),
+		array('title' => '微信号', 'field' => 'weixin', 'width' => 12),
+		array('title' => 'openid', 'field' => 'openid', 'width' => 24),
+		array('title' => '等级', 'field' => 'levelname', 'width' => 12),
+		array('title' => '计算分红', 'field' => 'money', 'width' => 12),
+		array('title' => '实际分红', 'field' => 'realmoney', 'width' => 12),
+		array('title' => '最终分红', 'field' => 'paymoney', 'width' => 12),
+		array('title' => '打款时间', 'field' => 'paytime', 'width' => 12)
+		)
+	));
 		}
 
 		$set = $this->getSet();
@@ -385,7 +384,7 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			show_json(0, '此股东已经结算!');
 		}
 
-		if (empty($partner['openid'])) {
+		if (empty($partner['openid']) || $partner['paymoney'] <= 0) {
 			show_json(0, '结算数据错误!');
 		}
 

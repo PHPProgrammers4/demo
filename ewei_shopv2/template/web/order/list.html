@@ -104,7 +104,7 @@
     <tr ><td colspan='8' style='height:20px;padding:0;border-top:none;'>&nbsp;</td></tr>
     <tr class='trorder'>
         <td colspan='4' >
-            订单编号:  {$item['ordersn']}{if $item['ispackage']}&nbsp;<span class="label label-success">套餐</span>{/if}
+            订单编号:  {$item['ordersn']} 1688订单编号:  {$item['1688_orderId']} {if $item['ispackage']} &nbsp;<span class="label label-success">套餐</span>{/if}
             {if !empty($item['refundstate'])}<label class='label label-danger'>{$r_type[$item['rtype']]}申请</label>{/if}
             {if !empty($item['refundstate']) && $item['rstatus'] == 4}<label class='label label-default'>客户退回物品</label>{/if}
         </td>

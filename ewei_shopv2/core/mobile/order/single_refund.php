@@ -1,12 +1,6 @@
 <?php
 
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
+
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -20,7 +14,7 @@ class Single_Refund_EweiShopV2Page extends MobileLoginPage {
         $uniacid = $_W['uniacid'];
 
         //订单商品
-        $order = pdo_fetch('select o.id,o.price,o.couponprice,o.iscycelbuy,o.status,o.virtual,o.isverify,o.refundstate,o.finishtime,o.deductprice,o.deductcredit2,o.dispatchprice,o.deductenough,o.merchdeductenough,g.cannotrefund,g.refund,g.returngoods,g.exchange,g.type,og.single_refundid,og.single_refundstate,og.single_refundtime,og.realprice as og_realprice,o.grprice,og.consume,o.ispackage,og.sendtime from ' . tablename('ewei_shop_order') .' o '
+        $order = pdo_fetch('select o.id,o.price,o.couponprice,o.iscycelbuy,o.status,o.virtual,o.isverify,o.refundstate,o.finishtime,o.deductprice,o.deductcredit2,o.dispatchprice,o.deductenough,o.merchdeductenough,g.cannotrefund,og.single_refundid,og.single_refundstate,og.single_refundtime,og.realprice as og_realprice,o.grprice,og.consume,o.ispackage,og.sendtime from ' . tablename('ewei_shop_order') .' o '
             . ' left join ' . tablename('ewei_shop_order_goods') . ' og on og.orderid=o.id'
             . ' left join ' . tablename('ewei_shop_goods') . ' g on g.id=og.goodsid'
             . ' where og.id=:ogid and o.openid=:openid and o.uniacid=:uniacid'
@@ -65,20 +59,9 @@ class Single_Refund_EweiShopV2Page extends MobileLoginPage {
             $_err = '全返订单,无法进行单商品退款';
         }
 
-        $refundgoods = array(
-            'refund' => $order['refund'] ? true : false,
-            'returngoods' => $order['returngoods'] ? true : false,
-            'exchange' => $order['exchange'] ? true : false,
-        );
-        //虚拟商品完成订单
-        if($order['status']>=3 && $order['type']==2 ){
-            $refundgoods['returngoods'] = false;
-            $refundgoods['exchange'] = false;
-        }
-
-        if ($order['status'] <= 0) {
-            $_err = '订单未付款或已关闭，不能申请退款!';
-        } elseif($order['status']==2 && !empty($order['cannotrefund']) && empty($order['refund']) && empty($order['returngoods']) && empty($order['exchange']) ) {
+        if ($order['status'] == 0) {
+            $_err = '订单未付款，不能申请退款!';
+        } elseif($order['status']==2 && !empty($order['cannotrefund'])) {
             $_err = '此商品不可退换货!';
         }elseif($order['status'] == 3) {
             if (!empty($order['virtual']) || $order['isverify'] == 1) {
@@ -96,10 +79,6 @@ class Single_Refund_EweiShopV2Page extends MobileLoginPage {
                     $_err = '订单完成, 无法申请退款!';
                 }
             }
-        }
-        $refund = pdo_fetch("select id.orderid from ".tablename('ewei_shop_order_refund')." where uniacid = :uniacid and orderid = :orderid and :goodsid in (ordergoodsids) and status > 0 limit 1 ",array(':uniacid'=>$uniacid,':orderid'=>$order['id'],':goodsid'=>$order_goodsid));
-        if(!empty($refund)){
-            $_err = '此订单已完成维权，不能申请退款!';
         }
 
         if (!empty($_err)) {
@@ -156,7 +135,6 @@ class Single_Refund_EweiShopV2Page extends MobileLoginPage {
 
         return array(
             'uniacid' => $uniacid,
-            'refundgoods' => $refundgoods,
             'openid' => $_W['openid'],
             'order_goodsid' => $order_goodsid,
             'order' => $order,

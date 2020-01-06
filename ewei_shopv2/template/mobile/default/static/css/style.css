@@ -887,7 +887,7 @@ a {
 .picker-modal .page-goods-detail .fui-sale-group .fui-cell .fui-cell-text{
     line-height: 0.9rem;
 }
-/**/
+
 .page-goods-detail .fui-sale-group .fui-cell.sendgoods .fui-cell-text{
     font-size:0.6rem;
     color:#666;
@@ -1789,9 +1789,9 @@ a {
     vertical-align: middle;
     margin-top: -6px;
    padding:0  0.5rem;
-    height:0.9rem;
-    line-height: 0.9rem;
-    border-radius: 0.9rem;
+    height:1.1rem;
+    line-height: 1.1rem;
+    border-radius: 1.1rem;
     color: #fff;
     font-size:0.5rem;
     background: -moz-linear-gradient(left, #f0b938 0%, #f09938 100%);
@@ -1994,7 +1994,7 @@ a {
 
 
 .member-page .headinfo .child .title {
-    margin-top: 1.2rem;
+    padding-top: 1.2rem;
     font-size: 0.7rem;
     color: #fff;
     text-align: center;
@@ -3280,7 +3280,6 @@ a {
     display: none;
 }
 
-.fui-modal .verify-pop,
 .verify-pop {
     position: absolute;
     top: 0;
@@ -3882,7 +3881,7 @@ a {
 /*border-bottom: 1px solid #d9d9d9;*/
 /*}*/
 
-/*mjy*/
+
 .member-cart-page .fui-list-media img {
     width: 4rem;
     height: 4rem;
@@ -4070,7 +4069,6 @@ a {
 .member-cart-page2 .fui-list.goods-item .fui-list-inner{
     min-height:3.5rem ;
 }
-
 .page-shop-notice-detail .fui-content .fui-article {
     padding-top: 0.5rem;
 }

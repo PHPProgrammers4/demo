@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -119,13 +119,6 @@ class Transfer_EweiShopV2Page extends SystemPage
 								unset($o['id']);
 								$o['uniacid'] = $wechatid1;
 								$o['goodsid'] = $newgoodsid;
-								$o['day'] = 0;
-								$o['allfullbackprice'] = 0;
-								$o['fullbackprice'] = 0;
-								$o['allfullbackratio'] = 0;
-								$o['fullbackratio'] = 0;
-								$o['isfullback'] = 0;
-								$o['isfullback'] = 0;
 								pdo_insert('ewei_shop_goods_option', $o);
 								$newoptionid = pdo_insertid();
 								$newspecitemids = array();

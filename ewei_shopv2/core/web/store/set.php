@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -32,11 +31,11 @@ class Set_EweiShopV2Page extends WebPage
 			}
 
 			m('common')->updateSysset(array(
-				'verify' => array('keyword' => $keyword, 'type' => $type)
-			));
+	'verify' => array('keyword' => $keyword, 'type' => $type)
+	));
 			m('common')->updatePluginset(array(
-				'verify' => array('keyword' => $keyword, 'type' => $type)
-			));
+	'verify' => array('keyword' => $keyword, 'type' => $type)
+	));
 			$rule = pdo_fetch('select * from ' . tablename('rule') . ' where uniacid=:uniacid and module=:module and name=:name  limit 1', array(':uniacid' => $_W['uniacid'], ':module' => 'ewei_shopv2', ':name' => 'ewei_shopv2:com:verify'));
 
 			if (empty($rule)) {

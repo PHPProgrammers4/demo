@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -267,14 +267,14 @@ class Order_EweiShopV2Page extends DividendWebPage
 			22 => array('css' => 'warning', 'name' => '支付宝支付'),
 			23 => array('css' => 'warning', 'name' => '银联支付'),
 			3  => array('css' => 'primary', 'name' => '货到付款')
-		);
+			);
 		$orderstatus = array(
 			-1 => array('css' => 'default', 'name' => '已关闭'),
 			0  => array('css' => 'danger', 'name' => '待付款'),
 			1  => array('css' => 'info', 'name' => '待发货'),
 			2  => array('css' => 'warning', 'name' => '待收货'),
 			3  => array('css' => 'success', 'name' => '已完成')
-		);
+			);
 		$is_merch = array();
 		$is_merchname = 0;
 
@@ -394,14 +394,6 @@ class Order_EweiShopV2Page extends DividendWebPage
 
 				if (!empty($agentid)) {
 					$magent = m('member')->getMember($agentid);
-				}
-
-				if (!empty($value['headsid']) && !empty($value['dividend'])) {
-					$dividend = iunserializer($value['dividend']);
-
-					if (!empty($dividend)) {
-						$value['dividend'] = isset($dividend['dividend_price']) ? floatval($dividend['dividend_price']) : 0;
-					}
 				}
 
 				$order_goods = pdo_fetchall('select g.id,g.title,g.thumb,g.goodssn,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice,og.changeprice,og.oldprice,og.commission1,og.commission2,og.commission3,og.commissions,og.diyformdata,og.diyformfields,op.specs,g.merchid from ' . tablename('ewei_shop_order_goods') . ' og ' . ' left join ' . tablename('ewei_shop_goods') . ' g on g.id=og.goodsid ' . ' left join ' . tablename('ewei_shop_goods_option') . ' op on og.optionid = op.id ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $uniacid, ':orderid' => $value['id']));
@@ -577,7 +569,6 @@ class Order_EweiShopV2Page extends DividendWebPage
 				array('title' => '分销商昵称', 'field' => 'agent_nickname', 'width' => 12),
 				array('title' => '分销商姓名', 'field' => 'agent_realname', 'width' => 12),
 				array('title' => '分销商手机号', 'field' => 'agent_mobile', 'width' => 12),
-				array('title' => '团队分红', 'field' => 'dividend', 'width' => 12),
 				array('title' => '粉丝昵称', 'field' => 'nickname', 'width' => 12),
 				array('title' => '会员姓名', 'field' => 'mrealname', 'width' => 12),
 				array('title' => 'openid', 'field' => 'openid', 'width' => 24),
@@ -617,7 +608,7 @@ class Order_EweiShopV2Page extends DividendWebPage
 				array('title' => '订单备注', 'field' => 'remark', 'width' => 36),
 				array('title' => '核销员', 'field' => 'salerinfo', 'width' => 24),
 				array('title' => '核销门店', 'field' => 'storeinfo', 'width' => 36)
-			);
+				);
 
 			if (p('diyform')) {
 				$columns[] = array('title' => '订单自定义信息', 'field' => 'order_diyformdata', 'width' => 36);

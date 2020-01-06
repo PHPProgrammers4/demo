@@ -1,19 +1,12 @@
 <?php
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 function app_error($errcode = 0,$message = '') {
-    return json_encode(array(
+    die(json_encode(array(
         'error'=>$errcode,
         'message'=>empty($message)?AppError::getError( $errcode ):$message
-    ));
+    )));
 
 }
 
@@ -27,7 +20,8 @@ function app_json($result = null,$openid) {
     $key = time().'@'.$openid;
     $auth =array('authkey'=>base64_encode(authcode($key,'ENCODE', "ewei_shopv2_wxapp")));
     m('cache')->set($auth['authkey'],1);
-    return json_encode( array_merge($ret,$auth,$result));
+    die(json_encode( array_merge($ret,$auth,$result)));
+
 }
 require EWEI_SHOPV2_PLUGIN . 'app/core/error_code.php';
 require EWEI_SHOPV2_PLUGIN . 'app/core/wxapp/wxBizDataCrypt.php';
@@ -50,7 +44,7 @@ class Wxapp_EweiShopV2Page extends Page
 
         $code = trim($_GPC['code']);
         if (empty($code)) {
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
         $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$this->appid}&secret={$this->appsecret}&js_code={$code}&grant_type=authorization_code";
         
@@ -58,7 +52,7 @@ class Wxapp_EweiShopV2Page extends Page
         $resp = ihttp_request($url);
 
         if(is_error($resp)){
-            return app_error(AppError::$SystemError , $resp['message']);;
+            app_error(AppError::$SystemError , $resp['message']);;
         }
         $arr = @json_decode($resp['content'],true);
         $arr['isclose'] = $_W['shopset']['app']['isclose'];
@@ -67,9 +61,9 @@ class Wxapp_EweiShopV2Page extends Page
         }
 
         if(!is_array($arr) || !isset($arr['openid'])){
-            return app_error(AppError::$WxAppLoginError);
+            app_error(AppError::$WxAppLoginError);
         }
-        return app_json($arr,$arr['openid']);
+        app_json($arr,$arr['openid']);
 
     }
 
@@ -83,7 +77,7 @@ class Wxapp_EweiShopV2Page extends Page
         $iv = trim($_GPC['iv']);
         $sessionKey = trim($_GPC['sessionKey']);
         if (empty($encryptedData) || empty($iv)) {
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
         $pc = new WXBizDataCrypt($this->appid, $sessionKey);
         $errCode = $pc->decryptData($encryptedData, $iv, $data);
@@ -131,9 +125,9 @@ class Wxapp_EweiShopV2Page extends Page
             if (p('commission')) {
                 p('commission')->checkAgent($member['openid']);
             }
-            return app_json($data,$data['openId']);
+            app_json($data,$data['openId']);
         }
-        return app_error(AppError::$WxAppError , '登录错误, 错误代码: '.$errCode);
+        app_error(AppError::$WxAppError , '登录错误, 错误代码: '.$errCode);
     }
 
     /**

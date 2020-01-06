@@ -1,7 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
-echo '
-';
+echo "\r\n";
 
 if (!defined('IN_IA')) {
 	exit('Access Denied');
@@ -21,9 +19,9 @@ return array(
 				'title'   => '海报管理',
 				'route'   => '',
 				'extends' => array('poster.scan')
+				)
 			)
 		)
-	)
-);
+	);
 
 ?>

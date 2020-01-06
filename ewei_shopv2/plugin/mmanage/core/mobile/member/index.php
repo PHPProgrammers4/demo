@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -166,21 +166,6 @@ class Index_EweiShopV2Page extends MmanageMobilePage
 					if (!empty($data['mobileverify']) && empty($password)) {
 						show_json(0, '开启绑定前请为用户设置密码');
 					}
-
-					if (!empty($password)) {
-						$salt = $member['salt'];
-
-						if (empty($salt)) {
-							$salt = m('account')->getSalt();
-						}
-
-						$data['pwd'] = md5($password . $salt);
-						$data['salt'] = $salt;
-					}
-				}
-
-				if (!empty($member['mobileverify']) && !empty($member['mobile'])) {
-					$password = trim($_GPC['password']);
 
 					if (!empty($password)) {
 						$salt = $member['salt'];

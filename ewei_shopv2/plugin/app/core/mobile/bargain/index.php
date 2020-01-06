@@ -1,16 +1,9 @@
 <?php
 
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class Index_EweiShopV2Page extends AppMobilePage
 {
@@ -20,26 +13,25 @@ class Index_EweiShopV2Page extends AppMobilePage
      */
     public function get_list() {
         global $_GPC, $_W;
-        $pindex = max(1, intval($_GPC['page']));
-        $pagesize =  max(30, intval($_GPC['pagesize']));
+
+        $pagesize = intval($_GPC['pagesize']);
+
+
         $condition = ' bg.account_id = :uniacid AND bg.status = 0 AND g.deleted = 0 AND g.status = 1';
         $params = array(
             ':uniacid' => intval($_W['uniacid']),
         );
+
         if(!empty($_GPC['keywords'])){
             $keywords = trim($_GPC['keywords']);
             $condition .= " AND g.title LIKE '%{$keywords}%' ";
         }
+
         $sql = "SELECT bg.* ,g.id as gid,g.title,g.subtitle,g.thumb,g.marketprice,g.productprice,g.minprice,g.maxprice,g.isdiscount,g.isdiscount_time,g.isdiscount_discounts,g.sales,g.salesreal,g.total,g.description,g.bargain,g.`type` as gtype,g.ispresell,g.`virtual`,g.hasoption,g.video FROM " .tablename('ewei_shop_bargain_goods'). " bg ".
             " LEFT JOIN " .tablename('ewei_shop_goods'). " g ON g.id = bg.goods_id ".
-            " WHERE {$condition} ORDER BY bg.id DESC LIMIT " . ($pindex - 1) * $pagesize . "," . $pagesize;
-        $list = pdo_fetchall($sql,$params);
-        $data = date('Y-m-d h:i:s');
-        $sqlcount = "SELECT bg.id,bg.start_time,bg.end_time FROM " .tablename('ewei_shop_bargain_goods'). " bg ".
-            " LEFT JOIN " .tablename('ewei_shop_goods'). " g ON g.id = bg.goods_id ".
-            " WHERE {$condition}  ORDER BY bg.id DESC ";
-        $count = pdo_fetchall($sqlcount,$params);
+            " WHERE {$condition} ORDER BY bg.id DESC ";
 
+        $list = pdo_fetchall($sql,$params);
         foreach($list as $k =>$v){
             if (strtotime($v['start_time'])>time()) {
                 unset($list[$k]);
@@ -47,16 +39,10 @@ class Index_EweiShopV2Page extends AppMobilePage
                 unset($list[$k]);
             }
         }
-        foreach($count as $k =>$v){
-            if (strtotime($v['start_time'])>time()) {
-                unset($count[$k]);
-            }elseif (strtotime($v['end_time'])<time()) {
-                unset($count[$k]);
-            }
-        }
-        $count = count($count);
+
         $list = set_medias($list, 'thumb');
-        return app_json(array('list' => $list, 'total' => $count, 'pindex'=>$pindex,'pagesize' => $pagesize));
+
+        app_json(array('list' => $list, 'total' => $list['total'], 'pagesize' => $pagesize));
     }
 
     /**
@@ -66,7 +52,7 @@ class Index_EweiShopV2Page extends AppMobilePage
         global $_W, $_GPC;
         $id = intval($_GPC['id']);
         if(empty($id)){
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
         $mid = (int)m('member')->getMid();
         $res = pdo_fetch("SELECT * FROM ". tablename('ewei_shop_bargain_goods') ." WHERE id = :id AND status='0'",array(':id'=>$id));
@@ -161,7 +147,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             }
         }
 
-        return app_json($result);
+        app_json($result);
     }
 
 
@@ -186,7 +172,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             'rule' => $rule,
         );
 
-        return app_json($result);
+        app_json($result);
     }
 
     /**
@@ -338,7 +324,7 @@ class Index_EweiShopV2Page extends AppMobilePage
                         if ($redis->get($redis_key)+2 < time()) {
                             $redis -> del($redis_key);
                         } else {
-                            return app_error(1,'不能短时间重复砍价!');
+                            app_error(1,'不能短时间重复砍价!');
                         }
                     }
                 }
@@ -348,10 +334,10 @@ class Index_EweiShopV2Page extends AppMobilePage
 
             $backInfo = $this->cut($id,$time_limit,$min_price,$res2['each_time'],$res2['total_time'],$max_price,$res2['probability']);
             if($backInfo['error'] == 1){
-                return app_error(1,$backInfo['message']);
+                app_error(1,$backInfo['message']);
             }
             if($backInfo['error'] == 0){
-                return app_json(array('cutPrice'=>$backInfo['cutPrice']));
+                app_json(array('cutPrice'=>$backInfo['cutPrice']));
             }
         }else{
             $res2['user_set'] = urldecode($res2['user_set']);
@@ -422,8 +408,7 @@ class Index_EweiShopV2Page extends AppMobilePage
         $result['mid'] = $myMid;
         $result['arrived'] = $arrived;
         $result['timeout'] = $timeout;
-        $result['bargain_share'] = $this->get_bargain_share();
-        return app_json($result);
+        app_json($result);
     }
 
     /**
@@ -434,30 +419,30 @@ class Index_EweiShopV2Page extends AppMobilePage
         $mid = (int)m('member')->getMid();
         $user_info = m('member')->getMember($_W['openid']);
         if(empty($user_info)){
-            return app_error(AppError::$AuthEnticationFail);
+            app_error(AppError::$AuthEnticationFail);
         }
         $bargain_id = (int)$_GPC['id'];
         $res = pdo_fetch("SELECT * FROM ". tablename('ewei_shop_bargain_goods') ." WHERE id = :id",array(':id'=>$bargain_id));
         if ($res['act_times']>=$res['maximum']){
-            return app_error(1,'活动次数已到达上限,不能发起砍价');
+            app_error(1,'活动次数已到达上限,不能发起砍价');
         }
 
         if(!empty($res['initiate'])){
             $count = pdo_get('ewei_shop_bargain_actor',array('goods_id'=>$bargain_id,'openid'=>$_W['openid'],'status'=>0,'order'=>0),'id');
             if(!empty($count['id'])){
-                return app_json(array('initiate'=>1,'bargainid'=>$count['id']));
+                app_json(array('initiate'=>1,'bargainid'=>$count['id']));
             }
         }
         $goods_detail = pdo_fetch("SELECT * FROM ". tablename('ewei_shop_goods') ." WHERE id = :id AND status='1'",array(':id'=>$res['goods_id']));
 
         if ($goods_detail['total']<=0) {
-            return app_error(1,'库存不足,不能发起砍价');
+            app_error(1,'库存不足,不能发起砍价');
         }elseif(strtotime($res['end_time'])<time()){
-            return app_error(1,'活动时间已经结束');
+            app_error(1,'活动时间已经结束');
         }elseif (strtotime($res['start_time'])>time()) {
-            return app_error(1,'活动时间尚未开始');
+            app_error(1,'活动时间尚未开始');
         }elseif ($goods_detail['status'] != 1){
-            return app_error(1,'商品已下架');
+            app_error(1,'商品已下架');
         }
 
         $time = date("Y-m-d H:i:s",time());
@@ -479,13 +464,13 @@ class Index_EweiShopV2Page extends AppMobilePage
             $result_id = pdo_insertid();
             pdo_query("UPDATE ". tablename('ewei_shop_bargain_goods') ." SET act_times=act_times+1 WHERE id= :id",array(':id'=>$bargain_id));
         }else{
-            return app_error(1,'拒绝访问');
+            app_error(1,'拒绝访问');
         }
 
         if ($result_id) {
-            return app_json(array('id' => $result_id,'mid'=>$mid));
+            app_json(array('id' => $result_id,'mid'=>$mid));
         }else{
-            return app_error(1,'操作错误');
+            app_error(1,'操作错误');
         }
     }
 
@@ -631,7 +616,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             'goods' => $goods,
             'mid' => $mid
         );
-        return app_json($result);
+        app_json($result);
     }
 
     /**
@@ -672,29 +657,7 @@ class Index_EweiShopV2Page extends AppMobilePage
             'goods' => $goods,
             'mid' => $mid,
         );
-        return app_json($result);
-    }
-
-    private function get_bargain_share(){
-        global $_W;
-        $share_res = pdo_fetch("SELECT * FROM ".tablename('ewei_shop_bargain_account') ."WHERE id = :id",array(':id'=>$_W['uniacid']));
-        if (!empty($share_res['mall_title'])) {
-            $share['title'] = $share_res['mall_title'];
-        }else{
-            $share['title'] = $share_res['mall_name'];
-        }
-        if (!empty($share_res['mall_content'])) {
-            $share['content'] = $share_res['mall_content'];
-        }else{
-            $share['content'] = $share_res['mall_name'];
-        }
-        if (!empty($share_res['mall_logo'])) {
-            $share['logo'] = tomedia($share_res['mall_logo']);
-        }else{
-            //$share['logo'] = tomedia("images/share_logo.jpg");
-            $share['logo'] = $_W['siteroot'] . "addons/ewei_shopv2/plugin/bargain/static/images/share_logo.jpg";
-        }
-        return $share;
+        app_json($result);
     }
 }
 

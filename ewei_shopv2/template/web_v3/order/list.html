@@ -176,45 +176,11 @@
     .table-row .list-inner.goodsRefund{
         flex: inherit;
     }
-    .rr-label{
-        width: 75px;
-        margin-right: 8px;
-        padding: 5px;
-        border: 1px solid #eee;
-        border-radius: 4px;
-        background: #44ABF7;
-        color: #fff;
-        text-align: center;
-    }
-    .rr-process{
-        color: #44ABF7;
-        cursor: pointer;
-
-    }
-    .rr-process .input-group {
-        display: none;
-    }
-    .rr-process .input-group:first-of-type{
-        display: block;
-    }
-    .rr-process .form-control {
-        display: none;
-    }
-    .rr-process .input-group-btn .btn{
-        background: none!important;
-        border: none!important;
-        color: #44ABF7!important;
-        outline: none!important;
-    }
-    .rr-process .input-group-btn .btn:active {
-        border: none!important;
-        box-shadow: none!important;
-    }
 </style>
 
 <div class="page-header">
-
-    <span>订单数:  <span class='text-danger'>{$total}</span> 订单金额:  <span class='text-danger'>￥{$totalmoney}</span> {if !empty($magent['nickname'])}订单推广人:  <span class='text-danger'>{$magent['nickname']}</span>{/if}</span>
+    当前位置：<span class="text-primary">订单管理</span>
+    <span>订单数:  <span class='text-danger'>{$total}</span> 订单金额:  <span class='text-danger'>{php echo empty($totalmoney) ? 0.00 : $totalmoney}</span> {if !empty($magent['nickname'])}订单推广人:  <span class='text-danger'>{$magent['nickname']}</span>{/if}</span>
 </div>
 <div class="page-content">
 
@@ -278,13 +244,6 @@
                 </span>
                 <input type="text" class="form-control input-sm"  name="keyword" id="keyword" value="{$_GPC['keyword']}" placeholder="请输入关键词"/>
                 <input type="hidden" name="export" id="export" value="0">
-                <span class="input-group-select">
-                    <select name="order_type" class="form-control" style="width:110px;padding:0 5px;">
-                        <option value="" {if $_GPC['order_type']==''}selected{/if}>全部订单</option>
-                        <option value='general' {if $_GPC['order_type']=='general'}selected{/if}>普通订单</option>
-                        <option value='fullback' {if $_GPC['order_type']=='fullback'}selected{/if}>全返订单</option>
-                    </select>
-                </span>
                 <span class="input-group-btn">
                         <button type="button" data-export="0" class="btn btn-primary btn-submit"> 搜索</button>
                         <button type="button" data-export="1" class="btn btn-success btn-submit">导出</button>
@@ -314,17 +273,21 @@
                     <div class='table-row table-top' style="padding:0  20px;background: #f7f7f7">
                         <div style="text-align: left;color: #8f8e8e;">
                             <span style="font-weight: bold;margin-right: 10px;color: #2d2d31">
-
+                              
                                 {if $item['iswxappcreate']==0}<span class="shop">商城</span>{else}<span class="min_program">小程序</span>{/if}
                                 {if $item['giftSign']==1}<span class="min_program" style=" border:1px solid orange; color: orange;">赠品</span>{/if}
                                 {if $item['is_cashier'] == 1}<span class="shop">收银台</span>{/if}{php echo date('Y-m-d',$item['createtime'])}&nbsp {php echo date('H:i:s',$item['createtime'])}
 
                             </span>
-                            订单编号:  {$item['ordersn']}{if $item['is_peerpay']}<span class="label label-primary">代付</span>{/if}{if $item['ispackage']}&nbsp;<span class="label label-success">套餐</span>{/if}
+                            订单编号:  {$item['ordersn']} {if $item['is_peerpay']}<span class="label label-primary">代付</span>{/if}{if $item['ispackage']}&nbsp;<span class="label label-success">套餐</span>{/if}
                             {if !empty($item['refundstate']) && $item['refundstate'] !=3}<label class='label label-danger'>{$r_type[$item['rtype']]}申请</label>{/if}
                             {if !empty($item['refundstate']) && $item['refundstate'] !=3 && $item['rstatus'] == 4}<label class='label label-default'>客户退回物品</label>{/if}
+
+
                         </div>
                         <div style='text-align:right;font-size:12px;' class='aops'>
+                            {if $item['1688_orderId']}<span style="display: block;float: left;text-align:left;color:#009688">1688订单编号:  {$item['1688_orderId']}</span>{/if}
+
                             {if $item['merchid'] == 0}
                                 {ifp 'order.op.remarksaler'}
                                 <a class='op'  data-toggle="ajaxModal" href="{php echo webUrl('order/op/remarksaler', array('id' => $item['id']))}" >
@@ -392,6 +355,7 @@
                                            {/if}
                                            {$g['title']}<br/>
                                            <span style="color: #999"> {if !empty($g['optiontitle'])}{$g['optiontitle']}{/if}{$g['goodssn']}</span>
+
                                        </div>
                                               {if $g['seckill_task']}
                                         <div>
@@ -406,33 +370,7 @@
 
 
                                     </div>
-
-                                    {if !empty($g['fullbackid'])}
-                                    <div>
-
-                                        <div class="rr-label">全返</div>
-                                        {if $item['status'] == "已完成"}
-                                        <div class="rr-process" id="">
-                                        <?php echo tpl_selector_new('goodsid',array(
-                                    'required'=>true,
-                                            'type'=>'goods',
-                                            'url'=>webUrl('sale/fullback/info', array(
-                                                    'order_id' => $item['id'],
-                                                    'goods_id'=>$g['id'],
-                                                    'option_id'=>$g['option_id']
-                                                )
-                                            ),
-                                            'items'=>$item,
-                                            'nokeywords'=>1,
-                                            'autosearch'=>1,
-                                            'buttontext' => "查看进度",
-                                            ))
-                                            ?></div>
-                                        {/if}
-                                    </div>
-                                    {/if}
-
-                                    <span style="float: right;text-align: right;display: inline-block;position: relative;right:5px ;">
+                                    <span style="float: right;text-align: right;display: inline-block;width:130px;">
                                         ￥{php echo number_format($g['oldprice']/$g['total'],2)}<br/>
                                         x{$g['total']}<br/>
                                         {if $g['single_refundstate']==8}
@@ -600,6 +538,14 @@
                                 {if $item['dispatchprice']>0}
                                 <br/>(含运费:￥{php echo number_format( $item['dispatchprice'],2)})
                                 {/if}
+                                <br>
+                                {if $item['1688_totalSuccessAmount']}
+                                    <span style="color:#009688">1688拿货价：￥{php echo number_format($item['1688_totalSuccessAmount'],2)}<br>
+                                    (含运费:￥{php echo number_format($item['1688_postFee'],2)})</span>
+
+                                {/if}
+
+
                             </div>
                             </div>
                         </div>
@@ -683,7 +629,7 @@
 
                         <div  class='ops list-inner columnFlex' style='line-height:20px;text-align:center' >
                            <div class="">
-                               <span class='text-{$item['statuscss']}'>{$item['status']}</span>
+                               <span class='text-{$item['statuscss']}'>{$item['status']}</span><br>
                                {if $item['merchid'] == 0}{template 'order/ops'}{/if}
                            </div>
                         </div>
@@ -753,10 +699,6 @@
                 $('#search').submit();
             }
         })
-
-
-
-
     })
 </script>
 {template '_footer'}

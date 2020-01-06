@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -20,7 +19,7 @@ class QuickProcessor extends PluginProcessor
 		$content = $obj->message['content'];
 		$msgtype = strtolower($message['msgtype']);
 		$event = strtolower($message['event']);
-		if ($msgtype == 'text' || $event == 'click') {
+		if (($msgtype == 'text') || ($event == 'click')) {
 			$quick = pdo_fetch('select * from ' . tablename('ewei_shop_quick') . ' where keyword=:keyword and status=1 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':keyword' => $content));
 
 			if (empty($quick)) {

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 function sort_enoughs($a, $b)
 {
 	$enough1 = floatval($a['enough']);
@@ -76,7 +75,7 @@ class Sale_EweiShopV2ComModel extends ComModel
 
 		return false;
 	}
-
+	
 	public function setRechargeActivity($log)
 	{
 		global $_W;
@@ -118,16 +117,7 @@ class Sale_EweiShopV2ComModel extends ComModel
 		$this->getCredit1($log['openid'], $log['money'], 21, 2);
 	}
 
-	/**
-     * 传入金额,生成满立减优惠
-     * @param string $openid 用户openid
-     * @param int $price 传入金额
-     * @param int $paytype 支付类型 1 余额支付; 3 货到付款; 21 微信支付; 22 支付宝支付; 37 收银台付款;
-     * @param int $type 购物送积分 1 充值送积分 2
-     * @param int $refund 是否是退款
-     * @param string $desc 是否是退款
-     * @return float|int
-     */
+
 	public function getCredit1($openid, $price = 0, $paytype = 1, $type = 1, $refund = 0, $desc = '')
 	{
 		global $_W;
@@ -199,12 +189,12 @@ class Sale_EweiShopV2ComModel extends ComModel
 	{
 		global $_W;
 		$res = array(
-			'万水千山总是情,这单帮我一定行',
-			array('无名侠', '支持一下,么么哒!'),
+			0                   => '万水千山总是情,这单帮我一定行',
+			1                   => array('无名侠', '支持一下,么么哒!'),
 			'self_peerpay'      => 0,
 			'peerpay_price'     => 0,
 			'peerpay_privilege' => 0
-		);
+			);
 		$data = m('common')->getPluginset('sale');
 		$data = $data['peerpay'];
 

@@ -1,16 +1,9 @@
 <?php
 
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class Index_EweiShopV2Page extends AppMobilePage
 {
@@ -61,7 +54,7 @@ class Index_EweiShopV2Page extends AppMobilePage
                 $tips = $friendcouponModel->errmsg;
             }
         }
-
+        
 
         $activitySetting['activity_start_time'] = $friendcouponModel->dateFormat($activitySetting['activity_start_time']);
         $activitySetting['activity_end_time'] = $friendcouponModel->dateFormat($activitySetting['activity_end_time']);
@@ -87,7 +80,7 @@ class Index_EweiShopV2Page extends AppMobilePage
                 $tips == '' && $tips = '您已经参与过这个活动啦，去看看别的活动吧~';
                 $_GPC['share_id'] = null;
                 $mylink = mobileUrl('friendcoupon', array(
-                    'id' => $currentActivityInfo['activity_id'],
+                    'id'       => $currentActivityInfo['activity_id'],
                     'share_id' => $currentActivityInfo['headerid']
                 ));
             }
@@ -205,20 +198,20 @@ class Index_EweiShopV2Page extends AppMobilePage
         }
 
 
-        return app_json(array(
-            'coupon' => $coupon,
-            'success' => $success,
-            'isReceive' => $isReceive,
-            'isShare' => $isShare,
+        app_json(array(
+            'coupon'              => $coupon,
+            'success'             => $success,
+            'isReceive'           => $isReceive,
+            'isShare'             => $isShare,
             'currentActivityInfo' => $currentActivityInfo,
-            'overTime' => $overTime,
-            'overPeople' => $overPeople,
-            'activityData' => $activityData,
-            'activitySetting' => $activitySetting,
-            'share_user' => $share_user,
-            'invalidMessage' => $tips,
-            'isLogin' => (boolean)$user,
-            'mylink' => $mylink
+            'overTime'            => $overTime,
+            'overPeople'          => $overPeople,
+            'activityData'        => $activityData,
+            'activitySetting'     => $activitySetting,
+            'share_user'          => $share_user,
+            'invalidMessage'      => $tips,
+            'isLogin'             => (boolean)$user,
+            'mylink'              => $mylink
         ));
     }
 
@@ -232,25 +225,19 @@ class Index_EweiShopV2Page extends AppMobilePage
         $activity_id = (int)$_GPC['id'];
         $form_id = $_GPC['form_id'];
         $activity = $friendcouponModel->validateActivity($activity_id);
-        //TODO
+
         if (!$user) {
-            $openidwx = substr($_GPC['openid'],7);
-            $user = $friendcouponModel->getmemberwx($openidwx);
-        }
-        if (!$user){
-            return app_error(83003, "请先获取登录授权!");
+            app_error(83003, "请先获取登录授权!");
         }
 
         if (!$activity) {
-            return app_error(83004, $friendcouponModel->errmsg);
+            app_error(83004, $friendcouponModel->errmsg);
         }
 
 
         $currentUserActivity = $friendcouponModel->getCurrentActivityInfo($user['openid'], $activity['id']);
         // 记录不存在的话,生成随机金额优惠券,写入data表
-        if ($currentUserActivity) {
-            app_error(10001, '您当前已经领取过任务了,赶快分享给好友吧');
-        }
+        $currentUserActivity && app_error(10001, '您当前已经领取过任务了,赶快分享给好友吧');
         // 计算出来的优惠券金额
         $couponAmounts = array();
         switch ($activity['allocate']) {
@@ -274,13 +261,13 @@ class Index_EweiShopV2Page extends AppMobilePage
                 $activity['activity_end_time'];
             foreach ($couponAmounts as $couponAmount) {
                 $data = array(
-                    'uniacid' => $_W['uniacid'],
+                    'uniacid'     => $_W['uniacid'],
                     'activity_id' => $activity['id'],
-                    'headerid' => $user['id'],
-                    'status' => 0, // 正常状态
-                    'deduct' => (float)$couponAmount,
-                    'enough' => $activity['use_condition'], //满多少可用,不填写相当于空，对应
-                    'deadline' => $deadline
+                    'headerid'    => $user['id'],
+                    'status'      => 0, // 正常状态
+                    'deduct'      => (float)$couponAmount,
+                    'enough'      => $activity['use_condition'], //满多少可用,不填写相当于空，对应
+                    'deadline'    => $deadline
                 );
                 // 生成所有随机优惠券
                 pdo_insert('ewei_shop_friendcoupon_data', $data);
@@ -294,15 +281,15 @@ class Index_EweiShopV2Page extends AppMobilePage
         $headerid = min($currentActivityIds);
         // 把优惠券先发给队长
         pdo_update('ewei_shop_friendcoupon_data', array(
-            'openid' => $user['openid'],
-            'avatar' => $user['avatar'],
-            'nickname' => $user['nickname'],
+            'openid'       => $user['openid'],
+            'avatar'       => $user['avatar'],
+            'nickname'     => $user['nickname'],
             'receive_time' => time(), // 领取活动的时间
-            'form_id' => $form_id
+            'form_id'      => $form_id
         ), array('id' => $headerid));
         // 发起次数-1
         pdo_update('ewei_shop_friendcoupon', array('launches_count +=' => 1), array('id' => $activity['id']));
-        return app_json('活动领取成功');
+        app_json('活动领取成功');
     }
 
     public function divide()
@@ -318,44 +305,44 @@ class Index_EweiShopV2Page extends AppMobilePage
         $activity = $friendcouponModel->getActivity($activity_id);
 
         if (!$user) {
-            return app_error(83003, "请登陆后在进行操作!");
+            app_error(83003, "请登陆后在进行操作!");
         }
 
         if (!$activity) {
-            return app_error(83004, $friendcouponModel->errmsg);
+            app_error(83004, $friendcouponModel->errmsg);
         }
 
         // 查看当前活动是否还在
         $onGoingActivities = $friendcouponModel->getOngoingActivities($activity_id, $share_id);
 
         if (!$onGoingActivities) {
-            return app_error(83005, array('没有进行中的活动'));
+            app_error(83005, array('没有进行中的活动'));
         }
         // 获取当前分享的活动的信息
         $shareActivityInfo = $friendcouponModel->getCurrentActivityInfo($share_user['openid'], $activity['id']);
 
         if ($shareActivityInfo['status'] == 1) {
-            return app_error(83006, '活动已经完成<br>下次早点来啊~');
+            app_error(83006, '活动已经完成<br>下次早点来啊~');
         }
         // 看下当前用户是否参与了活动
         $currentActivityInfo = $friendcouponModel->getCurrentActivityInfo($user['openid'], $activity_id);
         if (!$currentActivityInfo) {
             // 获取所有的优惠券
             $coupons = pdo_fetchall("select * from " . tablename('ewei_shop_friendcoupon_data') . " where uniacid = :uniacid and activity_id = :activity_id and headerid = :headerid", array(
-                ':uniacid' => $_W['uniacid'],
+                ':uniacid'     => $_W['uniacid'],
                 ':activity_id' => $activity['id'],
-                ':headerid' => $share_id,
+                ':headerid'    => $share_id,
             ));
             foreach ($coupons as $coupon) {
                 // 没有openid的就是没有下发的优惠券,找到对应记录,更新,然后跳转
                 if (!$coupon['openid']) {
                     pdo_update('ewei_shop_friendcoupon_data', array(
-                        'openid' => $user['openid'],
-                        'status' => 0,
-                        'avatar' => $user['avatar'],
-                        'nickname' => $user['nickname'],
+                        'openid'       => $user['openid'],
+                        'status'       => 0,
+                        'avatar'       => $user['avatar'],
+                        'nickname'     => $user['nickname'],
                         'receive_time' => time(), // 领取活动的时间
-                        'form_id' => $form_id
+                        'form_id'      => $form_id
                     ), array('id' => $coupon['id']));
                     break;
                 }
@@ -363,14 +350,14 @@ class Index_EweiShopV2Page extends AppMobilePage
 
             // 获取下剩余优惠券数量
             $overPlus = pdo_fetchcolumn("select count(1) from " . tablename('ewei_shop_friendcoupon_data') . " where uniacid = :uniacid and headerid = :headerid and activity_id = :activity_id and openid = ''", array(
-                ':uniacid' => $_W['uniacid'],
-                ':headerid' => $share_id,
+                ':uniacid'     => $_W['uniacid'],
+                ':headerid'    => $share_id,
                 ':activity_id' => $activity_id,
             ));
 
             // 如果还没有完全发完,就进入分享页面等待
             if ($overPlus) {
-                return app_json(array('message' => '瓜分成功！'));
+                app_json(array('message' => '瓜分成功！'));
             }
             pdo_update('ewei_shop_friendcoupon_data', array('status' => 1), array('activity_id' => $activity_id, 'headerid' => $share_id));
             // 整个活动就成功了
@@ -380,14 +367,14 @@ class Index_EweiShopV2Page extends AppMobilePage
                 . " where fd.uniacid = :uniacid and fd.headerid = :headerid and fd.activity_id = :activity_id";
 
             $coupons = pdo_fetchall($sql, array(
-                ':uniacid' => $_W['uniacid'],
+                ':uniacid'     => $_W['uniacid'],
                 ':activity_id' => $activity['id'],
-                ':headerid' => $share_id
+                ':headerid'    => $share_id
             ));
 
             // 发送优惠券
             if (false === $friendcouponModel->sendFriendCoupon($coupons)) {
-                return app_error(83007, $friendcouponModel->errmsg);
+                app_error(83007, $friendcouponModel->errmsg);
             }
 
             //发送小程序模板消息通知
@@ -456,9 +443,9 @@ class Index_EweiShopV2Page extends AppMobilePage
             }
 
             // 下发所有优惠券
-            return app_json(array('message' => '活动完成！'));
+            app_json(array('message' => '活动完成！'));
         }
-        return app_error(83008, '您已经瓜分过优惠券了,请不要重复瓜分!');
+        app_error(83008, '您已经瓜分过优惠券了,请不要重复瓜分!');
     }
 
     /**
@@ -483,11 +470,11 @@ class Index_EweiShopV2Page extends AppMobilePage
     {
         $token = p('app')->getAccessToken();
         $data = json_encode([
-            'touser' => $openid,
-            'template_id' => $template_id,
-            'page' => $page,
-            'form_id' => $form_id,
-            'data' => $data,
+            'touser'           => $openid,
+            'template_id'      => $template_id,
+            'page'             => $page,
+            'form_id'          => $form_id,
+            'data'             => $data,
             'emphasis_keyword' => $emphasis_keyword
         ]);
 
@@ -513,12 +500,13 @@ class Index_EweiShopV2Page extends AppMobilePage
         // 当前正在参与的活动
         if (empty($share_id)) {
             $currentTakePartActivity = pdo_fetch("select * from " . tablename('ewei_shop_friendcoupon_data') . " where uniacid = :uniacid and openid = :openid and activity_id = :activity_id", array(
-                ':uniacid' => $_W['uniacid'],
-                ':openid' => $openid,
-                ':activity_id' => $activity_id,
+                ':uniacid'  =>  $_W['uniacid'],
+                ':openid'   => $openid,
+                ':activity_id'  => $activity_id,
             ));
             $share_id = $currentTakePartActivity['headerid'];
         }
+
 
 
         $list = pdo_fetchall("select avatar,nickname,deduct from " . tablename('ewei_shop_friendcoupon_data') . " where uniacid = :uniacid and activity_id = :activity_id and headerid = :headerid and openid <> '' limit " . ($pindex - 1) . "," . $psize, array(

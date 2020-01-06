@@ -2,7 +2,7 @@
 <style>
     .form-group.rec_reward_data{clear:both;}
 </style>
-<div class="alert alert-warning">抽奖所有等级不能低于5个，概率之和可不等于100%，概率可设置最大最小值为小数点前三位，小数点后三位</div>
+<div class="alert alert-warning">抽奖所有等级不能低于5个，概率之和可不等于100%</div>
 <div class="form-group">
     <label class="col-lg control-label">抽奖标题&概率</label>
     {ifp 'lottery.edit'}
@@ -251,13 +251,6 @@
           }
 
           var probability = $('input[name="probability"]').val();
-
-          var ret = /^\d+(\.\d{1,3})?$/;
-
-          if(!ret.test(probability)){
-              tip.msgbox.err('小数点后仅限输入三位');
-              return;
-          }
           if(probability==''){
               tip.msgbox.err('概率不能为空');
               return;

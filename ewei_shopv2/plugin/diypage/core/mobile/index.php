@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -256,7 +256,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 
 			if ($urlData[0] == 'category') {
 				$pcate = $urlValue[0];
-				$goodsql = 'SELECT id,displayorder,title,subtitle,thumb,marketprice,productprice,minprice,maxprice,isdiscount,isdiscount_time,isdiscount_discounts,sales,salesreal,hascommission,commission1_pay,commission,total,description,bargain,nocommission,`type`,ispresell,`virtual`,hasoption,video,buylevels,buygroups,checked FROM ' . tablename('ewei_shop_goods') . ' WHERE FIND_IN_SET(' . $pcate . ',cates) AND status > 0 AND deleted = 0 AND checked=0 AND uniacid =' . $_W['uniacid'] . ' order by displayorder desc,id desc limit 0,' . $goodsnum;
+				$goodsql = 'SELECT id,displayorder,title,subtitle,thumb,marketprice,productprice,minprice,maxprice,isdiscount,isdiscount_time,isdiscount_discounts,sales,salesreal,hascommission,commission1_pay,commission,total,description,bargain,nocommission,`type`,ispresell,`virtual`,hasoption,video,buylevels,buygroups FROM ' . tablename('ewei_shop_goods') . ' WHERE FIND_IN_SET(' . $pcate . ',cates) AND status > 0 AND deleted = 0 AND uniacid =' . $_W['uniacid'] . ' order by displayorder desc,id desc limit 0,' . $goodsnum;
 				$list['list'] = pdo_fetchall($goodsql);
 				$count = pdo_fetch('SELECT count(id) as count FROM ' . tablename('ewei_shop_goods') . ' WHERE FIND_IN_SET(' . $pcate . ',cates) AND status > 0 AND deleted = 0 AND uniacid =' . $_W['uniacid']);
 				$list['count'] = $count['count'];
@@ -277,7 +277,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 								array_push($pricemax, $v['marketprice']);
 							}
 
-							$value['maxprice'] = max($pricemax);
+							$value[$key]['maxprice'] = max($pricemax);
 						}
 
 						if ($value['nocommission'] == 0) {
@@ -349,7 +349,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 				$groupsData = pdo_fetch($sql, $params);
 				$goodsid = $groupsData['goodsids'];
 				$goodsql = 'SELECT id,displayorder,title,subtitle,thumb,marketprice,productprice,minprice,maxprice,isdiscount,hascommission,nocommission,commission,commission1_rate,marketprice,commission1_pay,maxprice,isdiscount_time,isdiscount_discounts,sales,salesreal,total,description,bargain,`type`,ispresell,`virtual`,hasoption,video,buylevels,buygroups FROM ' . tablename('ewei_shop_goods') . ' WHERE id in(' . $goodsid . ') AND status > 0 AND deleted = 0 AND uniacid =' . $_W['uniacid'] . ' limit 0,' . $goodsnum;
-				$count = pdo_fetch('SELECT count(id) as count FROM ' . tablename('ewei_shop_goods') . ' WHERE id in(' . $goodsid . ') AND status > 0 AND checked=0 AND deleted = 0 AND uniacid =' . $_W['uniacid']);
+				$count = pdo_fetch('SELECT count(id) as count FROM ' . tablename('ewei_shop_goods') . ' WHERE id in(' . $goodsid . ') AND status > 0 AND deleted = 0 AND uniacid =' . $_W['uniacid']);
 				$list['list'] = pdo_fetchall($goodsql);
 				$list['count'] = $count['count'];
 
@@ -363,13 +363,13 @@ class Index_EweiShopV2Page extends PluginMobilePage
 
 						if ($value['hasoption'] == 1) {
 							$pricemax = array();
-							$options = pdo_fetchall('select * from ' . tablename('ewei_shop_goods_option') . ' where goodsid=:goodsid and uniacid=:uniacid order by displayorder asc', array(':goodsid' => $value['id'], ':uniacid' => $_W['uniacid']));
+							$options = pdo_fetchall('select * from ' . tablename('ewei_shop_goods_option') . ' where goodsid=:goodsid and                               uniacid=:uniacid order by displayorder asc', array(':goodsid' => $value['id'], ':uniacid' => $_W['uniacid']));
 
 							foreach ($options as $k => $v) {
 								array_push($pricemax, $v['marketprice']);
 							}
 
-							$value['maxprice'] = max($pricemax);
+							$value[$key]['maxprice'] = max($pricemax);
 						}
 
 						if ($value['nocommission'] == 0) {
@@ -449,7 +449,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 
 						$goodsid = implode(',', $goodsids);
 						$sql = 'SELECT id,displayorder,title,subtitle,thumb,marketprice,productprice,minprice,maxprice,hascommission,nocommission,commission,commission1_rate,marketprice,commission,commission1_pay,maxprice,isdiscount,isdiscount_time,isdiscount_discounts,sales,salesreal,total,description,bargain,`type`,ispresell,`virtual`,hasoption,video,buylevels,buygroups FROM ' . tablename('ewei_shop_goods') . ' WHERE id in(' . $goodsid . ') AND uniacid =' . $_W['uniacid'] . ' limit 0,' . $goodsnum;
-						$count = pdo_fetch('SELECT count(id) as count FROM ' . tablename('ewei_shop_goods') . ' WHERE id in(' . $goodsid . ') AND checked=0 AND uniacid =' . $_W['uniacid']);
+						$count = pdo_fetch('SELECT count(id) as count FROM ' . tablename('ewei_shop_goods') . ' WHERE id in(' . $goodsid . ') AND uniacid =' . $_W['uniacid']);
 						$list['list'] = pdo_fetchall($sql);
 						$list['count'] = $count['count'];
 
@@ -469,7 +469,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 										array_push($pricemax, $v['marketprice']);
 									}
 
-									$value['maxprice'] = max($pricemax);
+									$value[$key]['maxprice'] = max($pricemax);
 								}
 
 								if ($value['nocommission'] == 0) {
@@ -584,10 +584,6 @@ class Index_EweiShopV2Page extends PluginMobilePage
 			return $commission;
 		}
 
-		if (0 < $goods['maxprice']) {
-			$goods['marketprice'] = $goods['maxprice'];
-		}
-
 		if ($goods['hascommission'] == 1) {
 			$price = $goods['maxprice'];
 			$levelid = 'default';
@@ -599,12 +595,7 @@ class Index_EweiShopV2Page extends PluginMobilePage
 			$goods_commission = !empty($goods['commission']) ? json_decode($goods['commission'], true) : array();
 
 			if ($goods_commission['type'] == 0) {
-				if (0 < $goods['maxprice']) {
-					$commission = 1 <= $set['level'] ? (0 < $goods['commission1_rate'] ? $goods['commission1_rate'] * $goods['maxprice'] / 100 : $goods['commission1_pay']) : 0;
-				}
-				else {
-					$commission = 1 <= $set['level'] ? (0 < $goods['commission1_rate'] ? $goods['commission1_rate'] * $goods['marketprice'] / 100 : $goods['commission1_pay']) : 0;
-				}
+				$commission = 1 <= $set['level'] ? (0 < $goods['commission1_rate'] ? $goods['commission1_rate'] * $goods['marketprice'] / 100 : $goods['commission1_pay']) : 0;
 			}
 			else {
 				$price_all = array();

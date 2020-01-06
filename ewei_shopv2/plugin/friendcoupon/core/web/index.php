@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -137,7 +137,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 				show_json(0, '请设置瓜分时长');
 			}
 
-			if (15 < mb_strlen($data['title'], 'utf-8')) {
+			if (15 < mb_strlen($data['title'])) {
 				show_json(0, '活动名称的长度请控制在15字以内');
 			}
 

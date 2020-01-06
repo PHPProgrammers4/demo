@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -11,36 +11,6 @@ class Fullback_EweiShopV2Page extends MobileLoginPage
 		global $_W;
 		global $_GPC;
 		$_GPC['type'] = intval($_GPC['type']);
-		$_GPC['orderid'] = intval($_GPC['orderid']);
-		$orderid = $_GPC['orderid'];
-		$condition = ' where uniacid=:uniacid and openid =:openid ';
-		$params = array('uniacid' => $_W['uniacid'], 'openid' => $_W['openid']);
-
-		if ($orderid) {
-			$params['orderid'] = $orderid;
-			$condition .= ' and orderid=:orderid ';
-		}
-
-		$info = pdo_fetchall('SELECT * FROM' . tablename('ewei_shop_fullback_log') . $condition, $params);
-		$alldata = array();
-		$allday = array();
-		$fullbackday = array();
-		$createtime = array();
-		if (is_array($info) && !empty($info)) {
-			foreach ($info as &$value) {
-				$alldata['allprice'] += $value['price'];
-				$alldata['hasprice'] += $value['priceevery'] * $value['fullbackday'];
-				array_push($createtime, $value['createtime']);
-				array_push($allday, $value['day']);
-				array_push($fullbackday, $value['fullbackday']);
-			}
-
-			unset($value);
-		}
-
-		$alldata['day'] = max($allday);
-		$alldata['fullbackday'] = max($fullbackday);
-		$alldata['createtime'] = min($createtime);
 		include $this->template();
 	}
 
@@ -50,16 +20,9 @@ class Fullback_EweiShopV2Page extends MobileLoginPage
 		global $_GPC;
 		$isfullback = intval($_GPC['type']);
 		$pindex = max(1, intval($_GPC['page']));
-		$orderid = intval($_GPC['orderid']);
 		$psize = 10;
 		$condition = ' and fl.openid=:openid and fl.uniacid=:uniacid and fl.isfullback=:isfullback';
 		$params = array(':uniacid' => $_W['uniacid'], ':openid' => $_W['openid'], ':isfullback' => $isfullback);
-
-		if ($orderid) {
-			$condition .= ' and fl.orderid=:orderid';
-			$params['orderid'] = $orderid;
-		}
-
 		$list = array();
 		$list = pdo_fetchall('select fl.*,g.thumb,g.title from ' . tablename('ewei_shop_fullback_log') . ' as fl
             left join ' . tablename('ewei_shop_goods') . ' as g on g.id = fl.goodsid

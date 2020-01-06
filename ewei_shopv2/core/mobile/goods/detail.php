@@ -1,12 +1,5 @@
 <?php
 
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -99,16 +92,6 @@ class Detail_EweiShopV2Page extends MobilePage {
         //商品
         $goods = pdo_fetch("select * from " . tablename('ewei_shop_goods') . " where id=:id and uniacid=:uniacid limit 1", array(':id' => $id, ':uniacid' => $_W['uniacid']));
         //如果是核销商品 那就释放掉赠品 @author青椒
-
-        if($goods['ispresell']>0 && ($goods['preselltimeend'] == 0 || $goods['preselltimeend'] > time()) && $goods['hasoption']==1){
-            //预售商品价格处理 lgt
-            if(!empty($goods['hasoption'])){
-                $presell = pdo_fetch("select min(presellprice) as minprice,max(presellprice) as maxprice from ".tablename('ewei_shop_goods_option')." where goodsid = ".$id);
-                $goods['minpresellprice'] = $presell['minprice'];
-                $goods['maxpresellprice'] = $presell['maxprice'];
-            }
-        }
-
         if( $goods['isverify'] == 2 ){
             unset( $gifts );
         }
@@ -308,10 +291,7 @@ class Detail_EweiShopV2Page extends MobilePage {
             exit;
         }
         if(empty($showgoods)){
-             $this->message(array(
-                 'message' => '您当前会员等级无浏览权限，去商城逛逛吧~',
-                 'buttontext' => '去逛逛'
-             ), mobileUrl());
+             $this->message('无浏览权限');
         }
         $seckillinfo = false;
         $seckill  = p('seckill');
@@ -336,7 +316,7 @@ class Detail_EweiShopV2Page extends MobilePage {
         $task_goods_data = m('goods')->getTaskGoods($openid, $id, $rank, $log_id, $join_id);
         if (empty($task_goods_data['is_task_goods'])) {
             $is_task_goods = 0;
-            if (p('bargain') && !is_weixin()){
+            if (p('bargain')){
                 //如果是砍价商品,自动跳转
                 $bargain = pdo_fetch("SELECT * FROM ".tablename('ewei_shop_bargain_goods')." WHERE id = :id AND unix_timestamp(start_time)<".time()." AND unix_timestamp(end_time)>".time()." AND status = 0",array(':id'=>$goods['bargain']));
                 if ($bargain!=false){echo "<script>window.location.href = '".mobileUrl('bargain/detail',array('id'=>$goods['bargain']))."'</script>";return;}
@@ -479,8 +459,7 @@ class Detail_EweiShopV2Page extends MobilePage {
                 $ispresell = 0;
             }
         }
-
-        if ($goods['isverify']==2 && $goods['isendtime'] > 0 && $goods['endtime'] > 0 && $goods['endtime'] < time()) {
+        if ($goods['isendtime'] > 0 && $goods['endtime'] > 0 && $goods['endtime'] < time()) {
             $goods['canbuy'] = false;
             $goods['overdue']=true;
         }
@@ -550,7 +529,7 @@ class Detail_EweiShopV2Page extends MobilePage {
 
         //是否可以加入购物车
         $canAddCart = true;
-        if ($goods['isverify'] == 2 || $goods['type'] == 2 || $goods['type'] == 3 || $goods['type'] == 20 || !empty($is_task_goods) || !empty($gifts) || !empty($seckillinfo)) {
+        if ($goods['isverify'] == 2 || $goods['type'] == 2 || $goods['type'] == 3 || $goods['type'] == 20 || !empty($goods['cannotrefund']) || !empty($is_task_goods) || !empty($gifts) || !empty($seckillinfo)) {
             $canAddCart = false;
         }
 
@@ -619,7 +598,7 @@ class Detail_EweiShopV2Page extends MobilePage {
             $memberprice = m('goods')->getMemberPrice($goods, $level);
         }
 
-        if($goods['isdiscount'] && $goods['isdiscount_time']>=time() && $goods['isdiscount_time_start'] < time()){
+        if($goods['isdiscount'] && $goods['isdiscount_time']>=time()){
             $goods['oldmaxprice'] = $maxprice;
             $prices = array();
             $isdiscount_discounts = json_decode($goods['isdiscount_discounts'],true);
@@ -1045,8 +1024,6 @@ class Detail_EweiShopV2Page extends MobilePage {
         $uniacid = intval($_W['uniacid']);
         $openid = trim($_W['openid']);
         $goods = pdo_fetch("select id,minprice,minprice,maxprice,thumb_url,thumb,title from " . tablename('ewei_shop_goods') . " where id=:id and uniacid=:uniacid limit 1", array(':id' => $id, ':uniacid' => $_W['uniacid']));
-        $goods['minprice'] = round($goods['minprice'],2);
-        $goods['maxprice'] = round($goods['maxprice'],2);
         $member = m('member')->getMember($openid);
         $commission_data = m('common')->getPluginset('commission');
         $goodscode = '';

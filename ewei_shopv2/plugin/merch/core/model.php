@@ -424,199 +424,199 @@ class MerchModel extends PluginModel
 	protected function perm_diypage()
 	{
 		return array(
-			'text' => m('plugin')->getName('diypage'),
-			'page' => array(
-				'sys' => array('text' => '系统页面', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log', 'savetemp' => '另存为模板-log'),
-				'plu' => array('text' => '应用页面', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log', 'savetemp' => '另存为模板-log'),
-				'diy' => array('text' => '自定义页面', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log', 'savetemp' => '另存为模板-log'),
-				'mod' => array('text' => '公用模块', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log')
-			),
-			'menu' => array('text' => '自定义菜单', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log'),
-			'shop' => array(
-				'text'      => '商城页面设置',
-				'page'      => array('text' => '页面设置', 'main' => '查看', 'save' => '保存-log'),
-				'menu'      => array('text' => '按钮设置', 'main' => '查看', 'save' => '保存-log'),
-				'layer'     => array('text' => '悬浮按钮', 'main' => '编辑-log'),
-				'followbar' => array('text' => '关注条', 'main' => '编辑-log'),
-				'danmu'     => array('text' => '下单提醒', 'main' => '编辑-log'),
-				'adv'       => array('text' => '启动广告', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log')
-			),
-			'temp' => array(
-				'text'     => '模板管理',
-				'main'     => '通过模板创建页面',
-				'delete'   => '删除模板',
-				'category' => array('text' => '模板分类', 'main' => '查看', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log')
-			)
-		);
+	'text' => m('plugin')->getName('diypage'),
+	'page' => array(
+		'sys' => array('text' => '系统页面', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log', 'savetemp' => '另存为模板-log'),
+		'plu' => array('text' => '应用页面', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log', 'savetemp' => '另存为模板-log'),
+		'diy' => array('text' => '自定义页面', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log', 'savetemp' => '另存为模板-log'),
+		'mod' => array('text' => '公用模块', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log')
+		),
+	'menu' => array('text' => '自定义菜单', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log'),
+	'shop' => array(
+		'text'      => '商城页面设置',
+		'page'      => array('text' => '页面设置', 'main' => '查看', 'save' => '保存-log'),
+		'menu'      => array('text' => '按钮设置', 'main' => '查看', 'save' => '保存-log'),
+		'layer'     => array('text' => '悬浮按钮', 'main' => '编辑-log'),
+		'followbar' => array('text' => '关注条', 'main' => '编辑-log'),
+		'danmu'     => array('text' => '下单提醒', 'main' => '编辑-log'),
+		'adv'       => array('text' => '启动广告', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log')
+		),
+	'temp' => array(
+		'text'     => '模板管理',
+		'main'     => '通过模板创建页面',
+		'delete'   => '删除模板',
+		'category' => array('text' => '模板分类', 'main' => '查看', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log')
+		)
+	);
 	}
 
 	protected function perm_quick()
 	{
 		return array(
-			'text'  => m('plugin')->getName('quick'),
-			'adv'   => array(
-				'text'   => '幻灯片管理',
-				'main'   => '查看列表',
-				'view'   => '查看',
-				'add'    => '添加-log',
-				'edit'   => '编辑-log',
-				'delete' => '删除-log',
-				'xxx'    => array('enabled' => 'edit')
-			),
-			'pages' => array(
-				'text'   => '页面管理',
-				'main'   => '查看列表',
-				'add'    => '添加-log',
-				'edit'   => '编辑-log',
-				'delete' => '删除-log',
-				'xxx'    => array('status' => 'edit')
-			)
-		);
+	'text'  => m('plugin')->getName('quick'),
+	'adv'   => array(
+		'text'   => '幻灯片管理',
+		'main'   => '查看列表',
+		'view'   => '查看',
+		'add'    => '添加-log',
+		'edit'   => '编辑-log',
+		'delete' => '删除-log',
+		'xxx'    => array('enabled' => 'edit')
+		),
+	'pages' => array(
+		'text'   => '页面管理',
+		'main'   => '查看列表',
+		'add'    => '添加-log',
+		'edit'   => '编辑-log',
+		'delete' => '删除-log',
+		'xxx'    => array('status' => 'edit')
+		)
+	);
 	}
 
 	protected function perm_creditshop()
 	{
 		return array(
-			'text'    => m('plugin')->getName('creditshop'),
-			'goods'   => array(
-				'text'   => '商品',
-				'main'   => '查看列表',
-				'view'   => '查看详细',
-				'add'    => '添加-log',
-				'edit'   => '修改-log',
-				'delete' => '删除-log',
-				'xxx'    => array('property' => 'edit')
-			),
-			'log'     => array('text' => '订单/记录', 'exchange' => '兑换记录', 'draw' => '抽奖记录', 'order' => '待发货', 'convey' => '待收货', 'finish' => '已完成', 'verifying' => '待核销', 'verifyover' => '已核销', 'verify' => '全部核销', 'detail' => '详情', 'doexchange' => '确认兑换-log', 'export' => '导出明细-log'),
-			'comment' => array('text' => '评价管理', 'edit' => '回复评价', 'check' => '审核评价')
-		);
+	'text'    => m('plugin')->getName('creditshop'),
+	'goods'   => array(
+		'text'   => '商品',
+		'main'   => '查看列表',
+		'view'   => '查看详细',
+		'add'    => '添加-log',
+		'edit'   => '修改-log',
+		'delete' => '删除-log',
+		'xxx'    => array('property' => 'edit')
+		),
+	'log'     => array('text' => '订单/记录', 'exchange' => '兑换记录', 'draw' => '抽奖记录', 'order' => '待发货', 'convey' => '待收货', 'finish' => '已完成', 'verifying' => '待核销', 'verifyover' => '已核销', 'verify' => '全部核销', 'detail' => '详情', 'doexchange' => '确认兑换-log', 'export' => '导出明细-log'),
+	'comment' => array('text' => '评价管理', 'edit' => '回复评价', 'check' => '审核评价')
+	);
 	}
 
 	protected function perm_shop()
 	{
 		return array(
-			'text'          => '商城管理',
-			'adv'           => array(
-				'text'   => '幻灯片',
-				'main'   => '查看列表',
-				'view'   => '查看内容',
-				'add'    => '添加-log',
-				'edit'   => '修改-log',
-				'delete' => '删除-log',
-				'xxx'    => array('displayorder' => 'edit', 'enabled' => 'edit')
+	'text'          => '商城管理',
+	'adv'           => array(
+		'text'   => '幻灯片',
+		'main'   => '查看列表',
+		'view'   => '查看内容',
+		'add'    => '添加-log',
+		'edit'   => '修改-log',
+		'delete' => '删除-log',
+		'xxx'    => array('displayorder' => 'edit', 'enabled' => 'edit')
+		),
+	'nav'           => array(
+		'text'   => '首页导航图标',
+		'main'   => '查看列表',
+		'view'   => '查看内容',
+		'add'    => '添加-log',
+		'edit'   => '修改-log',
+		'delete' => '删除-log',
+		'xxx'    => array('displayorder' => 'edit', 'status' => 'edit')
+		),
+	'banner'        => array(
+		'text'   => '首页广告',
+		'main'   => '查看列表',
+		'view'   => '查看内容',
+		'add'    => '添加-log',
+		'edit'   => '修改-log',
+		'delete' => '删除-log',
+		'xxx'    => array('displayorder' => 'edit', 'enabled' => 'edit', 'setswipe' => 'edit')
+		),
+	'cube'          => array('text' => '首页魔方', 'main' => '查看', 'edit' => '修改-log'),
+	'recommand'     => array('text' => '首页商品推荐', 'main' => '编辑推荐商品-log', 'setstyle' => '设置商品组样式-log'),
+	'sort'          => array('text' => '首页元素排版', 'main' => '修改-log'),
+	'dispatch'      => array(
+		'text'   => '配送方式',
+		'main'   => '查看列表',
+		'view'   => '查看内容',
+		'add'    => '添加-log',
+		'edit'   => '修改-log',
+		'delete' => '删除-log',
+		'xxx'    => array('displayorder' => 'edit', 'enabled' => 'edit', 'setdefault' => 'edit')
+		),
+	'notice'        => array(
+		'text'   => '公告',
+		'main'   => '查看列表',
+		'view'   => '查看内容',
+		'add'    => '添加-log',
+		'edit'   => '修改-log',
+		'delete' => '删除-log',
+		'xxx'    => array('displayorder' => 'edit', 'status' => 'edit')
+		),
+	'comment'       => array('text' => '评价', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'post' => '回复-log', 'delete' => '删除-log'),
+	'refundaddress' => array(
+		'text'   => '退货地址',
+		'main'   => '查看列表',
+		'view'   => '查看内容',
+		'add'    => '添加-log',
+		'edit'   => '修改-log',
+		'delete' => '删除-log',
+		'xxx'    => array('setdefault' => 'edit')
+		),
+	'verify'        => array(
+		'text'  => 'O2O核销',
+		'saler' => array(
+			'text'   => '店员管理',
+			'main'   => '查看列表',
+			'view'   => '查看内容',
+			'add'    => '添加-log',
+			'edit'   => '修改-log',
+			'delete' => '删除-log',
+			'xxx'    => array('status' => 'edit')
 			),
-			'nav'           => array(
-				'text'   => '首页导航图标',
-				'main'   => '查看列表',
-				'view'   => '查看内容',
-				'add'    => '添加-log',
-				'edit'   => '修改-log',
-				'delete' => '删除-log',
-				'xxx'    => array('displayorder' => 'edit', 'status' => 'edit')
+		'store' => array(
+			'text'   => '门店管理',
+			'main'   => '查看列表',
+			'view'   => '查看内容',
+			'add'    => '添加-log',
+			'edit'   => '修改-log',
+			'delete' => '删除-log',
+			'xxx'    => array('displayorder' => 'edit', 'status' => 'edit')
 			),
-			'banner'        => array(
-				'text'   => '首页广告',
-				'main'   => '查看列表',
-				'view'   => '查看内容',
-				'add'    => '添加-log',
-				'edit'   => '修改-log',
-				'delete' => '删除-log',
-				'xxx'    => array('displayorder' => 'edit', 'enabled' => 'edit', 'setswipe' => 'edit')
-			),
-			'cube'          => array('text' => '首页魔方', 'main' => '查看', 'edit' => '修改-log'),
-			'recommand'     => array('text' => '首页商品推荐', 'main' => '编辑推荐商品-log', 'setstyle' => '设置商品组样式-log'),
-			'sort'          => array('text' => '首页元素排版', 'main' => '修改-log'),
-			'dispatch'      => array(
-				'text'   => '配送方式',
-				'main'   => '查看列表',
-				'view'   => '查看内容',
-				'add'    => '添加-log',
-				'edit'   => '修改-log',
-				'delete' => '删除-log',
-				'xxx'    => array('displayorder' => 'edit', 'enabled' => 'edit', 'setdefault' => 'edit')
-			),
-			'notice'        => array(
-				'text'   => '公告',
-				'main'   => '查看列表',
-				'view'   => '查看内容',
-				'add'    => '添加-log',
-				'edit'   => '修改-log',
-				'delete' => '删除-log',
-				'xxx'    => array('displayorder' => 'edit', 'status' => 'edit')
-			),
-			'comment'       => array('text' => '评价', 'main' => '查看列表', 'add' => '添加-log', 'edit' => '编辑-log', 'post' => '回复-log', 'delete' => '删除-log'),
-			'refundaddress' => array(
-				'text'   => '退货地址',
-				'main'   => '查看列表',
-				'view'   => '查看内容',
-				'add'    => '添加-log',
-				'edit'   => '修改-log',
-				'delete' => '删除-log',
-				'xxx'    => array('setdefault' => 'edit')
-			),
-			'verify'        => array(
-				'text'  => 'O2O核销',
-				'saler' => array(
-					'text'   => '店员管理',
-					'main'   => '查看列表',
-					'view'   => '查看内容',
-					'add'    => '添加-log',
-					'edit'   => '修改-log',
-					'delete' => '删除-log',
-					'xxx'    => array('status' => 'edit')
-				),
-				'store' => array(
-					'text'   => '门店管理',
-					'main'   => '查看列表',
-					'view'   => '查看内容',
-					'add'    => '添加-log',
-					'edit'   => '修改-log',
-					'delete' => '删除-log',
-					'xxx'    => array('displayorder' => 'edit', 'status' => 'edit')
-				),
-				'set'   => array('text' => '关键词设置', 'main' => '查看', 'edit' => '编辑-log')
-			)
-		);
+		'set'   => array('text' => '关键词设置', 'main' => '查看', 'edit' => '编辑-log')
+		)
+	);
 	}
 
 	protected function perm_taobao()
 	{
 		return array(
-			'text'      => m('plugin')->getName('taobao'),
-			'main'      => '获取宝贝',
-			'jingdong'  => array('text' => '京东助手', 'main' => '获取宝贝'),
-			'one688'    => array('text' => '1688宝贝助手', 'main' => '获取宝贝'),
-			'taobaocsv' => array('text' => '淘宝CSV助手', 'main' => '获取宝贝'),
-			'set'       => array('text' => '淘宝助手客户端', 'main' => '获取宝贝')
-		);
+	'text'      => m('plugin')->getName('taobao'),
+	'main'      => '获取宝贝',
+	'jingdong'  => array('text' => '京东助手', 'main' => '获取宝贝'),
+	'one688'    => array('text' => '1688宝贝助手', 'main' => '获取宝贝'),
+	'taobaocsv' => array('text' => '淘宝CSV助手', 'main' => '获取宝贝'),
+	'set'       => array('text' => '淘宝助手客户端', 'main' => '获取宝贝')
+	);
 	}
 
 	protected function perm_goods()
 	{
 		return array(
-			'text'     => '商品管理',
-			'main'     => '浏览列表',
-			'view'     => '查看详情',
-			'add'      => '添加-log',
-			'edit'     => '修改-log',
-			'delete'   => '删除-log',
-			'delete1'  => '彻底删除-log',
-			'restore'  => '恢复到仓库-log',
-			'xxx'      => array('status' => 'edit', 'property' => 'edit', 'change' => 'edit'),
-			'category' => array(
-				'text'   => '商品分类',
-				'add'    => '添加-log',
-				'edit'   => '修改-log',
-				'delete' => '删除-log',
-				'xxx'    => array('enabled' => 'edit')
-			),
-			'virtual'  => array(
-				'text'     => '虚拟卡密',
-				'temp'     => array('text' => '卡密模板管理', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'),
-				'category' => array('text' => '卡密分类管理', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log'),
-				'data'     => array('text' => '卡密数据', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log', 'export' => '导出-log', 'temp' => '下载模板', 'import' => '导入-log')
-			)
-		);
+	'text'     => '商品管理',
+	'main'     => '浏览列表',
+	'view'     => '查看详情',
+	'add'      => '添加-log',
+	'edit'     => '修改-log',
+	'delete'   => '删除-log',
+	'delete1'  => '彻底删除-log',
+	'restore'  => '恢复到仓库-log',
+	'xxx'      => array('status' => 'edit', 'property' => 'edit', 'change' => 'edit'),
+	'category' => array(
+		'text'   => '商品分类',
+		'add'    => '添加-log',
+		'edit'   => '修改-log',
+		'delete' => '删除-log',
+		'xxx'    => array('enabled' => 'edit')
+		),
+	'virtual'  => array(
+		'text'     => '虚拟卡密',
+		'temp'     => array('text' => '卡密模板管理', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'),
+		'category' => array('text' => '卡密分类管理', 'add' => '添加-log', 'edit' => '编辑-log', 'delete' => '删除-log'),
+		'data'     => array('text' => '卡密数据', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log', 'export' => '导出-log', 'temp' => '下载模板', 'import' => '导入-log')
+		)
+	);
 	}
 
 	protected function perm_sale()
@@ -634,8 +634,8 @@ class MerchModel extends PluginModel
 				'xxx'      => array('displayorder' => 'edit'),
 				'category' => array('text' => '优惠券分类', 'main' => '查看', 'edit' => '修改-log'),
 				'log'      => array('text' => '优惠券记录', 'main' => '查看', 'export' => '导出记录')
-			)
-		);
+				)
+			);
 		$sale = array('enough' => '修改满额立减-log', 'enoughfree' => '修改满额包邮-log');
 		$array = array_merge($array, $sale);
 		return $array;
@@ -644,124 +644,124 @@ class MerchModel extends PluginModel
 	protected function perm_statistics()
 	{
 		return array(
-			'text'            => '数据统计',
-			'sale'            => array('text' => '销售统计', 'main' => '查看', 'export' => '导出-log'),
-			'sale_analysis'   => array('text' => '销售指标', 'main' => '查看'),
-			'order'           => array('text' => '订单统计', 'main' => '查看', 'export' => '导出-log'),
-			'goods'           => array('text' => '商品销售明细', 'main' => '查看', 'export' => '导出-log'),
-			'goods_rank'      => array('text' => '商品销售排行', 'main' => '查看', 'export' => '导出-log'),
-			'goods_trans'     => array('text' => '商品销售转化率', 'main' => '查看', 'export' => '导出-log'),
-			'member_cost'     => array('text' => '会员消费排行', 'main' => '查看', 'export' => '导出-log'),
-			'member_increase' => array('text' => '会员增长趋势', 'main' => '查看')
-		);
+	'text'            => '数据统计',
+	'sale'            => array('text' => '销售统计', 'main' => '查看', 'export' => '导出-log'),
+	'sale_analysis'   => array('text' => '销售指标', 'main' => '查看'),
+	'order'           => array('text' => '订单统计', 'main' => '查看', 'export' => '导出-log'),
+	'goods'           => array('text' => '商品销售明细', 'main' => '查看', 'export' => '导出-log'),
+	'goods_rank'      => array('text' => '商品销售排行', 'main' => '查看', 'export' => '导出-log'),
+	'goods_trans'     => array('text' => '商品销售转化率', 'main' => '查看', 'export' => '导出-log'),
+	'member_cost'     => array('text' => '会员消费排行', 'main' => '查看', 'export' => '导出-log'),
+	'member_increase' => array('text' => '会员增长趋势', 'main' => '查看')
+	);
 	}
 
 	protected function perm_order()
 	{
 		return array(
-			'text'      => '订单',
-			'detail'    => array('text' => '订单详情', 'edit' => '编辑'),
-			'export'    => array(
-				'text' => '自定义导出-log',
-				'main' => '浏览页面',
-				'xxx'  => array('save' => 'main', 'delete' => 'main', 'gettemplate' => 'main', 'reset' => 'main')
-			),
-			'batchsend' => array(
-				'text' => '批量发货',
-				'main' => '批量发货-log',
-				'xxx'  => array('import' => 'main')
-			),
-			'list'      => array('text' => '订单管理', 'main' => '浏览全部订单', 'status_1' => '浏览关闭订单', 'status0' => '浏览待付款订单', 'status1' => '浏览已付款订单', 'status2' => '浏览已发货订单', 'status3' => '浏览完成的订单', 'status4' => '浏览退货申请订单', 'status5' => '浏览已退货订单'),
-			'op'        => array(
-				'text'          => '操作',
-				'delete'        => '订单删除-log',
-				'pay'           => '确认付款-log',
-				'send'          => '发货-log',
-				'sendcancel'    => '取消发货-log',
-				'finish'        => '确认收货(快递单)-log',
-				'verify'        => '确认核销(核销单)-log',
-				'fetch'         => '确认取货(自提单)-log',
-				'close'         => '关闭订单-log',
-				'changeprice'   => '订单改价-log',
-				'changeaddress' => '修改收货地址-log',
-				'remarksaler'   => '订单备注-log',
-				'paycancel'     => '订单取消付款-log',
-				'fetchcancel'   => '订单取消取货-log',
-				'changeexpress' => '修改快递状态',
-				'refund'        => array('text' => '维权', 'main' => '维权信息', 'submit' => '提交维权申请')
-			)
-		);
+	'text'      => '订单',
+	'detail'    => array('text' => '订单详情', 'edit' => '编辑'),
+	'export'    => array(
+		'text' => '自定义导出-log',
+		'main' => '浏览页面',
+		'xxx'  => array('save' => 'main', 'delete' => 'main', 'gettemplate' => 'main', 'reset' => 'main')
+		),
+	'batchsend' => array(
+		'text' => '批量发货',
+		'main' => '批量发货-log',
+		'xxx'  => array('import' => 'main')
+		),
+	'list'      => array('text' => '订单管理', 'main' => '浏览全部订单', 'status_1' => '浏览关闭订单', 'status0' => '浏览待付款订单', 'status1' => '浏览已付款订单', 'status2' => '浏览已发货订单', 'status3' => '浏览完成的订单', 'status4' => '浏览退货申请订单', 'status5' => '浏览已退货订单'),
+	'op'        => array(
+		'text'          => '操作',
+		'delete'        => '订单删除-log',
+		'pay'           => '确认付款-log',
+		'send'          => '发货-log',
+		'sendcancel'    => '取消发货-log',
+		'finish'        => '确认收货(快递单)-log',
+		'verify'        => '确认核销(核销单)-log',
+		'fetch'         => '确认取货(自提单)-log',
+		'close'         => '关闭订单-log',
+		'changeprice'   => '订单改价-log',
+		'changeaddress' => '修改收货地址-log',
+		'remarksaler'   => '订单备注-log',
+		'paycancel'     => '订单取消付款-log',
+		'fetchcancel'   => '订单取消取货-log',
+		'changeexpress' => '修改快递状态',
+		'refund'        => array('text' => '维权', 'main' => '维权信息', 'submit' => '提交维权申请')
+		)
+	);
 	}
 
 	protected function perm_perm()
 	{
 		return array(
-			'text' => '权限系统',
-			'log'  => array('text' => '操作日志', 'main' => '查看列表'),
-			'role' => array(
-				'text'   => '角色管理',
-				'main'   => '查看列表',
-				'add'    => '添加-log',
-				'edit'   => '修改-log',
-				'delete' => '删除-log',
-				'xxx'    => array('status' => 'edit', 'query' => 'main')
-			),
-			'user' => array(
-				'text'   => '操作员管理',
-				'main'   => '查看列表',
-				'add'    => '添加-log',
-				'edit'   => '修改-log',
-				'delete' => '删除-log',
-				'xxx'    => array('status' => 'edit')
-			)
-		);
+	'text' => '权限系统',
+	'log'  => array('text' => '操作日志', 'main' => '查看列表'),
+	'role' => array(
+		'text'   => '角色管理',
+		'main'   => '查看列表',
+		'add'    => '添加-log',
+		'edit'   => '修改-log',
+		'delete' => '删除-log',
+		'xxx'    => array('status' => 'edit', 'query' => 'main')
+		),
+	'user' => array(
+		'text'   => '操作员管理',
+		'main'   => '查看列表',
+		'add'    => '添加-log',
+		'edit'   => '修改-log',
+		'delete' => '删除-log',
+		'xxx'    => array('status' => 'edit')
+		)
+	);
 	}
 
 	protected function perm_apply()
 	{
 		return array(
-			'text'   => '提现',
-			'detail' => array('text' => '提现详情', 'export' => '导出提现申请订单详情'),
-			'list'   => array('text' => '提现管理', 'post' => '申请提现', 'status1' => '浏览待审核申请', 'status2' => '浏览待结算申请', 'status3' => '浏览已结算申请', 'export' => '导出申请')
-		);
+	'text'   => '提现',
+	'detail' => array('text' => '提现详情', 'export' => '导出提现申请订单详情'),
+	'list'   => array('text' => '提现管理', 'post' => '申请提现', 'status1' => '浏览待审核申请', 'status2' => '浏览待结算申请', 'status3' => '浏览已结算申请', 'export' => '导出申请')
+	);
 	}
 
 	protected function perm_exhelper()
 	{
 		return array(
-			'text'     => '快递助手',
-			'print'    => array(
-				'single' => array('text' => '单个打印', 'express' => '打印快递单-log', 'invoice' => '打印发货单-log', 'dosend' => '一键发货-log'),
-				'batch'  => array('text' => '批量打印', 'express' => '打印快递单-log', 'invoice' => '打印发货单-log', 'dosend' => '一键发货-log')
+	'text'     => '快递助手',
+	'print'    => array(
+		'single' => array('text' => '单个打印', 'express' => '打印快递单-log', 'invoice' => '打印发货单-log', 'dosend' => '一键发货-log'),
+		'batch'  => array('text' => '批量打印', 'express' => '打印快递单-log', 'invoice' => '打印发货单-log', 'dosend' => '一键发货-log')
+		),
+	'temp'     => array(
+		'express' => array(
+			'text'   => '快递单模板管理',
+			'add'    => '添加-log',
+			'edit'   => '修改-log',
+			'delete' => '删除-log',
+			'xxx'    => array('setdefault' => 'edit')
 			),
-			'temp'     => array(
-				'express' => array(
-					'text'   => '快递单模板管理',
-					'add'    => '添加-log',
-					'edit'   => '修改-log',
-					'delete' => '删除-log',
-					'xxx'    => array('setdefault' => 'edit')
-				),
-				'invoice' => array(
-					'text'   => '发货单模板管理',
-					'add'    => '添加-log',
-					'edit'   => '修改-log',
-					'delete' => '删除-log',
-					'xxx'    => array('setdefault' => 'edit')
-				)
-			),
-			'sender'   => array(
-				'text'   => '发货人信息管理',
-				'main'   => '查看列表',
-				'view'   => '查看',
-				'add'    => '添加-log',
-				'edit'   => '修改-log',
-				'delete' => '删除-log',
-				'xxx'    => array('setdefault' => 'edit')
-			),
-			'short'    => array('text' => '商品简称', 'main' => '查看', 'edit' => '修改-log'),
-			'printset' => array('text' => '打印端口设置', 'main' => '查看', 'edit' => '修改-log')
-		);
+		'invoice' => array(
+			'text'   => '发货单模板管理',
+			'add'    => '添加-log',
+			'edit'   => '修改-log',
+			'delete' => '删除-log',
+			'xxx'    => array('setdefault' => 'edit')
+			)
+		),
+	'sender'   => array(
+		'text'   => '发货人信息管理',
+		'main'   => '查看列表',
+		'view'   => '查看',
+		'add'    => '添加-log',
+		'edit'   => '修改-log',
+		'delete' => '删除-log',
+		'xxx'    => array('setdefault' => 'edit')
+		),
+	'short'    => array('text' => '商品简称', 'main' => '查看', 'edit' => '修改-log'),
+	'printset' => array('text' => '打印端口设置', 'main' => '查看', 'edit' => '修改-log')
+	);
 	}
 
 	public function check_edit($permtype = '', $item = array())
@@ -1211,7 +1211,7 @@ class MerchModel extends PluginModel
 					array('name' => '联系人', 'value' => $sendData['realname']),
 					array('name' => '手机号', 'value' => $sendData['mobile']),
 					array('name' => '申请时间', 'value' => date('Y-m-d H:i:s', $sendData['applytime']))
-				);
+					);
 				$tag = 'merch_apply';
 				$text = '[商户名称]在[申请时间]提交了入驻申请，请到后台查看~';
 				$time = date('Y-m-d H:i:s', time());
@@ -1223,7 +1223,7 @@ class MerchModel extends PluginModel
 					'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 					'remark'   => array('value' => '
 请到后台查看~', 'color' => '#000000')
-				);
+					);
 
 				if (!empty($openid)) {
 					foreach ($openid as $v) {
@@ -1268,7 +1268,7 @@ class MerchModel extends PluginModel
 					array('name' => '联系人', 'value' => $sendData['realname']),
 					array('name' => '手机号', 'value' => $sendData['mobile']),
 					array('name' => '申请时间', 'value' => date('Y-m-d H:i:s', $sendData['applytime']))
-				);
+					);
 				$tag = 'merch_applymoney';
 				$text = '[商户名称]在[申请时间]提交了提现申请,提现金额' . $sendData['money'] . '.[联系人] [手机号].';
 				$time = date('Y-m-d H:i:s', time());
@@ -1280,7 +1280,7 @@ class MerchModel extends PluginModel
 					'keyword4' => array('title' => '操作时间', 'value' => date('Y-m-d H:i:s', time()), 'color' => '#000000'),
 					'remark'   => array('value' => '
 请到后台查看~', 'color' => '#000000')
-				);
+					);
 
 				if (!empty($openid)) {
 					foreach ($openid as $v) {
@@ -1324,7 +1324,7 @@ class MerchModel extends PluginModel
 				$advanced_message = array(
 					'first'  => array('value' => $this->replaceArray($datas, $advanced_template['first']), 'color' => $advanced_template['firstcolor']),
 					'remark' => array('value' => $this->replaceArray($datas, $advanced_template['remark']), 'color' => $advanced_template['remarkcolor'])
-				);
+					);
 				$data = iunserializer($advanced_template['data']);
 
 				foreach ($data as $d) {
@@ -1383,7 +1383,7 @@ class MerchModel extends PluginModel
 		$msg = array(
 			'keyword1' => array('value' => $message['keyword1'], 'color' => '#73a68d'),
 			'keyword2' => array('value' => $message['keyword2'], 'color' => '#73a68d')
-		);
+			);
 
 		if ($tm['msguser'] == 1) {
 			$openid = $tm['applyopenid'];
@@ -2290,23 +2290,6 @@ class MerchModel extends PluginModel
 		}
 		else {
 			return $check;
-		}
-	}
-
-	/**
-     * 处理入口文件
-     */
-	public function entranceFile()
-	{
-		$path1 = __DIR__ . '/merchant.php';
-		$path2 = IA_ROOT . '/web/merchant.php';
-
-		if (!is_file($path1)) {
-			return NULL;
-		}
-
-		if (!is_file($path2) || md5_file($path1) != md5_file($path2)) {
-			@copy($path1, $path2);
 		}
 	}
 }

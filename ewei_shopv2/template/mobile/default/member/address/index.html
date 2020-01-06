@@ -33,18 +33,9 @@
 	<div class="title">收货地址</div> 
 	<div class="fui-header-right">&nbsp;</div>
     </div>
-	{if is_weixin() && $_W['shopset']['trade']['shareaddress']}
-	<div class="fui-cell-group order-info noborder" style="margin-top: 2.2rem">
-		<div class="fui-cell" id="btn-address">
-			<div class="fui-cell-text">
-				<span class="icon icon-weixin1" style="margin-right: .3rem;color:#62b900;font-size:1rem"></span>获取微信收货地址
-			</div>
-			<div class="fui-cell-remark text-danger">
-			</div>
-		</div>
-	</div>
-	{/if}
-    <div class='fui-content navbar' {if is_weixin() && $_W['shopset']['trade']['shareaddress']}style="top: 4.4rem"{/if}>
+    <div class='fui-content navbar' >
+
+	
 	<div class='content-empty' {if !empty($list)}style='display:none'{/if}>
 	    <!--<i class='icon icon-location'></i>-->
 	    <!--<br/>您还没有任何收货地址-->
@@ -112,8 +103,6 @@
 	</div> 
    </script>
     <script language='javascript'>require(['biz/member/address'], function (modal) {
-        modal.initPost({new_area: {php echo $new_area}, address_street: {php echo $address_street}});
-        modal.initSelector()
                     modal.initList();
                 });</script>
 </div> 

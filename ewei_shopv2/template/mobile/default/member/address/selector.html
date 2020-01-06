@@ -24,23 +24,12 @@
 	</div>
 
 	<div class='fui-content'>
-		{if is_weixin() && $_W['shopset']['trade']['shareaddress']}
-		<div class="fui-cell-group order-info noborder">
-			<div  class="fui-cell" id="btn-address">
-				<div class="fui-cell-text">
-					<span class="icon icon-weixin1" style="margin-right: .3rem;color:#62b900;font-size:1rem"></span>获取微信收货地址
-				</div>
-				<div class="fui-cell-remark text-danger">
-				</div>
-			</div>
-		</div>
-		{/if}
 		<div id="noaddress" class='content-empty' {if !empty($list)}style='display:none'{/if}>
 			<!--<i class='icon icon-location'></i>-->
 			<!--<br/>您还没有任何收货地址-->
 			<img src="{EWEI_SHOPV2_STATIC}images/noadd.png" style="width: 6rem;margin-bottom: .5rem;"><br/><p style="color: #999;font-size: .75rem">您暂时没有任何收货地址哦！</p>
 		</div>
-	    <div id="addresslist" class="fui-list-group" style="margin-bottom: 2.25rem">
+	    <div id="addresslist" class="fui-list-group">
 			{loop $list $address}
 				<div  class="fui-list address-item"
 					  data-isdefault="{$address['isdefault']}"
@@ -93,9 +82,7 @@
 	</script>
     <script language='javascript'>
 	    require(['biz/member/address'], function (modal) {
-            modal.initPost({new_area: {php echo $new_area}, address_street: {php echo $address_street}});
 		modal.initSelector()
-            modal.initList();
                 });</script>
 </div>
 

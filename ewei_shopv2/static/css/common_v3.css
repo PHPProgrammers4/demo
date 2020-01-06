@@ -1,4 +1,4 @@
-/*common*/
+
 
 ::-webkit-scrollbar {
     width: 4px;
@@ -146,7 +146,7 @@ select, input:focus, input {
     visibility: hidden;
     line-height: 20px;
 }
-/*img*/
+
 .img-30{
     width:30px;
     height:30px;
@@ -1566,7 +1566,7 @@ label > .fa {
     line-height: 40px;
 }
 
-/*select2*/
+
 .select2-container .select2-choice{
     border-color: #efefef !important;
 }
@@ -1638,7 +1638,7 @@ label > .fa {
     right: 0em;
     bottom: 0em;
 }
-/*pop*/
+
 .popover{
     z-index: 110;
 }
@@ -1866,7 +1866,7 @@ keygen, select, select[size="0"], select[size="1"] {
     z-index: 9 !important;
 }
 
-/*loading*/
+
 .page-loading-inner{
     position: fixed;
     top:125px;
@@ -1978,7 +1978,7 @@ keygen, select, select[size="0"], select[size="1"] {
     background: #fff !important;
 }
 
-/**/
+
 .border{
     border:1px solid #efefef;
 }

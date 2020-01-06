@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -22,9 +21,7 @@ class Staff_EweiShopV2Page extends WebPage
 			$params[':keyword'] = '%' . $keyword . '%';
 		}
 
-		$sql = 'SELECT np.*,st.storename FROM ' . tablename('ewei_shop_newstore_people') . ' np
-            inner join ' . tablename('ewei_shop_store') . ' st on np.storeid=st.id
-            WHERE 1 and' . $condition . 'ORDER BY np.id DESC';
+		$sql = 'SELECT np.*,st.storename FROM ' . tablename('ewei_shop_newstore_people') . " np\r\n            inner join " . tablename('ewei_shop_store') . " st on np.storeid=st.id\r\n            WHERE 1 and" . $condition . 'ORDER BY np.id DESC';
 		$sql .= ' LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
 		$list = pdo_fetchall($sql, $params);
 		$pager = pagination2(count($list), $pindex, $psize);

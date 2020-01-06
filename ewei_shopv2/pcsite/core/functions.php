@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 function es_empty()
 {
 	$empty_file = ES_CONTROLLER_PATH . ES_EMPTY_CONTROLLER . '.php';

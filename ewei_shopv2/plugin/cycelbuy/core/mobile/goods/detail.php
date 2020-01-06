@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -643,7 +643,7 @@ class Detail_EweiShopV2Page extends PluginMobilePage
 					'title'    => array('text' => $title, 'left' => 230, 'top' => 770, 'size' => 24, 'width' => 360, 'height' => 50, 'color' => '#333'),
 					'price'    => array('text' => $price, 'left' => 270, 'top' => 880, 'size' => 30, 'color' => '#f20'),
 					'desc'     => array('text' => '长按二维码扫码购买', 'left' => 210, 'top' => 980, 'size' => 18, 'color' => '#666')
-				);
+					);
 			}
 			else if ($commission_data['codeShare'] == 2) {
 				$title[0] = mb_substr($goods['title'], 0, 14, 'utf-8');
@@ -657,7 +657,7 @@ class Detail_EweiShopV2Page extends PluginMobilePage
 					'qrcode'   => array('thumb' => tomedia($qrcode), 'left' => 170, 'top' => 200, 'width' => 300, 'height' => 300),
 					'desc'     => array('text' => '长按二维码扫码购买', 'left' => 205, 'top' => 510, 'size' => 18, 'color' => '#666'),
 					'shopname' => array('text' => $_W['shopset']['shop']['name'], 'left' => 0, 'top' => 585, 'size' => 28, 'width' => 640, 'height' => 50, 'color' => '#fff')
-				);
+					);
 			}
 			else {
 				if ($commission_data['codeShare'] == 3) {
@@ -671,7 +671,7 @@ class Detail_EweiShopV2Page extends PluginMobilePage
 						'qrcode' => array('thumb' => tomedia($qrcode), 'left' => 20, 'top' => 810, 'width' => 220, 'height' => 220),
 						'price'  => array('text' => $price, 'left' => 280, 'top' => 870, 'size' => 30, 'color' => '#000'),
 						'desc'   => array('text' => '长按二维码扫码购买', 'left' => 280, 'top' => 950, 'size' => 18, 'color' => '#666')
-					);
+						);
 				}
 			}
 
@@ -702,7 +702,7 @@ class Detail_EweiShopV2Page extends PluginMobilePage
 					'title'    => array('text' => $title, 'left' => 230, 'top' => 770, 'size' => 24, 'width' => 360, 'height' => 50, 'color' => '#333'),
 					'price'    => array('text' => $price, 'left' => 270, 'top' => 880, 'size' => 30, 'color' => '#f20'),
 					'desc'     => array('text' => '长按二维码扫码购买', 'left' => 210, 'top' => 980, 'size' => 18, 'color' => '#666')
-				);
+					);
 			}
 			else {
 				if ($commission_data['codeShare'] == 2) {
@@ -717,7 +717,7 @@ class Detail_EweiShopV2Page extends PluginMobilePage
 						'qrcode'   => array('thumb' => tomedia($qrcode), 'left' => 170, 'top' => 200, 'width' => 300, 'height' => 300),
 						'desc'     => array('text' => '长按二维码扫码购买', 'left' => 205, 'top' => 510, 'size' => 18, 'color' => '#666'),
 						'shopname' => array('text' => $_W['shopset']['shop']['name'], 'left' => 0, 'top' => 585, 'size' => 28, 'width' => 640, 'height' => 50, 'color' => '#fff')
-					);
+						);
 				}
 			}
 

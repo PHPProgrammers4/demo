@@ -1,12 +1,5 @@
 <?php
 
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -433,10 +426,10 @@ class Finance_EweiShopV2Model
             }
         }
         if ($payment['is_new'] == 1 && !$app){
-            /*if ($normal)
+            if ($normal)
             {
                 $payment = pdo_fetch("SELECT * FROM ".tablename('ewei_shop_payment')." WHERE uniacid=:uniacid AND `type`='0'",array(':uniacid'=>$_W['uniacid']));
-            }*/
+            }
             $wechat = array(
                 'appid' => $payment['sub_appid'],
                 'mchid' => $payment['sub_mch_id'],
@@ -590,9 +583,6 @@ class Finance_EweiShopV2Model
         } else {
             libxml_disable_entity_loader(true);
             $arr = json_decode(json_encode(simplexml_load_string($resp['content'], 'SimpleXMLElement', LIBXML_NOCDATA)), true);
-            if($arr['return_code'] == 'FAIL' && $arr['return_msg']){
-                return error(-2, $arr['return_msg']);
-            }
             if ($arr['return_code'] == 'SUCCESS' && $arr['result_code'] == 'SUCCESS') {
                 return true;
             } elseif ($arr['return_code'] == 'SUCCESS' && $arr['result_code'] == 'FAIL'&& $arr['return_msg'] == 'OK' && !$refund_account){
@@ -601,10 +591,10 @@ class Finance_EweiShopV2Model
                 }
             }
 
-            /*if (!$normal)
+            if (!$normal)
             {
                 return $this->refund($openid, $out_trade_no, $out_refund_no, $totalmoney, $refundmoney, $app,'REFUND_SOURCE_RECHARGE_FUNDS',true);
-            }*/
+            }
 
             if ($arr['return_msg'] == $arr['err_code_des']) {
                 $error = $arr['return_msg'];
@@ -1036,95 +1026,8 @@ class Finance_EweiShopV2Model
             if (is_error($dc) || strexists($dc, 'CDATA[FAIL]')) {
                 continue;
             }
-            if ($datatype) {
-                $dc_arr = explode("\r\n", $dc);
-                /**
-                 * 下载对账单的数据类型和账单类型
-                 * zhurunfeng 2019-10-08
-                 */
-                $len = count($dc_arr);
-                $num_data = explode(",", $dc_arr[$len-2]);
-                $order_text = explode(",", $dc_arr[$len-3]);
-                foreach ($dc_arr as $key => $value) {
-                    if ($key != 0 && $key < $len-3) {
-                        if (!strstr($value, 'ewei_shopv2')) {
-                            $value_arr = explode(',', $value);
-                            // 订单数
-                            $ordernum = substr($num_data[0], 1);
-                            $ordernum -= 1;
-                            $num_data[0] = "`{$ordernum}";
-                            // 应结金额
-                            $yj_price = substr($num_data[1], 1);
-                            $yj_price -= substr($value_arr[12], 1);
-                            $num_data[1] = "`{$yj_price}";
-                            if ($type == "ALL") {
-                                // 退款金额
-                                $tk_price = substr($num_data[2], 1);
-                                $tk_price -= substr($value_arr[16], 1);
-                                $num_data[2] = "`{$tk_price}";
-                                // 充值券退款
-                                $czqtk_price = substr($num_data[3], 1);
-                                $czqtk_price -= substr($value_arr[17], 1);
-                                $num_data[3] = "`{$czqtk_price}";
-                                // 手续费金额
-                                $sxf_price = substr($num_data[4], 1);
-                                $sxf_price -= substr($value_arr[22], 1);
-                                $num_data[4] = "`{$sxf_price}";
-                                // 订单金额
-                                $order_price = substr($num_data[5], 1);
-                                $order_price -= substr($value_arr[24], 1);
-                                $num_data[5] = "`{$order_price}";
-                                // 申请退款金额
-                                $sqtk_price = substr($num_data[6], 1);
-                                $sqtk_price -= substr($value_arr[25], 1);
-                                $num_data[6] = "`{$sqtk_price}";
-                            } else if ($type == 'SUCCESS') {
-                                // 手续费金额
-                                $sxf_price = substr($num_data[4], 1);
-                                $sxf_price -= substr($value_arr[16], 1);
-                                $num_data[4] = "`{$sxf_price}";
-                                // 订单金额
-                                $order_price = substr($num_data[5], 1);
-                                $order_price -= substr($value_arr[18], 1);
-                                $num_data[5] = "`{$order_price}";
-                                
-                                unset($num_data[2]);
-                                unset($num_data[3]);
-                                unset($num_data[6]);
-                                unset($order_text[2]);
-                                unset($order_text[3]);
-                                unset($order_text[6]);
-                                
-                            } else if ($type == "REFUND") {
-                                // 退款金额
-                                $tk_price = substr($num_data[2], 1);
-                                $tk_price -= substr($value_arr[18], 1);
-                                $num_data[2] = "`{$tk_price}";
-                                // 充值券退款
-                                $czqtk_price = substr($num_data[3], 1);
-                                $czqtk_price -= substr($value_arr[19], 1);
-                                $num_data[3] = "`{$czqtk_price}";
-                                // 手续费金额
-                                $sxf_price = substr($num_data[4], 1);
-                                $sxf_price -= substr($value_arr[24], 1);
-                                $num_data[4] = "`{$sxf_price}";
-                                // 订单金额
-                                $order_price = substr($num_data[5], 1);
-                                $order_price -= substr($value_arr[26], 1);
-                                $num_data[5] = "`{$order_price}";
-                                // 申请退款金额
-                                $sqtk_price = substr($num_data[6], 1);
-                                $sqtk_price -= substr($value_arr[27], 1);
-                                $num_data[6] = "`{$sqtk_price}";
-                            }
-                            
-                            unset($dc_arr[$key]);
-                        }
-                    }
-                }
-                $dc_arr[$len-2] = implode(',', $num_data);
-                $dc_arr[$len-3] = implode(',', $order_text);
-                $dc = implode("\r\n", $dc_arr);
+            if($datatype && !strexists($dc, 'ewei_shopv2')){
+                continue;
             }
             $content .= $date . " 账单\r\n\r\n";
             $content .= $dc . "\r\n\r\n";

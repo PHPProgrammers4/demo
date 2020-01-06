@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -177,8 +177,8 @@ class Index_EweiShopV2Page extends DividendWebPage
 
 			$data['openid'] = $data['openid1'];
 			m('common')->updatePluginset(array(
-				'dividend' => array('tm' => $data)
-			));
+	'dividend' => array('tm' => $data)
+	));
 			plog('dividend.notice.edit', '修改通知设置');
 			show_json(1);
 		}
@@ -292,7 +292,7 @@ class Index_EweiShopV2Page extends DividendWebPage
 			$data['register_bottom_content'] = m('common')->html_images($data['register_bottom_content']);
 			m('common')->updatePluginset(array('dividend' => $data));
 			m('cache')->set('template_' . $this->pluginname, $data['style']);
-			plog('dividend.set.edit', '修改基本设置<br>成为队长条件 -- ' . $become . '<br/>分红比例' . $data['ratio'] . '%');
+			plog('dividend.set.edit', '修改基本设置<br>成为队长条件 -- ' . $become);
 			show_json(1, array('url' => webUrl('dividend/set', array('tab' => str_replace('#tab_', '', $_GPC['tab'])))));
 		}
 

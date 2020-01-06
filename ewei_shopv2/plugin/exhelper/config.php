@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -22,16 +21,16 @@ return array(
 					array('title' => '发货单模板', 'route' => 'invoice'),
 					array('title' => '发件人模板', 'route' => 'sender', 'route_ns' => true),
 					array('title' => '电子面单模版', 'hidemerch' => true, 'route' => 'esheet')
-				)
-			),
+					)
+				),
 			array(
 				'title' => '快递单/发货单',
 				'route' => 'print',
 				'items' => array(
 					array('title' => '单个打印', 'route' => 'single'),
 					array('title' => '批量打印', 'route' => 'batch')
-				)
-			),
+					)
+				),
 			array(
 				'title'     => '电子面单',
 				'hidemerch' => true,
@@ -39,10 +38,10 @@ return array(
 				'items'     => array(
 					array('title' => '单个打印', 'route' => 'single'),
 					array('title' => '批量打印', 'route' => 'batch')
+					)
 				)
 			)
 		)
-	)
-);
+	);
 
 ?>

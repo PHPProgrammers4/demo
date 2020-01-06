@@ -1,16 +1,9 @@
 <?php
 
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class Index_EweiShopV2Page extends AppMobilePage {
 
@@ -20,7 +13,7 @@ class Index_EweiShopV2Page extends AppMobilePage {
         /*
         $diypage = p('diypage');
         if(!$diypage){
-            return app_error(AppError::$PluginNotFound);
+            app_error(AppError::$PluginNotFound);
         }*/
 
         $pageid = intval($_GPC['id']);
@@ -29,19 +22,19 @@ class Index_EweiShopV2Page extends AppMobilePage {
         }
 
         if(empty($pageid)){
-            return app_error(AppError::$PageNotFound);
+            app_error(AppError::$PageNotFound);
         }
 
         $page = $this->model->getPage($pageid, true);
 
-        if($page==='default'){
-        
-            return app_json(array(
-                'diypage'=>false
-            ));
-        }
+if($page==='default'){
+
+    app_json(array(
+        'diypage'=>false
+    ));
+}
         if(empty($page) || empty($page['data'])){
-            return app_error(AppError::$PageNotFound);
+            app_error(AppError::$PageNotFound);
         }
 
         $startadv = array();
@@ -85,7 +78,7 @@ class Index_EweiShopV2Page extends AppMobilePage {
             $result['phonenumber'] = empty($_W['shopset']['app']['phonenumber'])? '#ff5555': $_W['shopset']['app']['phonenumber'];
         }
 
-        return app_json($result);
+        app_json($result);
     }
 
     function main2() {
@@ -93,7 +86,7 @@ class Index_EweiShopV2Page extends AppMobilePage {
 
         $diypage = p('diypage');
         if(!$diypage){
-            return app_error(AppError::$PluginNotFound);
+            app_error(AppError::$PluginNotFound);
         }
 
         $pagetype = trim($_GPC['type']);
@@ -105,15 +98,15 @@ class Index_EweiShopV2Page extends AppMobilePage {
         }
 
         if(empty($pageid)){
-            return app_error(AppError::$PageNotFound);
+            app_error(AppError::$PageNotFound);
         }
 
         $page = $diypage->getPage($pageid, true);
         if(empty($page) || empty($page['data'])){
-            return app_error(AppError::$PageNotFound);
+            app_error(AppError::$PageNotFound);
         }
 
-        return app_json(array(
+        app_json(array(
             'diypage'=>$page['data']
         ));
     }
@@ -141,7 +134,7 @@ class Index_EweiShopV2Page extends AppMobilePage {
         $set = m('common')->getPluginset('commission');
         $level = $this->getLevel($_W['openid']);
         if(empty($dataurl)){
-            return app_json(array(
+            app_json(array(
                 'goods'=>array(),
                 'type'=>'stores',
             ));
@@ -163,8 +156,8 @@ class Index_EweiShopV2Page extends AppMobilePage {
                 if($dataParams[0] == 'category'){
                     $pcate = $dataParams[1];
 
-                    $goodsql = 'SELECT id,displayorder,title,subtitle,thumb,marketprice,hascommission,nocommission,commission,commission1_rate,commission1_rate,marketprice,commission1_pay,maxprice,productprice,minprice,maxprice,isdiscount,isdiscount_time,isdiscount_discounts,sales,salesreal,total,description,bargain,`type`,ispresell,`virtual`,hasoption,video FROM ' .tablename('ewei_shop_goods') .' WHERE FIND_IN_SET('.$pcate.',cates) AND status = 1 AND deleted = 0 AND uniacid ='.$_W['uniacid'].' ORDER BY displayorder DESC'.' limit 0,'.$goodsnum;
-                    $count = pdo_fetch('SELECT count(id) as count FROM ' .tablename('ewei_shop_goods') .' WHERE FIND_IN_SET('.$pcate.',cates) AND status = 1 AND deleted = 0 AND uniacid ='.$_W['uniacid']);
+                    $goodsql = 'SELECT id,displayorder,title,subtitle,thumb,marketprice,hascommission,nocommission,commission,commission1_rate,commission1_rate,marketprice,commission1_pay,maxprice,productprice,minprice,maxprice,isdiscount,isdiscount_time,isdiscount_discounts,sales,salesreal,total,description,bargain,`type`,ispresell,`virtual`,hasoption,video FROM ' .tablename('ewei_shop_goods') .' WHERE FIND_IN_SET('.$pcate.',cates) AND status = 1 AND deleted = 0 AND uniacid ='.$_W['uniacid'].' limit 0,'.$goodsnum;
+                    $count = pdo_fetch('SELECT count(id) as count FROM ' .tablename('ewei_shop_goods') .' WHERE FIND_IN_SET('.$pcate.',cates) AND uniacid ='.$_W['uniacid']);
                     $list['list'] = pdo_fetchall($goodsql);
                     $list['count'] = $count['count'];
                     foreach($list['list'] as $k => $v){
@@ -202,14 +195,13 @@ class Index_EweiShopV2Page extends AppMobilePage {
                         }
                     }
 
-                    //m('common')->sortArrayByKey($list['list'], 'displayorder');
+                    m('common')->sortArrayByKey($list['list'], 'displayorder');
                     
-                    return app_json(array(
+                    app_json(array(
                         'goods'=>$list,
                         'type'=>'goods',
                     ));
-                }
-                elseif($dataParams[0] == 'groups'){
+                }elseif($dataParams[0] == 'groups'){
                     $sql = 'SELECT * FROM ' .tablename('ewei_shop_goods_group') .' WHERE id = :id AND uniacid = :uniacid';
                     $params = array(
                         ':uniacid' => $_W['uniacid'],
@@ -217,8 +209,8 @@ class Index_EweiShopV2Page extends AppMobilePage {
                     );
                     $groupsData = pdo_fetch($sql,$params);
                     $goodsid = $groupsData['goodsids'];
-                    $goodsql = 'SELECT id,displayorder,title,subtitle,thumb,hascommission,nocommission,commission,commission1_rate,commission1_rate,marketprice,commission1_pay,maxprice,marketprice,productprice,minprice,maxprice,isdiscount,isdiscount_time,isdiscount_discounts,sales,salesreal,total,description,bargain,`type`,ispresell,`virtual`,hasoption,video FROM ' .tablename('ewei_shop_goods') .' WHERE id in('.$goodsid.') AND status = 1 AND deleted = 0 AND uniacid ='.$_W['uniacid'].' ORDER BY displayorder DESC'.' limit 0,'.$goodsnum;
-                    $count = pdo_fetch('SELECT count(id) as count FROM ' .tablename('ewei_shop_goods') .' WHERE id in('.$goodsid.') AND status = 1 AND deleted = 0 AND uniacid ='.$_W['uniacid']);
+                    $goodsql = 'SELECT id,displayorder,title,subtitle,thumb,hascommission,nocommission,commission,commission1_rate,commission1_rate,marketprice,commission1_pay,maxprice,marketprice,productprice,minprice,maxprice,isdiscount,isdiscount_time,isdiscount_discounts,sales,salesreal,total,description,bargain,`type`,ispresell,`virtual`,hasoption,video FROM ' .tablename('ewei_shop_goods') .' WHERE id in('.$goodsid.') AND status = 1 AND deleted = 0 AND uniacid ='.$_W['uniacid'].' limit 0,'.$goodsnum;
+                    $count = pdo_fetch('SELECT count(id) as count FROM ' .tablename('ewei_shop_goods') .' WHERE id in('.$goodsid.') AND uniacid ='.$_W['uniacid']);
                     $list['list'] = pdo_fetchall($goodsql);
                     $list['count'] = $count['count'];
                     foreach($list['list'] as $k => $v){
@@ -255,13 +247,14 @@ class Index_EweiShopV2Page extends AppMobilePage {
                             $list['list'][$k]['seetitle'] = $set['seetitle'];
                         }
                     }
-                    //m('common')->sortArrayByKey($list['list'], 'displayorder');
-                    return app_json(array(
+
+                    m('common')->sortArrayByKey($list['list'], 'displayorder');
+
+                    app_json(array(
                         'goods'=>$list,
                         'type'=>'goods',
                     ));
-                }
-                else if($dataParams[0] == 'goodsids'){
+                }else if($dataParams[0] == 'goodsids'){
                     $goodsids = explode(',',$dataParams[1]);
                     if(!empty($goodsids)){
                         foreach($goodsids as $gk => $gv){
@@ -270,7 +263,7 @@ class Index_EweiShopV2Page extends AppMobilePage {
                             }
                         }
                         $goodsid = implode(',',$goodsids);
-                        $sql = 'SELECT id,displayorder,title,subtitle,thumb,marketprice,hascommission,nocommission,commission,commission1_rate,commission1_rate,marketprice,commission1_pay,maxprice,productprice,minprice,maxprice,isdiscount,isdiscount_time,isdiscount_discounts,sales,salesreal,total,description,bargain,`type`,ispresell,`virtual`,hasoption,video FROM ' .tablename('ewei_shop_goods') .' WHERE id in('.$goodsid.') AND uniacid ='.$_W['uniacid'].' ORDER BY displayorder DESC'.' limit 0,'.$goodsnum;
+                        $sql = 'SELECT id,displayorder,title,subtitle,thumb,marketprice,hascommission,nocommission,commission,commission1_rate,commission1_rate,marketprice,commission1_pay,maxprice,productprice,minprice,maxprice,isdiscount,isdiscount_time,isdiscount_discounts,sales,salesreal,total,description,bargain,`type`,ispresell,`virtual`,hasoption,video FROM ' .tablename('ewei_shop_goods') .' WHERE id in('.$goodsid.') AND uniacid ='.$_W['uniacid'].' limit 0,'.$goodsnum;
                         $count = pdo_fetch('SELECT count(id) as count FROM ' .tablename('ewei_shop_goods') .' WHERE id in('.$goodsid.') AND uniacid ='.$_W['uniacid']);
                         $list['list'] = pdo_fetchall($sql);
                         $list['count'] = $count['count'];
@@ -309,15 +302,14 @@ class Index_EweiShopV2Page extends AppMobilePage {
                             }
                         }
 
-                        //m('common')->sortArrayByKey($list['list'], 'displayorder');
+                        m('common')->sortArrayByKey($list['list'], 'displayorder');
 
-                        return app_json(array(
+                        app_json(array(
                             'goods'=>$list,
                             'type'=>'goods',
                         ));
                     }
-                }
-                else if($dataParams[0] == 'stores'){
+                }else if($dataParams[0] == 'stores'){
                     $urlValue = explode('?',$dataParams[1]);
                     $storesids = explode(',',$urlValue[0]);
                     if(!empty($storesids)){
@@ -327,14 +319,14 @@ class Index_EweiShopV2Page extends AppMobilePage {
                             }
                         }
                         $storesid = implode(',',$storesids);
-                        $sql = 'SELECT id,storename,displayorder FROM ' .tablename('ewei_shop_store') .' WHERE id in('.$storesid.') AND uniacid ='.$_W['uniacid'].' ORDER BY displayorder DESC'.' limit 0,'.$storenum;
+                        $sql = 'SELECT id,storename,displayorder FROM ' .tablename('ewei_shop_store') .' WHERE id in('.$storesid.') AND uniacid ='.$_W['uniacid'].' limit 0,'.$storenum;
                         $count = pdo_fetch('SELECT count(id) as count FROM ' .tablename('ewei_shop_store') .' WHERE id in('.$storesid.') AND uniacid ='.$_W['uniacid']);
                         $list['list'] = pdo_fetchall($sql);
                         $list['count'] = $count['count'];
 
-                        //m('common')->sortArrayByKey($list['list'], 'displayorder');
+                        m('common')->sortArrayByKey($list['list'], 'displayorder');
 
-                        return app_json(array(
+                        app_json(array(
                             'goods'=>$list,
                             'type'=>'stores',
                         ));

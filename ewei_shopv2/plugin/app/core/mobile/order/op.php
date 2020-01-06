@@ -10,7 +10,7 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-require_once EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
+require EWEI_SHOPV2_PLUGIN . 'app/core/page_mobile.php';
 
 class Op_EweiShopV2Page extends AppMobilePage
 {
@@ -24,18 +24,18 @@ class Op_EweiShopV2Page extends AppMobilePage
         global $_W, $_GPC;
         $orderid = intval($_GPC['id']);
         if(empty($orderid)){
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
         $order = pdo_fetch("select id,ordersn,openid,status,deductcredit,deductcredit2,deductprice,couponid,`virtual`,`virtual_info`,merchid  from " . tablename('ewei_shop_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1'
             , array(':id' => $orderid, ':uniacid' => $_W['uniacid'], ':openid' => $_W['openid']));
         if (empty($order)) {
-            return app_error(AppError::$OrderNotFound);
+            app_error(AppError::$OrderNotFound);
         }
         if($order['status'] > 0){
-            return app_error(AppError::$OrderCannotCancel);
+            app_error(AppError::$OrderCannotCancel);
         }
         if($order['status'] < 0){
-            return app_error(AppError::$OrderCannotCancel);
+            app_error(AppError::$OrderCannotCancel);
         }
 
         if (!empty($order['virtual']) && $order['virtual'] != 0) {
@@ -77,13 +77,7 @@ class Op_EweiShopV2Page extends AppMobilePage
         //模板消息
         m('notice')->sendOrderMessage($orderid);
 
-        //加入好物圈收藏
-        $goodscircle = p('goodscircle');
-        if($goodscircle){
-            $goodscircle->updateOrder($order['openid'],$orderid);
-        }
-
-        return app_json();
+        app_json();
     }
 
     /**
@@ -96,7 +90,7 @@ class Op_EweiShopV2Page extends AppMobilePage
         global $_W, $_GPC;
         $orderid = intval($_GPC['id']);
         if(empty($orderid)){
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
 
         //单品退换货，确认收货后取消维权
@@ -105,11 +99,11 @@ class Op_EweiShopV2Page extends AppMobilePage
         $order = pdo_fetch("select id,status,openid,couponid,refundstate,refundid from " . tablename('ewei_shop_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1'
             , array(':id' => $orderid, ':uniacid' => $_W['uniacid'], ':openid' => $_W['openid']));
         if (empty($order)) {
-            return app_error(AppError::$OrderNotFound);
+            app_error(AppError::$OrderNotFound);
         }
 
         if ($order['status'] != 2) {
-            return app_error(AppError::$OrderCannotFinish);
+            app_error(AppError::$OrderCannotFinish);
         }
         if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
 
@@ -127,12 +121,8 @@ class Op_EweiShopV2Page extends AppMobilePage
         //商品全返
         m('order')->fullback($orderid);
 
-        $memberSetting = m('common')->getSysset('member');
-        // 会员升级 - 如果没有设置升级条件或者升级条件是1的时候,那么走收货后进行升级的流程
-        if ((int)$memberSetting['upgrade_condition'] === 1 || empty($memberSetting['upgrade_condition'])) {
-            m('member')->upgradeLevel($order['openid'], $orderid);
-        }
         //会员升级
+        m('member')->upgradeLevel($order['openid'], $orderid);
 
         //余额赠送
         m('order')->setGiveBalance($orderid, 1);
@@ -155,13 +145,7 @@ class Op_EweiShopV2Page extends AppMobilePage
             p('commission')->checkOrderFinish($orderid);
         }
 
-        //加入好物圈收藏
-        $goodscircle = p('goodscircle');
-        if($goodscircle){
-            $goodscircle->updateOrder($order['openid'],$orderid);
-        }
-
-        return app_json();
+        app_json();
     }
 
     /**
@@ -176,21 +160,21 @@ class Op_EweiShopV2Page extends AppMobilePage
         $orderid = intval($_GPC['id']);
         $userdeleted = intval($_GPC['userdeleted']);
         if(empty($orderid)){
-            return app_error(AppError::$ParamsError);
+            app_error(AppError::$ParamsError);
         }
-        $order = pdo_fetch("select id,status,refundstate,refundid,openid,ordersn from " . tablename('ewei_shop_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1'
+        $order = pdo_fetch("select id,status,refundstate,refundid from " . tablename('ewei_shop_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1'
             , array(':id' => $orderid, ':uniacid' => $_W['uniacid'], ':openid' => $_W['openid']));
         if (empty($order)) {
-            return app_error(AppError::$OrderNotFound);
+            app_error(AppError::$OrderNotFound);
         }
 
         if ($userdeleted == 0) {
             if ($order['status'] != 3) {
-                return app_error(AppError::$OrderCannotRestore);
+                app_error(AppError::$OrderCannotRestore);
             }
         } else {
             if ($order['status'] != 3 && $order['status'] != -1) {
-                return app_error(AppError::$OrderCannotDelete);
+                app_error(AppError::$OrderCannotDelete);
             }
 
             if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
@@ -203,14 +187,7 @@ class Op_EweiShopV2Page extends AppMobilePage
         }
 
         pdo_update('ewei_shop_order', array('userdeleted' => $userdeleted, 'refundstate' => 0), array('id' => $order['id'], 'uniacid' => $_W['uniacid']));
-
-        //加入好物圈收藏
-        $goodscircle = p('goodscircle');
-        if($goodscircle){
-            $goodscircle->deleteOrder($order['openid'],$order['ordersn']);
-        }
-
-        return app_json();
+        app_json();
     }
 
 }

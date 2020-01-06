@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 function merchUrl($do = '', $query = NULL, $full = false)
 {
 	global $_W;
@@ -126,14 +125,6 @@ $_W['attachurl'] = $_W['attachurl_local'] = $_W['siteroot'] . $_W['config']['upl
 
 if (!empty($_W['setting']['remote'][$_W['uniacid']]['type'])) {
 	$_W['setting']['remote'] = $_W['setting']['remote'][$_W['uniacid']];
-}
-
-$info = uni_setting_load('remote', $uniacid);
-
-if (!empty($info['remote'])) {
-	if ($info['remote']['type'] != 0) {
-		$_W['setting']['remote'] = $info['remote'];
-	}
 }
 
 if (!empty($_W['setting']['remote']['type'])) {

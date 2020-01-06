@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -10,7 +9,6 @@ class Level_EweiShopV2Page extends WebPage
 	{
 		global $_W;
 		global $_GPC;
-		$set = array();
 		$set = m('common')->getSysset();
 		$shopset = $set['shop'];
 		$default = array('id' => 'default', 'levelname' => empty($set['shop']['levelname']) ? '普通等级' : $set['shop']['levelname'], 'discount' => $set['shop']['leveldiscount'], 'ordermoney' => 0, 'ordercount' => 0, 'membercount' => pdo_fetchcolumn('select count(1) from ' . tablename('ewei_shop_member') . ' where uniacid=:uniacid and level=0 limit 1', array(':uniacid' => $_W['uniacid'])));
@@ -83,9 +81,6 @@ class Level_EweiShopV2Page extends WebPage
 			$data = array('uniacid' => $_W['uniacid'], 'level' => intval($_GPC['level']), 'levelname' => trim($_GPC['levelname']), 'ordercount' => intval($_GPC['ordercount']), 'ordermoney' => $_GPC['ordermoney'], 'discount' => trim($_GPC['discount']), 'enabled' => $enabled);
 			$goodsids = iserializer($_GPC['goodsids']);
 			$buygoods = intval($_GPC['buygoods']);
-			if ($buygoods == 1 && empty($_GPC['goodsids'])) {
-				show_json(0, '商品不能为空');
-			}
 
 			if (!empty($id)) {
 				if ($id == 'default') {
@@ -138,12 +133,7 @@ class Level_EweiShopV2Page extends WebPage
 		$items = pdo_fetchall('SELECT id,levelname FROM ' . tablename('ewei_shop_member_level') . (' WHERE id in( ' . $id . ' ) AND uniacid=') . $_W['uniacid']);
 
 		foreach ($items as $item) {
-			$res = pdo_delete('ewei_shop_member_level', array('id' => $item['id']));
-
-			if ($res) {
-				pdo_update('ewei_shop_member', array('level' => 0), array('uniacid' => $_W['uniacid'], 'level' => $item['id']));
-			}
-
+			pdo_delete('ewei_shop_member_level', array('id' => $item['id']));
 			plog('member.level.delete', '删除等级 ID: ' . $item['id'] . ' 标题: ' . $item['levelname'] . ' ');
 		}
 

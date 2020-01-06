@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 define('IN_SYS', true);
 require '../framework/bootstrap.inc.php';
 load()->web('common');

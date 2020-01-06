@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -32,19 +31,9 @@ class Favorite_EweiShopV2Page extends MobileLoginPage
 		$list = array();
 
 		if (!empty($total)) {
-			$sql = 'SELECT f.id,f.goodsid,g.title,g.thumb,g.marketprice,g.productprice,g.merchid,g.minprice,g.maxprice FROM ' . tablename('ewei_shop_member_favorite') . ' f ' . ' left join ' . tablename('ewei_shop_goods') . ' g on f.goodsid = g.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
+			$sql = 'SELECT f.id,f.goodsid,g.title,g.thumb,g.marketprice,g.productprice,g.merchid FROM ' . tablename('ewei_shop_member_favorite') . ' f ' . ' left join ' . tablename('ewei_shop_goods') . ' g on f.goodsid = g.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
 			$list = pdo_fetchall($sql, $params);
 			$list = set_medias($list, 'thumb');
-
-			if (!empty($list)) {
-				foreach ($list as &$item) {
-					if ((double) $item['marketprice'] == 0 && (double) $item['productprice'] == 0) {
-						$item['marketprice'] = $item['minprice'];
-					}
-				}
-			}
-
-			unset($item);
 			if (!empty($list) && $merch_plugin && $merch_data['is_openmerch']) {
 				$merch_user = $merch_plugin->getListUser($list, 'merch_user');
 

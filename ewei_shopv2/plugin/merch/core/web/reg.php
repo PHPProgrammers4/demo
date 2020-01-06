@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -46,18 +45,18 @@ class Reg_EweiShopV2Page extends PluginWebPage
 
 			unset($row);
 			m('excel')->export($list, array(
-				'title'   => '商户数据-' . date('Y-m-d-H-i', time()),
-				'columns' => array(
-					array('title' => 'ID', 'field' => 'id', 'width' => 12),
-					array('title' => '商户名', 'field' => 'merchname', 'width' => 24),
-					array('title' => '主营项目', 'field' => 'salecate', 'width' => 12),
-					array('title' => '商家简介', 'field' => 'desc', 'width' => 24),
-					array('title' => '联系人', 'field' => 'realname', 'width' => 12),
-					array('title' => '手机号', 'field' => 'moible', 'width' => 12),
-					array('title' => '申请时间', 'field' => 'applytime', 'width' => 12),
-					array('title' => '状态', 'field' => 'statusstr', 'width' => 12)
-				)
-			));
+	'title'   => '商户数据-' . date('Y-m-d-H-i', time()),
+	'columns' => array(
+		array('title' => 'ID', 'field' => 'id', 'width' => 12),
+		array('title' => '商户名', 'field' => 'merchname', 'width' => 24),
+		array('title' => '主营项目', 'field' => 'salecate', 'width' => 12),
+		array('title' => '商家简介', 'field' => 'desc', 'width' => 24),
+		array('title' => '联系人', 'field' => 'realname', 'width' => 12),
+		array('title' => '手机号', 'field' => 'moible', 'width' => 12),
+		array('title' => '申请时间', 'field' => 'applytime', 'width' => 12),
+		array('title' => '状态', 'field' => 'statusstr', 'width' => 12)
+		)
+	));
 		}
 
 		$pager = pagination2($total, $pindex, $psize);
@@ -137,7 +136,6 @@ class Reg_EweiShopV2Page extends PluginWebPage
 					$user['regid'] = $item['id'];
 					$user['status'] = 0;
 					pdo_insert('ewei_shop_merch_user', $user);
-					m('notice')->sendMerchSuccess($item['id']);
 					$userid = pdo_insertid();
 					pdo_update('ewei_shop_merch_reg', $item, array('id' => $item['id']));
 
@@ -155,7 +153,6 @@ class Reg_EweiShopV2Page extends PluginWebPage
 					$user['status'] = 0;
 					pdo_update('ewei_shop_merch_user', $user, array('uniacid' => $_W['uniacid'], 'regid' => $item['id']));
 					pdo_update('ewei_shop_merch_reg', $item, array('id' => $item['id']));
-					m('notice')->sendMerchSuccess($item['id']);
 
 					if (ca('merch.user.edit')) {
 						show_json(1, array('message' => '允许入驻成功，请编辑商户账户资料!', 'url' => webUrl('merch/user/edit', array('id' => $usercount['id']))));
@@ -168,7 +165,6 @@ class Reg_EweiShopV2Page extends PluginWebPage
 			else {
 				if ($status == -1) {
 					pdo_update('ewei_shop_merch_reg', $item, array('id' => $item['id']));
-					m('notice')->sendMerchFail($item['id']);
 				}
 			}
 

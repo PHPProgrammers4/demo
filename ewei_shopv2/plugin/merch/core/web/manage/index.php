@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 require EWEI_SHOPV2_PLUGIN . 'merch/core/inc/page_merch.php';
 class Index_EweiShopV2Page extends MerchWebPage
 {
@@ -113,9 +112,9 @@ class Index_EweiShopV2Page extends MerchWebPage
 								}
 
 								$list[$top] = array(
-									'title' => $title,
-									'items' => array()
-								);
+	'title' => $title,
+	'items' => array()
+	);
 							}
 
 							if (strexists($submenu_item['title'], $keyword)) {

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -50,7 +49,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			'creditshop' => array('status' => 0, 'list' => $creditshop_list),
 			'seckill'    => array('status' => 0, 'list' => $seckill_list),
 			'exchange'   => array('status' => 0, 'list' => $exchange_list)
-		);
+			);
 		$pluginAll = m('plugin')->getAll();
 
 		if (empty($pluginAll)) {

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -49,10 +48,7 @@ class Verify_EweiShopV2Page extends WebPage
 			$this->message('未查询到记次时商品或核销码已失效,请核对核销码!', '', 'error');
 		}
 
-		$verifygood = pdo_fetch('select vg.*,g.id as goodsid ,g.title,g.subtitle,g.thumb  from ' . tablename('ewei_shop_verifygoods') . '   vg
-		 inner join ' . tablename('ewei_shop_order_goods') . ' og on vg.ordergoodsid = og.id
-		 inner join ' . tablename('ewei_shop_goods') . ' g on og.goodsid = g.id
-		 where   vg.verifycode=:verifycode and vg.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':verifycode' => $verifycode));
+		$verifygood = pdo_fetch('select vg.*,g.id as goodsid ,g.title,g.subtitle,g.thumb  from ' . tablename('ewei_shop_verifygoods') . "   vg\r\n\t\t inner join " . tablename('ewei_shop_order_goods') . " og on vg.ordergoodsid = og.id\r\n\t\t inner join " . tablename('ewei_shop_goods') . " g on og.goodsid = g.id\r\n\t\t where   vg.verifycode=:verifycode and vg.uniacid=:uniacid  limit 1", array(':uniacid' => $_W['uniacid'], ':verifycode' => $verifycode));
 
 		if (empty($verifygood)) {
 			$this->message('未查询到记次时商品或核销码已失效,请核对核销码!', '', 'error');
@@ -127,14 +123,7 @@ class Verify_EweiShopV2Page extends WebPage
 			$params[':buyendtime'] = $buyendtime;
 		}
 
-		$sql = 'select vg.*,g.id as goodsid ,g.title,g.thumb,o.ordersn,vgl.verifydate,vgl.verifynum,o.paytime,s.storename,sa.salername,vgl.remarks,o.openid,o.carrier  from ' . tablename('ewei_shop_verifygoods_log') . '   vgl
-		 left join ' . tablename('ewei_shop_verifygoods') . ' vg on vg.id = vgl.verifygoodsid
-		 left join ' . tablename('ewei_shop_store') . ' s  on s.id = vgl.storeid
-		 left join ' . tablename('ewei_shop_saler') . ' sa  on sa.id = vgl.salerid
-		 left join ' . tablename('ewei_shop_order_goods') . ' og on vg.ordergoodsid = og.id
-		 left join ' . tablename('ewei_shop_order') . ' o on o.id = og.orderid
-		 left join ' . tablename('ewei_shop_goods') . ' g on og.goodsid = g.id
-		 where  1 and  ' . $condition . ' ORDER BY vgl.verifydate DESC ';
+		$sql = 'select vg.*,g.id as goodsid ,g.title,g.thumb,o.ordersn,vgl.verifydate,vgl.verifynum,o.paytime,s.storename,sa.salername,vgl.remarks,o.openid,o.carrier  from ' . tablename('ewei_shop_verifygoods_log') . "   vgl\r\n\t\t left join " . tablename('ewei_shop_verifygoods') . " vg on vg.id = vgl.verifygoodsid\r\n\t\t left join " . tablename('ewei_shop_store') . " s  on s.id = vgl.storeid\r\n\t\t left join " . tablename('ewei_shop_saler') . " sa  on sa.id = vgl.salerid\r\n\t\t left join " . tablename('ewei_shop_order_goods') . " og on vg.ordergoodsid = og.id\r\n\t\t left join " . tablename('ewei_shop_order') . " o on o.id = og.orderid\r\n\t\t left join " . tablename('ewei_shop_goods') . " g on og.goodsid = g.id\r\n\t\t where  1 and  " . $condition . ' ORDER BY vgl.verifydate DESC ';
 
 		if (empty($_GPC['export'])) {
 			$sql .= ' LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
@@ -157,14 +146,7 @@ class Verify_EweiShopV2Page extends WebPage
 		}
 
 		unset($rom);
-		$total = pdo_fetchcolumn('select  COUNT(*)   from ' . tablename('ewei_shop_verifygoods_log') . '   vgl
-		 left join ' . tablename('ewei_shop_verifygoods') . ' vg on vg.id = vgl.verifygoodsid
-		 left join ' . tablename('ewei_shop_store') . ' s  on s.id = vgl.storeid
-		 left join ' . tablename('ewei_shop_saler') . ' sa  on sa.id = vgl.salerid
-		 left join ' . tablename('ewei_shop_order_goods') . ' og on vg.ordergoodsid = og.id
-		 left join ' . tablename('ewei_shop_order') . ' o on o.id = og.orderid
-		 left join ' . tablename('ewei_shop_goods') . ' g on og.goodsid = g.id
-		  where  1 and  ' . $condition . ' ORDER BY vgl.verifydate DESC ', $params);
+		$total = pdo_fetchcolumn('select  COUNT(*)   from ' . tablename('ewei_shop_verifygoods_log') . "   vgl\r\n\t\t left join " . tablename('ewei_shop_verifygoods') . " vg on vg.id = vgl.verifygoodsid\r\n\t\t left join " . tablename('ewei_shop_store') . " s  on s.id = vgl.storeid\r\n\t\t left join " . tablename('ewei_shop_saler') . " sa  on sa.id = vgl.salerid\r\n\t\t left join " . tablename('ewei_shop_order_goods') . " og on vg.ordergoodsid = og.id\r\n\t\t left join " . tablename('ewei_shop_order') . " o on o.id = og.orderid\r\n\t\t left join " . tablename('ewei_shop_goods') . " g on og.goodsid = g.id\r\n\t\t  where  1 and  " . $condition . ' ORDER BY vgl.verifydate DESC ', $params);
 		$pager = pagination2($total, $pindex, $psize);
 		set_time_limit(0);
 
@@ -181,7 +163,7 @@ class Verify_EweiShopV2Page extends WebPage
 				array('title' => '核销人', 'field' => 'salername', 'width' => 12),
 				array('title' => '核销门店', 'field' => 'storename', 'width' => 20),
 				array('title' => '备注信息', 'field' => 'remarks', 'width' => 45)
-			);
+				);
 			$exportlist = array();
 
 			foreach ($list as $key => $value) {

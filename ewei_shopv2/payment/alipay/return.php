@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 function str($str)
 {
 	$str = str_replace('"', '', $str);

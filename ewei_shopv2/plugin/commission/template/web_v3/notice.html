@@ -451,51 +451,6 @@
 
             <table class="table table-responsive">
                 <thead style="background: #ededed">
-                <th>卖家通知-申请成为分销商</th>
-                <th class="w200">模板消息</th>
-                <th class="w60 is_advanced"><!--<input class="js-switch small checkall" data-type="tpl-advanced" type="checkbox" />--></th>
-                <th class="w200 is_sms"></th>
-                <th class="w60 is_sms" style="text-align: right"><input class="js-switch small checkall" data-type="sms" type="checkbox" /></th>
-                <th style="width:350px"></th>
-                </thead>
-                <tbody>
-
-                <tr>
-                    <td>申请成为分销商通知</td>
-
-
-                    <td>
-                        <select class="select2"{ifp 'commission.notice.edit'}name="data[apply_commission]"{else}disabled{/if}>
-                        <option value=''>[默认]申请成为分销商通知</option>
-                        {loop $template_list['commission_become_apply'] $template_val}
-                        <option value="{$template_val['id']}" {if $data['tm']['apply_commission'] == $template_val['id'] }selected{/if}>{$template_val['title']}</option>
-                        {/loop}
-                        </select>
-                    </td>
-                    <td style="text-align: right;" class="is_advanced">
-                        <label class="notice-default">
-                            <input type="hidden" name="data[commission_apply_notice]" value="{php echo intval($data['tm']['commission_apply_notice'])}" />
-                            <input class="js-switch small checkone" data-type="tpl-advanced"   data-tag="commission_become_apply" type="checkbox" value="{php echo intval($data['tm']['commission_apply_notice'])}" {if empty($data['tm']['commission_apply_notice'])}checked{/if}/>
-                        </label>
-                        <label style="display: none;">
-                            <img src="../addons/ewei_shopv2/static/images/loading.gif" width="20" alt="" onerror="this.src='../addons/ewei_shopv2/static/images/nopic.png'" />
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: top;">选择通知人-<br/>申请成为分销商通知</td>
-                    <td colspan="{if !empty($salers)}4{else}2{/if}" class="colstd">
-                        {php echo tpl_selector('openids3',array('key'=>'openid','text'=>'nickname', 'thumb'=>'avatar','multi'=>1,'placeholder'=>'昵称/姓名/手机号','buttontext'=>'选择通知人', 'items'=>$salers3,'url'=>webUrl('member/query') ))}
-                        <span class='help-block'>申请成为分销商通知后以模板消息的方式商家通知，可以指定多个人，如果不填写则不通知</span>
-                    </td>
-                </tr>
-
-                </tbody>
-            </table>
-
-
-            <table class="table table-responsive">
-                <thead style="background: #ededed">
                 <th>卖家通知-分销商提现</th>
                 <th class="w200">模板消息</th>
                 <th class="w60 is_advanced"><!--<input class="js-switch small checkall" data-type="tpl-advanced" type="checkbox" />--></th>
@@ -518,13 +473,14 @@
                     </td>
                     <td style="text-align: right;" class="is_advanced">
                         <label class="notice-default">
-                            <input type="hidden" name="data[commission_applymoney_close_advanced]" value="{php echo intval($data['tm']['commission_applymoney_close_advanced'])}" />
-                            <input class="js-switch small checkone" data-type="tpl-advanced"   data-tag="commission_applymoney" type="checkbox" value="{php echo intval($data['tm']['commission_applymoney_close_advanced'])}" {if empty($data['tm']['commission_applymoney_close_advanced'])}checked{/if}/>
+                            <input type="hidden" name="data[commission_applymoney_notice]" value="{php echo intval($data['tm']['commission_applymoney_notice'])}" />
+                            <input class="js-switch small checkone" data-type="tpl-advanced"   data-tag="commission_applymoney" type="checkbox" value="{php echo intval($data['tm']['commission_applymoney_notice'])}" {if empty($data['tm']['commission_applymoney_notice'])}checked{/if}/>
                         </label>
                         <label style="display: none;">
                             <img src="../addons/ewei_shopv2/static/images/loading.gif" width="20" alt="" onerror="this.src='../addons/ewei_shopv2/static/images/nopic.png'" />
                         </label>
                     </td>
+                </tr>
                 <tr>
                     <td style="vertical-align: top;">选择通知人-<br/>分销商提现通知</td>
                     <td colspan="{if !empty($salers)}4{else}2{/if}" class="colstd">

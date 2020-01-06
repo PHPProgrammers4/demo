@@ -45,13 +45,13 @@
     <div class="wb-header-flex"></div>
 
     <ul>
-        {if $system['right_menu']['system']}
-            <li data-toggle="tooltip" data-placement="bottom" title="">
-                <a href="{php echo webUrl('system')}">
-                    系统管理
-                </a>
-            </li>
-        {/if}
+        <!--{if $system['right_menu']['system']}-->
+            <!--<li data-toggle="tooltip" data-placement="bottom" title="">-->
+                <!--<a href="{php echo webUrl('system')}">-->
+                    <!--系统管理-->
+                <!--</a>-->
+            <!--</li>-->
+        <!--{/if}-->
         {if p('app')}
             {php  $appsets = p('app')->getGlobal()}
             {if !empty($appsets['mmanage']['qrcode'])}
@@ -72,8 +72,8 @@
         {/if}
         {if $_W['role'] == 'founder'}
         <li>
-            <a href="{php echo webUrl('system')}" target="_blank">
-                <i class="icow icow-icon_shoppingmall" style="margin-right: 10px;color: #f34347"></i>应用设置
+            <a href="{php echo webUrl('system')}" >
+                <i class="icow icow-qiehuan" style="margin-right: 10px;color: #f34347"></i>系统管理
             </a>
         </li>
         {/if}
@@ -206,8 +206,6 @@
                     <a href="{php echo webUrl('system/copyright')}"><i class="icow icow-banquan"></i>版权</a>
                     <a href="{php echo webUrl('system/data')}"><i class="icow icow-statistics"></i>数据</a>
                     <a href="{php echo webUrl('system/site')}"><i class="icow icow-wangzhan"></i>网站</a>
-                    <a href="{php echo webUrl('system/auth')}"><i class="icow icow-iconfont-shouquan"></i>授权</a>
-                    <a href="{php echo webUrl('system/auth/upgrade')}"><i class="icow icow-gengxin"></i>更新</a>
                     <span class="syssettips"></span>
                 </div>
             </li>
@@ -244,7 +242,7 @@
           </div>
         </div>
     {/if}
- 
+
     {if !$no_right}
         <div class="wb-panel {if empty($system['foldpanel'])}in{/if}">
             <div class="panel-group" id="panel-accordion">

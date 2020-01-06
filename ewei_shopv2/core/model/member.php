@@ -1,12 +1,4 @@
 <?php
-
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -260,10 +252,6 @@ class Member_EweiShopV2Model {
             }
             $log_data['remark'] = $log_data['remark']. " 剩余: ".$newcredit;
             pdo_update('mc_members', array($credittype => $newcredit), array('uid' => $uid));
-            $a = $newcredit;
-            $log_data['presentcredit'] = $a;
-            pdo_insert('mc_credits_record', $log_data);
-
         } else {
             //如果未关注
             $value = pdo_fetchcolumn("SELECT {$credittype} FROM " . tablename('ewei_shop_member') . " WHERE  uniacid=:uniacid and openid=:openid limit 1", array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
@@ -274,34 +262,28 @@ class Member_EweiShopV2Model {
             pdo_update('ewei_shop_member', array($credittype => $newcredit), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
             $log_data['remark'] = $log_data['remark']. " OPENID: ".$openid;
             $log_data['remark'] = $log_data['remark']. " 剩余: ".$newcredit;
-            $a = $newcredit;
-            $log_data['presentcredit'] = $a;
-            pdo_insert('mc_credits_record', $log_data);
         }
+        pdo_insert('mc_credits_record', $log_data);
         //新增商城积分(余额)记录表
         $member_log_table_flag = pdo_tableexists('ewei_shop_member_credit_record');
         if($member_log_table_flag){
             $log_data['openid'] = $openid;
-            $log_data['presentcredit'] = $a;
             pdo_insert('ewei_shop_member_credit_record', $log_data);
         }
 
         if (p('task')){//##任务中心
-            if ($credittype == 'credit1'){//处理积分
+            if ($credittype == 'credit1'){
 
-            }else{//处理余额
+            }else{
                 p('task')->checkTaskReward('cost_rechargeenough',$credits,$openid);
                 p('task')->checkTaskReward('cost_rechargetotal',$credits,$openid);
-                //因为任务为:充值余额完成赠送积分,但是积分达到任务额度也会赠送,需要判断,只充积分,才赠送
-                p('task')->checkTaskProgress($credits,'recharge_full',0,$openid);
             }
-            p('task')->checkTaskProgress($credits,'recharge_count',0,$openid);
         }
 
-//        if (p('task')){//##任务中心
-//            p('task')->checkTaskProgress($credits,'recharge_full',0,$openid);
-//            p('task')->checkTaskProgress($credits,'recharge_count',0,$openid);
-//        }
+        if (p('task')){//##任务中心
+            p('task')->checkTaskProgress($credits,'recharge_full',0,$openid);
+            p('task')->checkTaskProgress($credits,'recharge_count',0,$openid);
+        }
 
         //com('wxcard')->updateMemberCardByOpenid($openid);
          com_run('wxcard::updateMemberCardByOpenid',$openid);
@@ -438,11 +420,7 @@ class Member_EweiShopV2Model {
 				'createtime' => time(),
 				'status' => 0
 			);
-
-                pdo_insert('ewei_shop_member', $member);
-
-                $this->deleterepeat($openid);
-
+			pdo_insert('ewei_shop_member', $member);
             if(method_exists(m('member'),'memberRadisCountDelete')) {
                 m('member')->memberRadisCountDelete(); //清除会员统计radis缓存
             }
@@ -472,7 +450,6 @@ class Member_EweiShopV2Model {
 			if (!empty($upgrade)) {
 				pdo_update('ewei_shop_member', $upgrade, array('id' => $member['id']));
 			}
-            $this->deleterepeat($openid);
 		}
 		//分销商
 		if (p('commission')) {
@@ -580,12 +557,9 @@ class Member_EweiShopV2Model {
 
     /**
      * 会员升级
-     *
      * @param type $mid
-     * @param $orderid
-     * @param $status int 3-订单完成 1-订单付款后 增加了一个付款后和订单完成后升级的选项,所以增加了一个status的状态显示
      */
-    function upgradeLevel($openid, $orderid = 0, $status = 3) {
+    function upgradeLevel($openid, $orderid = 0) {
         global $_W;
         if (empty($openid)) {
             return;
@@ -605,11 +579,11 @@ class Member_EweiShopV2Model {
                 . ' left join ' . tablename('ewei_shop_order') . ' o on o.id=og.orderid '
                 . ' where o.openid=:openid and o.status=3 and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));*/
             //根据订单支付金额来判断   -- yqj --
-            $ordermoney = pdo_fetchcolumn('select sum(price) from ' . tablename('ewei_shop_order') . " where uniacid=:uniacid and openid=:openid and status=:status limit 1", array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid'], ':status' => $status));
+            $ordermoney = pdo_fetchcolumn('select sum(price) from ' . tablename('ewei_shop_order') . " where uniacid=:uniacid and openid=:openid and status=3 limit 1", array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
             $ordermoney = floatval($ordermoney);
             $level = pdo_fetch('select * from ' . tablename('ewei_shop_member_level') . " where uniacid=:uniacid  and enabled=1 and {$ordermoney} >= ordermoney and ordermoney>0  order by level desc limit 1", array(':uniacid' => $_W['uniacid']));
         } else if ($leveltype == 1) {
-            $ordercount = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_order') . ' where openid=:openid and status=:status and uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid'],':status' => $status));
+            $ordercount = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_order') . ' where openid=:openid and status=3 and uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
             $level = pdo_fetch('select * from ' . tablename('ewei_shop_member_level') . " where uniacid=:uniacid and enabled=1 and {$ordercount} >= ordercount and ordercount>0  order by level desc limit 1", array(':uniacid' => $_W['uniacid']));
         }
 
@@ -633,6 +607,7 @@ class Member_EweiShopV2Model {
         if ($level['id'] == $member['level']) {
             return;
         }
+
         //旧等级
         $oldlevel = $this->getLevel($openid);
         $canupgrade = false;  //是否可以升级
@@ -1104,22 +1079,5 @@ class Member_EweiShopV2Model {
             }
         }
     }
-
-    public function deleterepeat($openid = '')
-    {
-        global $_W;
-
-        $uid = $openid;
-
-        if (!empty($uid)) {
-            $result = pdo_fetchall("SELECT id,openid,createtime FROM ".tablename('ewei_shop_member')." WHERE uniacid=:uniacid and openid=:openid order by createtime DESC",array('uniacid' => $_W['uniacid'],'openid' => $uid));
-            $count = count($result);
-            if ($count > 1){
-                pdo_delete('ewei_shop_member',array('id'=>$result['0']['id'],'uniacid'=>$_W['uniacid']));
-            }
-        }
-
-    }
-
 
 }

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -62,7 +61,7 @@ class Log_EweiShopV2Page extends ComWebPage
 		if (!empty($_GPC['time1']['start']) && !empty($_GPC['time1']['end'])) {
 			$starttime1 = strtotime($_GPC['time1']['start']);
 			$endtime1 = strtotime($_GPC['time1']['end']);
-			$condition .= ' AND d.usetime >= :starttime1 AND d.usetime <= :endtime1 ';
+			$condition .= ' AND d.usetime >= :starttime1 AND d.gettime <= :endtime1 ';
 			$params[':starttime1'] = $starttime1;
 			$params[':endtime1'] = $endtime1;
 		}
@@ -178,7 +177,7 @@ class Log_EweiShopV2Page extends ComWebPage
 				array('title' => '获取时间', 'field' => 'gettime', 'width' => 12),
 				array('title' => '使用时间', 'field' => 'usetime', 'width' => 12),
 				array('title' => '使用单号', 'field' => 'ordersn', 'width' => 12)
-			);
+				);
 			m('excel')->export($list, array('title' => '优惠券数据-' . date('Y-m-d-H-i', time()), 'columns' => $columns));
 			plog('sale.coupon.log.export', '导出优惠券发放记录');
 		}

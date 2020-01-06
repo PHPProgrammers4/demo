@@ -558,8 +558,8 @@
   <county name="皇姑区" /> 
   <county name="铁西区" /> 
   <county name="苏家屯区" /> 
-  <county name="浑南区" />
-  <county name="沈北新区" />
+  <county name="东陵区" /> 
+  <county name="新城子区" /> 
   <county name="于洪区" /> 
   <county name="辽中县" /> 
   <county name="康平县" /> 
@@ -997,9 +997,11 @@
   <county name="高淳县" /> 
   </city>
  <city name="无锡市">
-  <county name="梁溪区" />
-  <county name="新吴区" />
-  <county name="锡山区" />
+  <county name="市辖区" /> 
+  <county name="崇安区" /> 
+  <county name="南长区" /> 
+  <county name="北塘区" /> 
+  <county name="锡山区" /> 
   <county name="惠山区" /> 
   <county name="滨湖区" /> 
   <county name="江阴市" /> 
@@ -1154,8 +1156,7 @@
   <county name="奉化市" /> 
   </city>
  <city name="温州市">
-  <county name="龙港市" />
-  <county name="市辖区" />
+  <county name="市辖区" /> 
   <county name="鹿城区" /> 
   <county name="龙湾区" /> 
   <county name="瓯海区" /> 
@@ -2232,7 +2233,7 @@
   <county name="芦淞区" /> 
   <county name="石峰区" /> 
   <county name="天元区" /> 
-  <county name="渌口区" />
+  <county name="株洲县" /> 
   <county name="攸县" /> 
   <county name="茶陵县" /> 
   <county name="炎陵县" /> 
@@ -2570,7 +2571,7 @@
   <county name="石碣"/>
   <county name="石龙"/>
   <county name="石排"/>
-  <county name="望牛墩镇"/>
+  <county name="望牛墩"/>
   <county name="谢岗"/>
   <county name="樟木头"/>
   <county name="中堂"/>
@@ -3666,8 +3667,7 @@
   <county name="安西县" /> 
   <county name="肃北蒙古族自治县" /> 
   <county name="阿克塞哈萨克族自治县" /> 
-  <county name="玉门市" />
-  <county name="瓜州县" />
+  <county name="玉门市" /> 
   <county name="敦煌市" /> 
   </city>
  <city name="庆阳市">
@@ -3982,6 +3982,5 @@
   </province>
     <province name="境外">
         <city name="境外地区"></city>
-        <city name="其他地区"></city>
     </province>
   </address>

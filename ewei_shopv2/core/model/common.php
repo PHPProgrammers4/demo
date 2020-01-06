@@ -1,15 +1,14 @@
 <?php
 
-/*
- * 人人商城V2
- * 
- * @author ewei 狸小狐 QQ:22185157 
- */
 if (!defined('IN_IA')) {
-	exit('Access Denied');
+    exit('Access Denied');
 }
 
 class Common_EweiShopV2Model {
+
+    public $appkey = '7525739';
+    public $appSecret = 'IxmtvyXXDzrk';
+    public $access_token = '67f63cbb-ef47-4234-bc78-cea2693830c2';
 
     public function getSetData($uniacid = 0) {
         global $_W;
@@ -1060,37 +1059,37 @@ class Common_EweiShopV2Model {
         * 小程序微信提现打款
         * */
         if(strpos($params['openid'],'sns_wa_')!==false){
-            if(p('app')){
-                return error(-1, '小程序暂不支持微信红包打款，请选择企业打款');
-                //获取小程序微信支付配置
-                $sets = m('common')->getSysset(array('app', 'pay'));
-                $sec = m('common')->getSec();
-                $sec = iunserializer($sec['sec']);
-                if(!is_array($sec['wxapp']) || !isset($sec['wxapp'])){
-                    $sec['wxapp'] = array();
+                if(p('app')){
+                    return error(-1, '小程序暂不支持微信红包打款，请选择企业打款');
+                    //获取小程序微信支付配置
+                    $sets = m('common')->getSysset(array('app', 'pay'));
+                    $sec = m('common')->getSec();
+                    $sec = iunserializer($sec['sec']);
+                    if(!is_array($sec['wxapp']) || !isset($sec['wxapp'])){
+                        $sec['wxapp'] = array();
+                    }
+                    //是否开启小程序微信支付
+                    if(empty($sec['wxapp'])){
+                        return error(-1, '未开启小程序微信支付');
+                    }
+                    if(empty($sec['wxapp_cert'])||empty($sec['wxapp_key'])){
+                        return error(-1, '未上传完整的微信支付证书');
+                    }
+                    $payment['sub_appid'] = $sets['app']['appid'];
+                    $payment['sub_mch_id'] = $sec['wxapp']['mchid'];
+                    $payment['apikey'] = $sec['wxapp']['apikey'];
+                    $certs = array(
+                        'cert' => $sec['wxapp_cert'],
+                        'key' => $sec['wxapp_key'],
+                        'root' => $sec['wxapp_root']
+                    );
+                    /*
+                     * 小程序openid去掉sns_wa_
+                     * */
+                    $params['openid'] = str_replace('sns_wa_','',$params['openid']);
+                }else{
+                    return error(-1, '没有设定支付参数');
                 }
-                //是否开启小程序微信支付
-                if(empty($sec['wxapp'])){
-                    return error(-1, '未开启小程序微信支付');
-                }
-                if(empty($sec['wxapp_cert'])||empty($sec['wxapp_key'])){
-                    return error(-1, '未上传完整的微信支付证书');
-                }
-                $payment['sub_appid'] = $sets['app']['appid'];
-                $payment['sub_mch_id'] = $sec['wxapp']['mchid'];
-                $payment['apikey'] = $sec['wxapp']['apikey'];
-                $certs = array(
-                    'cert' => $sec['wxapp_cert'],
-                    'key' => $sec['wxapp_key'],
-                    'root' => $sec['wxapp_root']
-                );
-                /*
-                 * 小程序openid去掉sns_wa_
-                 * */
-                $params['openid'] = str_replace('sns_wa_','',$params['openid']);
-            }else{
-                return error(-1, '没有设定支付参数');
-            }
         }else{
             $set = $this->getSysset('pay');
             if (!empty($set['weixin_id'])){
@@ -1784,6 +1783,65 @@ class Common_EweiShopV2Model {
         if ($arr) {
             array_multisort(array_column($arr,$key),SORT_DESC,$arr);
         }
+    }
+
+    function post_alibaba_api($token, $appSecret, $apiInfo, $code_arr)
+    {
+
+        $appSecret = $this->appSecret;
+        $token = $this->access_token;
+        $appkey = $this->appkey;
+        $url = 'http://gw.open.1688.com/openapi/';//1688开放平台使用gw.open.1688.com域名
+
+
+        $aliParams = array();
+        foreach ($code_arr as $key => $val) {
+            $aliParams[] = $key . $val;
+        }
+        $aliParams[] = 'access_token'.$token;
+
+        sort($aliParams);
+
+
+
+        $sign_str = join('', $aliParams);
+        $sign_str = $apiInfo.$appkey  . $sign_str;
+        $code_sign = strtoupper(bin2hex(hash_hmac("sha1", $sign_str, $appSecret, true)));
+
+
+        $aliParams = array();
+//        foreach ($code_arr as $key => $val) {
+//            $aliParams[] = $key . '=' . $val;
+//        }
+        $aliParams[] = 'access_token'.'=' .$token;
+
+
+        $sign_str = join('&', $aliParams);
+        $sign_str = $apiInfo .$appkey. '?' . $sign_str;
+        return $url . $sign_str. "&_aop_signature=" . $code_sign;
+    }
+
+    function curl_post($data,$url){
+        $curl = curl_init();
+        //设置抓取的url
+        curl_setopt($curl, CURLOPT_URL, $url);
+        //设置头文件的信息作为数据流输出
+        //设置获取的信息以文件流的形式返回，而不是直接输出。
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        //设置post方式提交
+        curl_setopt($curl, CURLOPT_POST, 1);
+        //设置post数据
+        $post_data = $data;
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data);
+        //执行命令
+        $json = curl_exec($curl);
+        //关闭URL请求
+        curl_close($curl);
+        //显示获得的数据
+
+        $adata = json_decode($json,true);
+
+        return $adata;
     }
 
 }

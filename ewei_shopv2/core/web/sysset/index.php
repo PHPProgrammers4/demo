@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 echo '  ';
 
 if (!defined('IN_IA')) {
@@ -106,7 +106,8 @@ class Index_EweiShopV2Page extends WebPage
 			$data = is_array($_GPC['data']) ? $_GPC['data'] : array();
 			$data['logo'] = save_media($data['icon']);
 			$data['desc'] = str_replace(array('
-', '', '
+', '
+', '
 '), '', trim($data['desc']));
 			m('common')->updateSysset(array('share' => $data));
 			plog('sysset.follow.edit', '修改系统设置-分享及关注设置');
@@ -139,82 +140,69 @@ class Index_EweiShopV2Page extends WebPage
 
 		$error_message = '';
 		$templatenum = count($result['template_list']);
-		$templatetype = pdo_fetch('select `name`,templatecode,content,templatename  from ' . tablename('ewei_shop_member_message_template_type') . ' where typecode=:typecode  limit 1', array(':typecode' => $tag));
+		$templatetype = pdo_fetch('select `name`,templatecode,content  from ' . tablename('ewei_shop_member_message_template_type') . ' where typecode=:typecode  limit 1', array(':typecode' => $tag));
 
 		if (empty($templatetype)) {
 			show_json(1, array('status' => 0, 'messages' => '默认模板信息错误', 'tag' => $tag));
 		}
 
 		$content = str_replace(array('
-', '', '
+', '
+', '
 ', ' '), '', $templatetype['content']);
 		$content = str_replace(array('：'), ':', $content);
 		$issnoet = true;
 		$defaulttemp = pdo_fetch('select *  from ' . tablename('ewei_shop_member_message_template_default') . ' where typecode=:typecode and uniacid=:uniacid  limit 1', array(':typecode' => $tag, ':uniacid' => $_W['uniacid']));
 		$template_list = $result['template_list'];
 		$templateIds = array_column($template_list, 'template_id');
-		$templateTiele = array_column($template_list, 'title');
-
-		if (in_array($templatetype['templatename'], $templateTiele)) {
-			$found_key = array_search($templatetype['templatename'], $templateTiele);
-
-			if (empty($defaulttemp)) {
-				pdo_insert('ewei_shop_member_message_template_default', array('typecode' => $tag, 'uniacid' => $_W['uniacid'], 'templateid' => $template_list[$found_key]['template_id']));
+		if (empty($defaulttemp) || !in_array($defaulttemp['templateid'], $templateIds)) {
+			if (25 <= $templatenum) {
+				show_json(1, array('status' => 0, 'messages' => '开启' . $templatetype['name'] . '失败！！您的可用微信模板消息数量达到上限，请删除部分后重试！！', 'tag' => $tag));
 			}
-			else {
-				pdo_update('ewei_shop_member_message_template_default', array('templateid' => $template_list[$found_key]['template_id']), array('typecode' => $tag, 'uniacid' => $_W['uniacid']));
+
+			$bb = '{"template_id_short":"' . $templatetype['templatecode'] . '"}';
+			$account = m('common')->getAccount();
+			$token = $account->fetch_token();
+			$url = 'https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=' . $token;
+			$ch1 = curl_init();
+			curl_setopt($ch1, CURLOPT_URL, $url);
+			curl_setopt($ch1, CURLOPT_POST, 1);
+			curl_setopt($ch1, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch1, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch1, CURLOPT_SSL_VERIFYHOST, false);
+			curl_setopt($ch1, CURLOPT_POSTFIELDS, $bb);
+			$c = curl_exec($ch1);
+			$result = @json_decode($c, true);
+
+			if (!is_array($result)) {
+				show_json(1, array('status' => 0, 'messages' => '微信接口错误.', 'tag' => $tag));
 			}
-		}
-		else {
-			if (empty($defaulttemp) || !in_array($defaulttemp['templateid'], $templateIds)) {
-				if (25 <= $templatenum) {
-					show_json(1, array('status' => 0, 'messages' => '开启' . $templatetype['name'] . '失败！！您的可用微信模板消息数量达到上限，请删除部分后重试！！', 'tag' => $tag));
+
+			if (!empty($result['errcode'])) {
+				if (strstr($result['errmsg'], 'template conflict with industry hint')) {
+					show_json(1, array('status' => 0, 'messages' => '默认模板与公众号所属行业冲突,请将公众平台模板消息所在行业选择为： IT科技/互联网|电子商务， 其他/其他', 'tag' => $tag));
 				}
-
-				$bb = '{"template_id_short":"' . $templatetype['templatecode'] . '"}';
-				$account = m('common')->getAccount();
-				$token = $account->fetch_token();
-				$url = 'https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=' . $token;
-				$ch1 = curl_init();
-				curl_setopt($ch1, CURLOPT_URL, $url);
-				curl_setopt($ch1, CURLOPT_POST, 1);
-				curl_setopt($ch1, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($ch1, CURLOPT_SSL_VERIFYPEER, false);
-				curl_setopt($ch1, CURLOPT_SSL_VERIFYHOST, false);
-				curl_setopt($ch1, CURLOPT_POSTFIELDS, $bb);
-				$c = curl_exec($ch1);
-				$result = @json_decode($c, true);
-
-				if (!is_array($result)) {
-					show_json(1, array('status' => 0, 'messages' => '微信接口错误.', 'tag' => $tag));
+				else if (strstr($result['errmsg'], 'system error hint')) {
+					show_json(1, array('status' => 0, 'messages' => '微信接口系统繁忙,请稍后再试!', 'tag' => $tag));
 				}
-
-				if (!empty($result['errcode'])) {
-					if (strstr($result['errmsg'], 'template conflict with industry hint')) {
-						show_json(1, array('status' => 0, 'messages' => '默认模板与公众号所属行业冲突,请将公众平台模板消息所在行业选择为： IT科技/互联网|电子商务， 其他/其他', 'tag' => $tag));
-					}
-					else if (strstr($result['errmsg'], 'system error hint')) {
-						show_json(1, array('status' => 0, 'messages' => '微信接口系统繁忙,请稍后再试!', 'tag' => $tag));
-					}
-					else if (strstr($result['errmsg'], 'invalid industry id hint')) {
-						show_json(1, array('status' => 0, 'messages' => '微信接口系统繁忙,请稍后再试!', 'tag' => $tag));
-					}
-					else if (strstr($result['errmsg'], 'access_token is invalid or not latest hint')) {
-						show_json(1, array('status' => 0, 'messages' => '微信证书无效，请检查平台access_token设置', 'tag' => $tag));
-					}
-					else {
-						show_json(1, array('status' => 0, 'messages' => $result['errmsg'], 'tag' => $tag));
-					}
+				else if (strstr($result['errmsg'], 'invalid industry id hint')) {
+					show_json(1, array('status' => 0, 'messages' => '微信接口系统繁忙,请稍后再试!', 'tag' => $tag));
+				}
+				else if (strstr($result['errmsg'], 'access_token is invalid or not latest hint')) {
+					show_json(1, array('status' => 0, 'messages' => '微信证书无效，请检查平台access_token设置', 'tag' => $tag));
 				}
 				else {
-					$defaulttemp = pdo_fetch('select * from ' . tablename('ewei_shop_member_message_template_default') . ' where typecode=:typecode and uniacid=:uniacid  limit 1', array(':typecode' => $tag, ':uniacid' => $_W['uniacid']));
+					show_json(1, array('status' => 0, 'messages' => $result['errmsg'], 'tag' => $tag));
+				}
+			}
+			else {
+				$defaulttemp = pdo_fetch('select * from ' . tablename('ewei_shop_member_message_template_default') . ' where typecode=:typecode and uniacid=:uniacid  limit 1', array(':typecode' => $tag, ':uniacid' => $_W['uniacid']));
 
-					if (empty($defaulttemp)) {
-						pdo_insert('ewei_shop_member_message_template_default', array('typecode' => $tag, 'uniacid' => $_W['uniacid'], 'templateid' => $result['template_id']));
-					}
-					else {
-						pdo_update('ewei_shop_member_message_template_default', array('templateid' => $result['template_id']), array('typecode' => $tag, 'uniacid' => $_W['uniacid']));
-					}
+				if (empty($defaulttemp)) {
+					pdo_insert('ewei_shop_member_message_template_default', array('typecode' => $tag, 'uniacid' => $_W['uniacid'], 'templateid' => $result['template_id']));
+				}
+				else {
+					pdo_update('ewei_shop_member_message_template_default', array('templateid' => $result['template_id']), array('typecode' => $tag, 'uniacid' => $_W['uniacid']));
 				}
 			}
 		}
@@ -632,7 +620,6 @@ class Index_EweiShopV2Page extends WebPage
 		if ($_W['ispost']) {
 			ca('sysset.member.edit');
 			$data = is_array($_GPC['data']) ? $_GPC['data'] : array();
-			$data['upgrade_condition'] = intval($data['upgrade_condition']);
 			$data['levelname'] = trim($data['levelname']);
 			$data['levelurl'] = trim($data['levelurl']);
 			$data['leveltype'] = intval($data['leveltype']);
@@ -835,7 +822,6 @@ class Index_EweiShopV2Page extends WebPage
 			$data['regbg'] = save_media($data['regbg']);
 			$data['sns']['wx'] = intval($data['sns']['wx']);
 			$data['sns']['qq'] = intval($data['sns']['qq']);
-			$data['content'] = $_GPC['content'];
 			m('common')->updateSysset(array('wap' => $data));
 			plog('sysset.wap.edit', '修改WAP设置');
 			show_json(1);
@@ -944,15 +930,10 @@ class Index_EweiShopV2Page extends WebPage
 			$data = array();
 
 			if (empty($_GPC['express_type'])) {
-				$data['express_bird'] = array('express_bird_userid' => trim($_GPC['express_bird_userid']), 'express_bird_apikey' => trim($_GPC['express_bird_apikey']), 'express_bird_cache' => intval($_GPC['express_bird_cache']), 'express_bird_customer_name' => trim($_GPC['express_bird_customer_name']));
-			}
-			else if ($_GPC['express_type'] == '1') {
-				$data['express_one_hundred'] = array('apikey' => trim($_GPC['apikey']), 'customer' => trim($_GPC['customer']), 'isopen' => intval($_GPC['isopen']), 'cache' => intval($_GPC['cache']));
+				$data['express_bird'] = array('express_bird_userid' => trim($_GPC['express_bird_userid']), 'express_bird_apikey' => trim($_GPC['express_bird_apikey']), 'express_bird_cache' => intval($_GPC['express_bird_cache']));
 			}
 			else {
-				if ($_GPC['express_type'] == '2') {
-					$data['express_ali'] = array('aliappcode' => trim($_GPC['aliappcode']));
-				}
+				$data['express_one_hundred'] = array('apikey' => trim($_GPC['apikey']), 'customer' => trim($_GPC['customer']), 'isopen' => intval($_GPC['isopen']), 'cache' => intval($_GPC['cache']));
 			}
 
 			$data['express_type'] = $_GPC['express_type'];
@@ -969,8 +950,8 @@ class Index_EweiShopV2Page extends WebPage
 		global $_W;
 		global $_GPC;
 		m('common')->updateSysset(array(
-			'notice_redis' => array('notice_redis_click' => 1)
-		));
+	'notice_redis' => array('notice_redis_click' => 1)
+	));
 
 		if ($_W['ispost']) {
 			ca('sysset.note_redis.edit');
@@ -998,8 +979,8 @@ class Index_EweiShopV2Page extends WebPage
 		global $_W;
 		global $_GPC;
 		m('common')->updateSysset(array(
-			'wxpaycert_view' => array('wxpaycert_view_click' => 1)
-		));
+	'wxpaycert_view' => array('wxpaycert_view_click' => 1)
+	));
 
 		if ($_W['ispost']) {
 			$mch_id = trim($_GPC['mch_id']);

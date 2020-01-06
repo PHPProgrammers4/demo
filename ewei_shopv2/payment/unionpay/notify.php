@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 error_reporting(0);
 define('IN_MOBILE', true);
 require '../../../../framework/bootstrap.inc.php';
@@ -71,7 +70,7 @@ if (!empty($_POST) && verify($_POST) && $_POST['respMsg'] == 'success') {
 					$ret['card_type'] = $log['card_type'];
 					$ret['card_fee'] = $log['card_fee'];
 					$ret['card_id'] = $log['card_id'];
-					$site->{$method}($ret);
+					$site->$method($ret);
 					exit('success');
 				}
 			}

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 class Controller
 {
 	public function template($name = '')
@@ -162,16 +161,7 @@ class Controller
 
 		if ($_W['isajax'] || !empty($_GET['isajax']) || $type == 'ajax') {
 			if ($type != 'ajax' && !empty($_GPC['target'])) {
-				exit('
-<script type="text/javascript">
-parent.require([\'jquery\', \'util\'], function($, util){
-	var url = ' . (!empty($redirect) ? 'parent.location.href' : '\'\'') . ';
-	var modalobj = util.message(\'' . $msg . '\', \'\', \'' . $type . '\');
-	if (url) {
-		modalobj.on(\'hide.bs.modal\', function(){$(\'.modal\').each(function(){if($(this).attr(\'id\') != \'modal-message\') {$(this).modal(\'hide\');}});top.location.reload()});
-	}
-});
-</script>');
+				exit("\n<script type=\"text/javascript\">\nparent.require(['jquery', 'util'], function(\$, util){\n\tvar url = " . (!empty($redirect) ? 'parent.location.href' : '\'\'') . ";\n\tvar modalobj = util.message('" . $msg . '\', \'\', \'' . $type . "');\n\tif (url) {\n\t\tmodalobj.on('hide.bs.modal', function(){\$('.modal').each(function(){if(\$(this).attr('id') != 'modal-message') {\$(this).modal('hide');}});top.location.reload()});\n\t}\n});\n</script>");
 			}
 			else {
 				$vars = array();

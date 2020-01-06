@@ -1,12 +1,4 @@
 <?php
-
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -155,6 +147,16 @@ class Single_Refund_EweiShopV2Page extends WebPage {
 
             } else if ($refundstatus == 1) {
                 //同意退款
+
+
+
+
+
+
+
+
+
+
 
                 //订单号
                 if ($item['parentid'] > 0) {
@@ -408,7 +410,8 @@ class Single_Refund_EweiShopV2Page extends WebPage {
     //处理赠送积分余额以及库存
     function refund_after($item,$time,$shopset){
         global $_W, $_GPC;
-        
+
+
         //订单商品
         $goods = pdo_fetch("SELECT og.goodsid,og.total,g.totalcnf,og.realprice,g.money,og.optionid,g.total as goodstotal,og.optionid,g.sales,g.salesreal,g.credit,og.seckill,og.consume FROM "
             . tablename('ewei_shop_order_goods').'og'
@@ -456,22 +459,16 @@ class Single_Refund_EweiShopV2Page extends WebPage {
         pdo_update('ewei_shop_order_goods', array('single_refundstate' => 9,'single_refundtime' => $time,'nocommission'=>1), array('id' => $item['ordergoodsid'], 'uniacid' => $_W['uniacid']));
 
 
-        $order_goods=pdo_fetchall("select single_refundid,single_refundstate,single_refundtime,sendtype,sendtime from ".tablename('ewei_shop_order_goods')." where orderid=:orderid",array(':orderid'=>$item['id']));
+        $order_goods=pdo_fetchall("select single_refundid,single_refundstate,single_refundtime from ".tablename('ewei_shop_order_goods')." where orderid=:orderid",array(':orderid'=>$item['id']));
 
         $refund_num=0;//退款过的订单商品数量
         $apply_refund_num=0;//申请维权中的订单商品数量
-        $nosend = 0; // 按包裹发货是否有没维权成功但未发货的商品
         foreach ($order_goods as $og){
             if($og['single_refundtime']>0){
                 $refund_num++;
             }
             if($og['single_refundstate']==1 || $og['single_refundstate']==2){
                 $apply_refund_num++;
-            }
-            if ($item['sendtype'] != 0) {
-                if ($og['sendtime'] == 0 && $og['single_refundstate'] != 9) {
-                    $nosend = 1;
-                }
             }
         }
 
@@ -484,11 +481,6 @@ class Single_Refund_EweiShopV2Page extends WebPage {
 
             pdo_update('ewei_shop_order', array('status' => -1,'canceltime' => $time,'refundid'=>0), array('id' => $item['id'], 'uniacid' => $_W['uniacid']));
             plog('order.op.close', "订单关闭 ID: {$item['id']} 订单号: {$item['ordersn']}");
-        }
-        
-        // 没有没发货的商品，更新订单状态
-        if ($nosend == 0 && $item['sendtype'] != 0) {
-            pdo_update('ewei_shop_order', array('status' => 2), array('id' => $item['id'], 'uniacid' => $_W['uniacid']));
         }
 
         //如果没有正在维权中的订单商品
@@ -504,12 +496,6 @@ class Single_Refund_EweiShopV2Page extends WebPage {
             . ' left join ' . tablename('ewei_shop_order') . ' o on o.id = og.orderid '
             . ' where og.goodsid=:goodsid and o.status>=1 and o.uniacid=:uniacid limit 1', array(':goodsid' => $item['ordergoodsid'], ':uniacid' => $_W['uniacid']));
         pdo_update('ewei_shop_goods', array('salesreal' => $salesreal), array('id' => $item['ordergoodsid']));
-
-        //加入好物圈收藏
-        $goodscircle = p('goodscircle');
-        if($goodscircle){
-            $goodscircle->updateOrder($item['openid'],$item['id']);
-        }
     }
 
 

@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -148,12 +147,10 @@ class Goodsgroup_EweiShopV2Page extends WebPage
 			$params[':keyword'] = '%' . $keyword . '%';
 		}
 
-		$sql = 'SELECT a.* ,b.title,b.thumb,b.hasoption,b.marketprice FROM ' . tablename('ewei_shop_newstore_goodsgroup_goods') . '
-        a inner join ' . tablename('ewei_shop_goods') . ' b ON a.goodsid = b.id  WHERE 1 and ' . $condition . ' ORDER BY a.id DESC ';
+		$sql = 'SELECT a.* ,b.title,b.thumb,b.hasoption,b.marketprice FROM ' . tablename('ewei_shop_newstore_goodsgroup_goods') . "\r\n        a inner join " . tablename('ewei_shop_goods') . ' b ON a.goodsid = b.id  WHERE 1 and ' . $condition . ' ORDER BY a.id DESC ';
 		$sql .= ' LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
 		$list = pdo_fetchall($sql, $params);
-		$total = pdo_fetchcolumn('SELECT count(1)  FROM ' . tablename('ewei_shop_newstore_goodsgroup_goods') . '
-        a inner join ' . tablename('ewei_shop_goods') . ' b ON a.goodsid = b.id  WHERE 1 and ' . $condition . ' ORDER BY a.id DESC ', $params);
+		$total = pdo_fetchcolumn('SELECT count(1)  FROM ' . tablename('ewei_shop_newstore_goodsgroup_goods') . "\r\n        a inner join " . tablename('ewei_shop_goods') . ' b ON a.goodsid = b.id  WHERE 1 and ' . $condition . ' ORDER BY a.id DESC ', $params);
 		$pager = pagination2($total, $pindex, $psize);
 		include $this->template();
 	}

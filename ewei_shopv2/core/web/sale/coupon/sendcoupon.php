@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -260,7 +260,7 @@ class Sendcoupon_EweiShopV2Page extends ComWebPage
 			$msg = array(
 				'first'  => array('value' => $data['frist'], 'color' => $data['fristcolor']),
 				'remark' => array('value' => $data['remark'], 'color' => $data['remarkcolor'])
-			);
+				);
 			$msg['keyword1'] = array('value' => '会员通知', 'color' => $data['keyword1color']);
 			$msg['keyword2'] = array('value' => $data['keyword1'], 'color' => $data['keyword1color']);
 			$msg['keyword3'] = array('value' => $data['keyword2'], 'color' => $data['keyword2color']);

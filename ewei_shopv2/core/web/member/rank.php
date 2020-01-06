@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 function ranksort1($a, $b)
 {
 	return $b['credit1'] < $a['credit1'] ? -1 : 1;

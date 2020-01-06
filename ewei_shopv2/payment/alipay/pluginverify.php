@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 require '../../../../framework/bootstrap.inc.php';
 require '../../../../addons/ewei_shopv2/defines.php';
 require '../../../../addons/ewei_shopv2/core/inc/functions.php';

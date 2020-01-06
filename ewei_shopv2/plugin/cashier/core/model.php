@@ -1,5 +1,5 @@
 <?php
-//dezend by http://www.yunlu99.com/
+
 function sort_cashier($a, $b)
 {
 	$enough1 = floatval($a['enough']);
@@ -286,7 +286,7 @@ class CashierModel extends PluginModel
 				'keyword3' => array('title' => '审核状态', 'value' => $params['status'], 'color' => '#000000'),
 				'keyword4' => array('title' => '审核时间', 'value' => $params['createtime'], 'color' => '#000000'),
 				'keyword5' => array('title' => '驳回原因', 'value' => $params['reason'], 'color' => '#000000')
-			);
+				);
 			$datas = array('[联系人]' => $params['name'], '[联系电话]' => $params['mobile'], '[审核状态]' => $params['status'], '[审核时间]' => $params['createtime'], '[驳回原因]' => $params['reason']);
 			break;
 
@@ -299,7 +299,7 @@ class CashierModel extends PluginModel
 				'keyword4' => array('title' => '打款时间', 'value' => $params['paytime'], 'color' => '#000000'),
 				'keyword5' => array('title' => '申请金额', 'value' => $params['money'], 'color' => '#000000'),
 				'keyword6' => array('title' => '打款金额', 'value' => $params['realmoney'], 'color' => '#000000')
-			);
+				);
 			$datas = array('[联系人]' => $params['name'], '[联系电话]' => $params['mobile'], '[申请时间]' => $params['createtime'], '[申请金额]' => $params['money']);
 			break;
 
@@ -312,7 +312,7 @@ class CashierModel extends PluginModel
 				'keyword4' => array('title' => '打款时间', 'value' => $params['paytime'], 'color' => '#000000'),
 				'keyword5' => array('title' => '申请金额', 'value' => $params['money'], 'color' => '#000000'),
 				'keyword6' => array('title' => '打款金额', 'value' => $params['realmoney'], 'color' => '#000000')
-			);
+				);
 			$datas = array('[联系人]' => $params['name'], '[联系电话]' => $params['mobile'], '[申请时间]' => $params['createtime'], '[打款时间]' => $params['paytime'], '[申请金额]' => $params['money'], '[打款金额]' => $params['realmoney']);
 			break;
 
@@ -324,7 +324,7 @@ class CashierModel extends PluginModel
 				'keyword3' => array('title' => '余额抵扣', 'value' => $params['deduction'], 'color' => '#000000'),
 				'keyword4' => array('title' => '付款时间', 'value' => $params['paytime'], 'color' => '#000000'),
 				'keyword5' => array('title' => '收银台名称', 'value' => $params['cashier_title'], 'color' => '#000000')
-			);
+				);
 			$datas = array('[订单编号]' => $params['logno'], '[付款金额]' => $params['money'], '[余额抵扣]' => $params['deduction'], '[付款时间]' => $params['paytime'], '[收银台名称]' => $params['cashier_title']);
 			break;
 
@@ -336,7 +336,7 @@ class CashierModel extends PluginModel
 				'keyword3' => array('title' => '余额抵扣', 'value' => $params['deduction'], 'color' => '#000000'),
 				'keyword4' => array('title' => '付款时间', 'value' => $params['paytime'], 'color' => '#000000'),
 				'keyword5' => array('title' => '收银台名称', 'value' => $params['cashier_title'], 'color' => '#000000')
-			);
+				);
 			$datas = array('[订单编号]' => $params['logno'], '[付款金额]' => $params['money'], '[余额抵扣]' => $params['deduction'], '[付款时间]' => $params['paytime'], '[收银台名称]' => $params['cashier_title']);
 			break;
 
@@ -361,7 +361,7 @@ class CashierModel extends PluginModel
 				$advanced_message = array(
 					'first'  => array('value' => $this->replaceArray($datas, $advanced_template['first']), 'color' => $advanced_template['firstcolor']),
 					'remark' => array('value' => $this->replaceArray($datas, $advanced_template['remark']), 'color' => $advanced_template['remarkcolor'])
-				);
+					);
 				$data = iunserializer($advanced_template['data']);
 
 				if (!empty($data)) {
@@ -678,78 +678,11 @@ class CashierModel extends PluginModel
 			m('member')->setCredit($pay_log['openid'], 'credit1', 0 - $pay_log['present_credit1'], $_W['cashieruser']['title'] . ' 收银台退款收回赠送的积分! 退款订单号' . $out_trade_no);
 		}
 
-		if (!empty($pay_log['deduction']) && $pay_log['paytype'] != 2) {
-			m('member')->setCredit($pay_log['openid'], 'credit2', $pay_log['deduction'], $_W['cashieruser']['title'] . $_W['cashieruser']['title'] . ' 收银台退款返还余额抵扣! 退款订单号' . $out_trade_no);
-		}
-
 		if (!empty($pay_log['orderid'])) {
 			pdo_update('ewei_shop_order', array('status' => -1), array('uniacid' => $_W['uniacid'], 'id' => $pay_log['orderid']));
-			$this->refundbackGoodsStocks(1, $pay_log);
-		}
-
-		if ($pay_log['isgoods'] == 1) {
-			$goodsinfo = pdo_getall('ewei_shop_cashier_pay_log_goods', array('logid' => $pay_log['id']), array('goodsid', 'total'));
-			$this->refundbackGoodsStocks(2, $goodsinfo);
 		}
 
 		return $res;
-	}
-
-	public function refundbackGoodsStocks($status, $info = array())
-	{
-		global $_W;
-
-		if ($status == 1) {
-			$orderid = $info['orderid'];
-			$order = pdo_fetch('select id,ordersn,price,openid,dispatchtype,addressid,carrier,status,isparent,paytype,isnewstore,storeid,istrade,status from ' . tablename('ewei_shop_order') . ' where id=:id limit 1', array(':id' => $orderid));
-			$condition = ' og.orderid=:orderid';
-			$param = array();
-			$param[':orderid'] = $orderid;
-			$param[':uniacid'] = $_W['uniacid'];
-			$goods = pdo_fetchall('select og.goodsid,og.seckill,og.total,g.totalcnf,og.realprice,g.credit,og.optionid,g.total as goodstotal,og.optionid,g.sales,g.salesreal,g.type from ' . tablename('ewei_shop_order_goods') . ' og ' . ' left join ' . tablename('ewei_shop_goods') . ' g on g.id=og.goodsid ' . (' where ' . $condition . ' and og.uniacid=:uniacid '), $param);
-
-			foreach ($goods as $g) {
-				$goods_item = pdo_fetch('select total as goodstotal from' . tablename('ewei_shop_goods') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $g['goodsid'], ':uniacid' => $_W['uniacid']));
-				$g['goodstotal'] = $goods_item['goodstotal'];
-				$stocktype = 1;
-
-				if (!empty($stocktype)) {
-					if (!empty($g['optionid'])) {
-						$option = m('goods')->getOption($g['goodsid'], $g['optionid']);
-						if (!empty($option) && $option['stock'] != -1) {
-							if ($stocktype == 1) {
-								$stock = $option['stock'] + $g['total'];
-							}
-
-							pdo_update('ewei_shop_goods_option', array('stock' => $stock), array('uniacid' => $_W['uniacid'], 'goodsid' => $g['goodsid'], 'id' => $g['optionid']));
-						}
-					}
-
-					if ($stocktype == 1 && $g['goodstotal'] != -1) {
-						if ($stocktype == 1) {
-							$totalstock = $g['goodstotal'] + $g['total'];
-						}
-
-						if ($totalstock != -1) {
-							pdo_update('ewei_shop_goods', array('total' => $totalstock), array('uniacid' => $_W['uniacid'], 'id' => $g['goodsid']));
-						}
-					}
-				}
-			}
-		}
-
-		if ($status == 2) {
-			if (!empty($info)) {
-				foreach ($info as $key => $value) {
-					$good = pdo_get('ewei_shop_cashier_goods', array('id' => $value['goodsid']));
-
-					if ($good['total'] != -1) {
-						$totalstock = $good['total'] + $value['total'];
-						pdo_update('ewei_shop_cashier_goods', array('total' => $totalstock), array('id' => $value['goodsid']));
-					}
-				}
-			}
-		}
 	}
 
 	/**
@@ -1436,7 +1369,7 @@ class CashierModel extends PluginModel
 	public function goodsCalculate($selfgoods = array(), $shopgoods = array(), $params, $return = false)
 	{
 		global $_W;
-		$order = $this->createOrder(array('paytype' => $params['paytype'], 'openid' => isset($params['openid']) ? $params['openid'] : '', 'money' => (double) $params['money'], 'couponpay' => (double) $params['couponpay'], 'nosalemoney' => (double) $params['nosalemoney'], 'operatorid' => (int) $params['operatorid'], 'deduction' => (double) $params['deduction'], 'mobile' => (int) $params['mobile'], 'title' => $params['title']), 1, true);
+		$order = $this->createOrder(array('paytype' => $params['paytype'], 'openid' => isset($params['openid']) ? $params['openid'] : '', 'money' => (double) $params['money'], 'couponpay' => (double) $params['couponpay'], 'nosalemoney' => (double) $params['nosalemoney'], 'operatorid' => (int) $params['operatorid'], 'deduction' => (double) $params['deduction'], 'mobile' => (int) $params['mobile'], 'title' => $params['title']), 1, false);
 
 		if (!empty($selfgoods)) {
 			foreach ($selfgoods as $key => $val) {
@@ -1533,7 +1466,7 @@ class CashierModel extends PluginModel
 									'keyword1' => array('title' => '任务名称', 'value' => '商品库存不足', 'color' => '#000000'),
 									'keyword2' => array('title' => '通知类型', 'value' => '请及时补货', 'color' => '#4b9528'),
 									'remark'   => array('value' => '商品名称：' . $g['title'] . '-' . $option['title'], 'color' => '#000000')
-								);
+									);
 								$this->sendNotice(array('openid' => $manageopenid, 'saler_stockwarn' => 'saler_stockwarn_template'), 'saler_stockwarn', $msg);
 							}
 						}
@@ -1562,7 +1495,7 @@ class CashierModel extends PluginModel
 								'keyword1' => array('title' => '任务名称', 'value' => '商品库存不足', 'color' => '#000000'),
 								'keyword2' => array('title' => '通知类型', 'value' => '请及时补货', 'color' => '#4b9528'),
 								'remark'   => array('value' => '商品名称：' . $g['title'], 'color' => '#000000')
-							);
+								);
 							$this->sendNotice(array('openid' => $manageopenid, 'saler_stockwarn' => 'saler_stockwarn_template'), 'saler_stockwarn', $msg);
 						}
 					}
@@ -1600,7 +1533,7 @@ class CashierModel extends PluginModel
 					'keyword1' => array('title' => '任务名称', 'value' => '商品库存不足', 'color' => '#000000'),
 					'keyword2' => array('title' => '通知类型', 'value' => '请及时补货', 'color' => '#4b9528'),
 					'remark'   => array('value' => '商品名称：' . $g['title'], 'color' => '#000000')
-				);
+					);
 				$this->sendNotice(array('openid' => $manageopenid, 'saler_stockwarn' => 'saler_stockwarn_template'), 'saler_stockwarn', $msg);
 			}
 		}

@@ -261,6 +261,8 @@
         {loop $virtual_types $virtual_type}
         {if $item['virtual'] == $virtual_type['id']}{$virtual_type['usedata']}/{$virtual_type['alldata']} | {$virtual_type['title']}{/if}
         {/loop}
+
+
         {/if}
     </div>
     </div>
@@ -746,7 +748,7 @@
 
 <div class="entity" {if ($item['type'] == 2 || $item['type'] == 3 || $item['type'] == 10)}style="display: none;"{/if}>
 <div class="form-group">
-    <!--<label class="col-sm-2 control-label">是否支持退换货</label>
+    <label class="col-sm-2 control-label">是否支持退换货</label>
     <div class="col-sm-9 col-xs-12">
         {ife 'goods' $item}
         <label class="radio-inline"><input type="radio" name="cannotrefund" value="0" {if empty($item['cannotrefund'])}checked="true"{/if}   /> 是</label>
@@ -754,22 +756,6 @@
         {else}
         <div class='form-control-static'>{if empty($item['cannotrefund'])}否{else}是{/if}</div>
         {/if}
-    </div>-->
-    <label class="col-sm-2 control-label">是否支持退换货</label>
-    <div class="col-sm-9 col-xs-12">
-        <input type="hidden" name="cannotrefund" value="1">
-        {ife 'goods' $item}
-        <label class="checkbox-inline"><input type="checkbox" name="refund" value="1" {if !empty($item['refund']) || empty($item['cannotrefund']) }checked="true"{/if}   /> 退款</label>
-        <label class="checkbox-inline"><input type="checkbox" name="returngoods" value="1" {if !empty($item['returngoods']) || empty($item['cannotrefund']) }checked="true"{/if}   /> 退货退款</label>
-        <label class="checkbox-inline"><input type="checkbox" name="exchange" value="1" {if !empty($item['exchange']) || empty($item['cannotrefund'])}checked="true"{/if}   /> 换货</label>
-        {else}
-        <div class='form-control-static'>
-            {if !empty($item['refund']) || empty($item['cannotrefund'])}退款;{/if}
-            {if !empty($item['returngoods']) || empty($item['cannotrefund'])}退货退款;{/if}
-            {if !empty($item['exchange']) || empty($item['cannotrefund'])}换货;{/if}
-        </div>
-        {/if}
-        <div class="help-block">订单中有多个不同售后选项的商品时，整单发起售后只能满足相同选项条件进行售后</div>
     </div>
 </div>
 

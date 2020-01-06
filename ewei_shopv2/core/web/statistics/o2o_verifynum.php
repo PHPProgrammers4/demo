@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -106,13 +105,13 @@ class O2o_verifynum_EweiShopV2Page extends WebPage
 
 		if ($_GPC['export'] == 1) {
 			m('excel')->export($list, array(
-				'title'   => '会员消费排行报告-' . date('Y-m-d-H-i', time()),
-				'columns' => array(
-					array('title' => '门店id', 'field' => 'id', 'width' => 12),
-					array('title' => '门店名称', 'field' => 'storename', 'width' => 12),
-					array('title' => '核销订单数量', 'field' => 'num', 'width' => 12)
-				)
-			));
+	'title'   => '会员消费排行报告-' . date('Y-m-d-H-i', time()),
+	'columns' => array(
+		array('title' => '门店id', 'field' => 'id', 'width' => 12),
+		array('title' => '门店名称', 'field' => 'storename', 'width' => 12),
+		array('title' => '核销订单数量', 'field' => 'num', 'width' => 12)
+		)
+	));
 			plog('statistics.member_cost.export', '导出会员消费排行');
 		}
 

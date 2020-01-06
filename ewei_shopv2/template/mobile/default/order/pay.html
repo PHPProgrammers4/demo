@@ -43,7 +43,7 @@
             <!--</div>-->
             <a id="btn-submit" class="external btn btn-danger block pay-btn"  style="margin-top:1.25rem" data-type='credit'>确认支付</a>
             {else}
-            {if $wechat['success'] || (is_h5app() &&$payinfo['wechat'])}
+            {if $wechat['success'] || (is_h5app() && $payinfo['wechat'])}
             <div class='fui-list pay-btn' data-type='wechat' {if is_h5app()&&is_ios()}style="display: none;" id="threeWX"{/if}>
             <div class='fui-list-media'>
                 <!--<i class='icon icon-wechat wechat'></i>-->
@@ -140,4 +140,3 @@
     {php $initWX=true}
 {/if}
 {template '_footer'}
-<!--4000097827-->

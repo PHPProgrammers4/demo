@@ -1,1 +1,132 @@
-eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--){d[e(c)]=k[c]||e(c)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('1r([\'7\',\'Y\'],5(7,Y){q 4={3:{}};4.1b=5(3){4.3.u=3.u;4.3.s=3.s;4.3.t=3.t;$(\'.1c-1d-D\').D({1e:7.v(\'Z/D\'),1f:7.v(\'Z/D/1g\')});$(\'#p\').12(5(){q p=$(9).L("14:16").8();6(p==2){$(\'.r-10\').1h();$(\'.V-g\').b(\'换货\')}C{$(\'.r-10\').i();$(\'.V-g\').b(\'退款\')}});$(".U-l").1i("o").1l("o",5(){6($(9).L("S")){7.1m(\'.U-l T S\')}});$(\'.n-O\').o(5(){6($(9).d(\'a\')){c}6($(\'#p\').8()!=2){6(!$(\'#I\').1n()){f.m.i(\'请输入数字金额!\');c}6($(\'#I\').8()<0){f.m.i(\'请输入正确的退款金额!\');c}}q l=[];$(\'#l\').L(\'T\').1o(5(){l.1p($(9).17(\'1q\'))});$(9).d(\'a\',1).b(\'正在处理...\');7.G(\'j/H/O\',{\'h\':4.3.s,\'p\':$(\'#p\').8(),\'W\':$(\'#W\').8(),\'X\':$(\'#X\').8(),\'l\':l,\'I\':$(\'#I\').8()},5(M){6(M.E==1){K.J=7.v(\'j/F\',{h:4.3.u});c}$(\'.n-O\').w(\'a\').b(\'确定\');f.m.i(M.y.z)},k,k)});$(\'.n-B\').o(5(){6($(9).d(\'a\')){c}f.15(\'确定您要取消申请?\',\'\',5(){$(9).d(\'a\',1).d(\'N\',$(9).b()).b(\'正在处理..\');7.G(\'j/H/B\',{\'h\':4.3.s},5(e){6(e.E==1){K.J=7.v(\'j/F\',{h:4.3.u});c}C{f.m.i(e.y.z)}$(\'.n-B\').w(\'a\').b($(\'.n-B\').d(\'N\')).w(\'N\')},k,k)})});$("19[x=A]").8($(\'#1k\').8()).12(5(){q 13=$(9);q 11=13.L("14:16");q x=11.17("x");$(":1j[x=P]").8(x)});$(\'#18\').o(5(){6($(9).d(\'a\')){c}6($(\'#R\').1a()){f.m.i(\'请填写快递单号\');c}$(9).b(\'正在处理...\').d(\'a\',1);7.G(\'j/H/A\',{h:4.3.s,t:4.3.t,A:$(\'#A\').8(),P:$(\'#P\').8(),R:$(\'#R\').8()},5(e){6(e.E==1){K.J=7.v(\'j/F\',{h:4.3.u})}C{$(\'#18\').b(\'确认\').w(\'a\');f.m.i(e.y.z)}},k,k)});$(\'.n-Q\').o(5(){6($(9).d(\'a\')){c}f.15(\'确认您已经收到换货物品?\',\'\',5(){$(9).d(\'a\',1).b(\'正在处理...\');7.G(\'j/H/Q\',{t:4.3.t,h:4.3.s},5(e){6(e.E==1){K.J=7.v(\'j/F\',{h:4.3.u})}C{$(\'.n-Q\').b(\'确认收到换货物品\').w(\'a\');f.m.i(e.y.z)}},k,k)})})};c 4});',62,90,'|||params|modal|function|if|core|val|this|stop|html|return|attr|postjson|FoxUI||id|show|order|true|images|toast|btn|click|rtype|var||order_goodsid|single_refundid|orderid|getUrl|removeAttr|name|result|message|express|cancel|else|uploader|status|detail|json|single_refund|price|href|location|find|ret|buttontext|submit|expresscom|receive|expresssn|img|li|fui|re|reason|content|tpl|util|group|sel|change|obj|option|confirm|selected|data|express_submit|select|isEmpty|init|refund|container|uploadUrl|removeUrl|remove|hide|off|input|express_old|on|showImages|isNumber|each|push|filename|define'.split('|'),0,{}))
+define(['core', 'tpl'], function (core, tpl) {
+    var modal = {params: {}};
+    modal.init = function (params) {
+        modal.params.orderid = params.orderid;
+        modal.params.order_goodsid = params.order_goodsid;
+        modal.params.single_refundid = params.single_refundid;
+        $('.refund-container-uploader').uploader({
+            uploadUrl: core.getUrl('util/uploader'),
+            removeUrl: core.getUrl('util/uploader/remove')
+        });
+        $('#rtype').change(function () {
+            var rtype = $(this).find("option:selected").val();
+            if (rtype == 2) {
+                $('.r-group').hide();
+                $('.re-g').html('换货')
+            } else {
+                $('.r-group').show();
+                $('.re-g').html('退款')
+            }
+        });
+        //上传图片预览
+        $(".fui-images").off("click").on("click",function () {
+            if($(this).find("img")){
+                core.showImages('.fui-images li img');
+            }
+        });
+        $('.btn-submit').click(function () {
+            if ($(this).attr('stop')) {
+                return
+            }
+
+            if ($('#rtype').val() != 2) {
+                if (!$('#price').isNumber()) {
+                    FoxUI.toast.show('请输入数字金额!');
+                    return
+                }
+                if ($('#price').val() < 0) {
+                    FoxUI.toast.show('请输入正确的退款金额!');
+                    return
+                }
+            }
+
+            var images = [];
+            $('#images').find('li').each(function () {
+                images.push($(this).data('filename'))
+            });
+            $(this).attr('stop', 1).html('正在处理...');
+            core.json('order/single_refund/submit', {
+                'id': modal.params.order_goodsid,
+                'rtype': $('#rtype').val(),
+                'reason': $('#reason').val(),
+                'content': $('#content').val(),
+                'images': images,
+                'price': $('#price').val()
+            }, function (ret) {
+                if (ret.status == 1) {
+                    location.href = core.getUrl('order/detail', {id: modal.params.orderid});
+                    return
+                }
+                $('.btn-submit').removeAttr('stop').html('确定');
+                FoxUI.toast.show(ret.result.message)
+            }, true, true)
+        });
+        $('.btn-cancel').click(function () {
+            if ($(this).attr('stop')) {
+                return
+            }
+            FoxUI.confirm('确定您要取消申请?', '', function () {
+                $(this).attr('stop', 1).attr('buttontext', $(this).html()).html('正在处理..');
+                core.json('order/single_refund/cancel', {'id': modal.params.order_goodsid}, function (postjson) {
+                    if (postjson.status == 1) {
+                        location.href = core.getUrl('order/detail', {id: modal.params.orderid});
+                        return
+                    } else {
+                        FoxUI.toast.show(postjson.result.message)
+                    }
+                    $('.btn-cancel').removeAttr('stop').html($('.btn-cancel').attr('buttontext')).removeAttr('buttontext')
+                }, true, true)
+            })
+        });
+        $("select[name=express]").val($('#express_old').val()).change(function () {
+            var obj = $(this);
+            var sel = obj.find("option:selected");
+            var name = sel.data("name");
+            $(":input[name=expresscom]").val(name)
+        });
+        $('#express_submit').click(function () {
+            if ($(this).attr('stop')) {
+                return
+            }
+            if ($('#expresssn').isEmpty()) {
+                FoxUI.toast.show('请填写快递单号');
+                return
+            }
+            $(this).html('正在处理...').attr('stop', 1);
+            core.json('order/single_refund/express', {
+                id: modal.params.order_goodsid,
+                single_refundid: modal.params.single_refundid,
+                express: $('#express').val(),
+                expresscom: $('#expresscom').val(),
+                expresssn: $('#expresssn').val()
+            }, function (postjson) {
+                if (postjson.status == 1) {
+                    location.href = core.getUrl('order/detail', {id: modal.params.orderid})
+                } else {
+                    $('#express_submit').html('确认').removeAttr('stop');
+                    FoxUI.toast.show(postjson.result.message)
+                }
+            }, true, true)
+        });
+        $('.btn-receive').click(function () {
+            if ($(this).attr('stop')) {
+                return
+            }
+            FoxUI.confirm('确认您已经收到换货物品?', '', function () {
+                $(this).attr('stop', 1).html('正在处理...');
+                core.json('order/single_refund/receive', {
+                    single_refundid: modal.params.single_refundid,
+                    id: modal.params.order_goodsid
+                }, function (postjson) {
+                    if (postjson.status == 1) {
+                        location.href = core.getUrl('order/detail', {id: modal.params.orderid})
+                    } else {
+                        $('.btn-receive').html('确认收到换货物品').removeAttr('stop');
+                        FoxUI.toast.show(postjson.result.message)
+                    }
+                }, true, true)
+            })
+        })
+    };
+    return modal
+});

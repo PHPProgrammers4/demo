@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -21,13 +20,13 @@ class Single_EweiShopV2Page extends MerchWebPage
 			22 => array('css' => 'warning', 'name' => '支付宝支付'),
 			23 => array('css' => 'warning', 'name' => '银联支付'),
 			3  => array('css' => 'primary', 'name' => '货到付款')
-		);
+			);
 		$orderstatus = array(
 			array('css' => 'danger', 'name' => '待付款'),
 			array('css' => 'info', 'name' => '待发货'),
 			array('css' => 'warning', 'name' => '待收货'),
 			array('css' => 'success', 'name' => '已完成')
-		);
+			);
 		if (empty($starttime) && empty($endtime)) {
 			$starttime = strtotime('-1 month');
 			$endtime = time();
@@ -163,9 +162,9 @@ class Single_EweiShopV2Page extends MerchWebPage
 
 				if (!isset($list[$addresskey])) {
 					$list[$addresskey] = array(
-						'realname' => $order_address['realname'],
-						'orderids' => array()
-					);
+	'realname' => $order_address['realname'],
+	'orderids' => array()
+	);
 				}
 
 				$list[$addresskey]['orderids'][] = $order['id'];
@@ -203,14 +202,14 @@ class Single_EweiShopV2Page extends MerchWebPage
 				22 => array('css' => 'warning', 'name' => '支付宝支付'),
 				23 => array('css' => 'warning', 'name' => '银联支付'),
 				3  => array('css' => 'primary', 'name' => '货到付款')
-			);
+				);
 			$orderstatus = array(
 				-1 => array('css' => 'default', 'name' => '已关闭'),
 				0  => array('css' => 'danger', 'name' => '待付款'),
 				1  => array('css' => 'info', 'name' => '待发货'),
 				2  => array('css' => 'warning', 'name' => '待收货'),
 				3  => array('css' => 'success', 'name' => '已完成')
-			);
+				);
 			$sql = 'select o.* , a.realname,a.mobile,a.province,a.city,a.area, d.dispatchname,m.nickname,r.status as refundstatus from ' . tablename('ewei_shop_order') . ' o' . ' left join ' . tablename('ewei_shop_order_refund') . ' r on r.orderid=o.id and ifnull(r.status,-1)<>-1' . ' left join ' . tablename('ewei_shop_member') . ' m on m.openid=o.openid ' . ' left join ' . tablename('ewei_shop_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('ewei_shop_dispatch') . ' d on d.id = o.dispatchid ' . ' where o.id in ( ' . implode(',', $arr) . (') and o.uniacid=' . $_W['uniacid'] . ' and m.uniacid=' . $_W['uniacid'] . ' and o.merchid=' . $merchid . ' and o.isparent=0 ORDER BY o.createtime DESC,o.status DESC  ');
 			$list = pdo_fetchall($sql, $paras);
 
@@ -283,8 +282,7 @@ class Single_EweiShopV2Page extends MerchWebPage
 				$goods = '';
 
 				foreach ($order_goods as &$og) {
-					$goods .= '' . $og['title'] . '
-';
+					$goods .= '' . $og['title'] . "\r\n";
 
 					if (!empty($og['optiontitle'])) {
 						$goods .= ' 规格: ' . $og['optiontitle'];
@@ -306,8 +304,7 @@ class Single_EweiShopV2Page extends MerchWebPage
 						$goods .= ' 商品条码: ' . $og['productsn'];
 					}
 
-					$goods .= ' 单价: ' . $og['price'] / $og['total'] . ' 折扣后: ' . $og['realprice'] / $og['total'] . ' 数量: ' . $og['total'] . ' 总价: ' . $og['price'] . ' 折扣后: ' . $og['realprice'] . '
- ';
+					$goods .= ' 单价: ' . $og['price'] / $og['total'] . ' 折扣后: ' . $og['realprice'] / $og['total'] . ' 数量: ' . $og['total'] . ' 总价: ' . $og['price'] . ' 折扣后: ' . $og['realprice'] . "\r\n ";
 				}
 
 				unset($og);
@@ -505,14 +502,14 @@ class Single_EweiShopV2Page extends MerchWebPage
 				22 => array('css' => 'warning', 'name' => '支付宝支付'),
 				23 => array('css' => 'warning', 'name' => '银联支付'),
 				3  => array('css' => 'primary', 'name' => '货到付款')
-			);
+				);
 			$orderstatus = array(
 				-1 => array('css' => 'default', 'name' => '已关闭'),
 				0  => array('css' => 'danger', 'name' => '待付款'),
 				1  => array('css' => 'info', 'name' => '待发货'),
 				2  => array('css' => 'warning', 'name' => '待收货'),
 				3  => array('css' => 'success', 'name' => '已完成')
-			);
+				);
 
 			foreach ($orders as $i => $order) {
 				if (!empty($order['address_send'])) {

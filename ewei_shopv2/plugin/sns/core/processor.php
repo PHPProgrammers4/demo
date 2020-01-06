@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -33,7 +32,7 @@ class SnsProcessor extends PluginProcessor
 			$r_img = tomedia($r_img);
 			$news = array(
 				array('title' => $r_title, 'picurl' => $r_img, 'description' => $r_desc, 'url' => $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=ewei_shopv2&do=mobile&r=sns.board&id=' . $board['id'])
-			);
+				);
 			return $obj->respNews($news);
 		}
 

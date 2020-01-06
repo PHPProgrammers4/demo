@@ -139,34 +139,6 @@
     </div>
 </div>
 
-<!--<div class="form-group">-->
-<!--    <label class="col-lg control-label must">授权页背景图</label>-->
-<!--    <div class="col-md-9">-->
-<!--        {php echo tpl_form_field_image2('auth_background_image',$sets['app']['auth_background_image'])}-->
-<!--        <span class="help-block image-block">小程序授权页面背景图，不设置使用默认图片。</span>-->
-<!--        <span class="help-block">建议尺寸****。</span>-->
-<!--    </div>-->
-<!--</div>-->
-
-<div class="form-group">
-    <label class="col-lg control-label">授权方式</label>
-    <div class="col-sm-9">
-        <label class="radio-inline"><input type="radio" value="0" name="set[force_auth]" {if empty($sets['app']['force_auth'])}checked{/if}>下单授权</label>
-        <label class="radio-inline"><input type="radio" value="1" name="set[force_auth]" {if $sets['app']['force_auth'] == 1}checked{/if}>首页授权</label>
-        <div class="help-block">下单授权：购买、加入购物车、会员中心页时强制授权。</div>
-        <div class="help-block">首页授权：启动小程序时强制授权。（推荐使用）</div>
-    </div>
-</div>
-<div class="form-group">
-    <label class="col-lg control-label" style="padding-top: 0;">核销二维码生成链接<br>(公众号业务域名)</label>
-    <div class="col-sm-9">
-        <input class="form-control valid" name="set[verifyurl]" value="{$sets['app']['verifyurl']}" {ifp 'app.setting.edit'}name="set[verifyurl]"{else}disabled{/if} />
-        <div class="help-block">请填写带有https或者http的完整域名 <span style="color: red"> (最后不要带/)</span></div>
-    </div>
-</div>
-
-
-
 <div class="form-group-title">客服功能</div>
 <div class="form-group">
     <label class="col-lg control-label">客服功能</label>

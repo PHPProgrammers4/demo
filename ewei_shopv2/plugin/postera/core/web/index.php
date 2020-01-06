@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
@@ -119,18 +118,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 				pdo_insert('rule_keyword', $keyword_data);
 			}
 
-			$goodsId = $data['type'] == 3 ? $data['goodsid'] : 0;
-			$timesort = time();
-
-			if ($_GPC['submit_type'] == 2) {
-				$url = webUrl('postera.show&id=' . $id . '&goodsid=' . $goodsId . '&ort=' . $timesort);
-				$url = rawurldecode($url);
-				echo '<script>window.open(\'' . $url . '\')</script>';
-				show_json(1, array('url' => webUrl('postera.edit', array('id' => $id))));
-			}
-			else {
-				show_json(1, array('url' => webUrl('postera')));
-			}
+			show_json(1, array('url' => webUrl('postera')));
 		}
 
 		$imgroot = $_W['attachurl'];
@@ -169,8 +157,8 @@ class Index_EweiShopV2Page extends PluginWebPage
 		}
 		else {
 			$type = $item['coupontype'];
-			$starttime = $item['timestart'] ?: time();
-			$endtime = $item['timeend'] ?: time();
+			$starttime = $item['timestart'];
+			$endtime = $item['timeend'];
 		}
 
 		include $this->template();

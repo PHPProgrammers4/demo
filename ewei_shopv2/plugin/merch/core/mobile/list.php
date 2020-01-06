@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 class List_EweiShopV2Page extends PluginMobilePage
 {
 	public function main()
@@ -7,20 +6,20 @@ class List_EweiShopV2Page extends PluginMobilePage
 		global $_W;
 		global $_GPC;
 		$category = $this->model->getCategory(array(
-			'isrecommand' => 1,
-			'status'      => 1,
-			'orderby'     => array('displayorder' => 'desc', 'id' => 'asc')
-		));
+	'isrecommand' => 1,
+	'status'      => 1,
+	'orderby'     => array('displayorder' => 'desc', 'id' => 'asc')
+	));
 		$merchuser = $this->model->getMerch(array(
-			'isrecommand' => 1,
-			'status'      => 1,
-			'field'       => 'id,uniacid,merchname,desc,logo,groupid,cateid',
-			'orderby'     => array('id' => 'asc')
-		));
+	'isrecommand' => 1,
+	'status'      => 1,
+	'field'       => 'id,uniacid,merchname,desc,logo,groupid,cateid',
+	'orderby'     => array('id' => 'asc')
+	));
 		$category_swipe = $this->model->getCategorySwipe(array(
-			'status'  => 1,
-			'orderby' => array('displayorder' => 'desc', 'id' => 'asc')
-		));
+	'status'  => 1,
+	'orderby' => array('displayorder' => 'desc', 'id' => 'asc')
+	));
 		include $this->template();
 	}
 
@@ -35,9 +34,9 @@ class List_EweiShopV2Page extends PluginMobilePage
 		}
 
 		$data = array_merge($data, array(
-			'status'  => 1,
-			'orderby' => array('displayorder' => 'desc', 'id' => 'asc')
-		));
+	'status'  => 1,
+	'orderby' => array('displayorder' => 'desc', 'id' => 'asc')
+	));
 		$category = $this->model->getCategory($data);
 		include $this->template();
 	}
@@ -48,9 +47,9 @@ class List_EweiShopV2Page extends PluginMobilePage
 		global $_GPC;
 		$data = array();
 		$data = array_merge($data, array(
-			'status'  => 1,
-			'orderby' => array('displayorder' => 'desc', 'id' => 'asc')
-		));
+	'status'  => 1,
+	'orderby' => array('displayorder' => 'desc', 'id' => 'asc')
+	));
 		$category = $this->model->getCategory($data);
 
 		foreach ($category as &$value) {
@@ -96,9 +95,9 @@ class List_EweiShopV2Page extends PluginMobilePage
 		if (!empty($merchuser)) {
 			$data = array();
 			$data = array_merge($data, array(
-				'status'  => 1,
-				'orderby' => array('displayorder' => 'desc', 'id' => 'asc')
-			));
+	'status'  => 1,
+	'orderby' => array('displayorder' => 'desc', 'id' => 'asc')
+	));
 			$category = $this->model->getCategory($data);
 			$cate_list = array();
 

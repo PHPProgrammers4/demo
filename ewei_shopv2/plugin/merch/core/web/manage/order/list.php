@@ -1,12 +1,6 @@
 <?php
 
-/*
- * 人人商城
- *
- * 青岛易联互动网络科技有限公司
- * http://www.we7shop.cn
- * TEL: 4000097827/18661772381/15865546761
- */
+
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -84,7 +78,7 @@ class List_EweiShopV2Page extends MerchWebPage {
                 $condition .= " AND (locate(:keyword,sm.realname)>0 or locate(:keyword,sm.mobile)>0 or locate(:keyword,sm.nickname)>0 or locate(:keyword,s.salername)>0 )";
             } else if ($searchfield == 'store') {
                 $condition .= " AND (locate(:keyword,store.storename)>0)";
-                $sqlcondition = " left join " . tablename('ewei_shop_merch_store') . " store on (store.id = o.verifystoreid or store.id = vol.storeid) and store.uniacid=o.uniacid";
+                $sqlcondition = " left join " . tablename('ewei_shop_merch_store') . " store on store.id = o.verifystoreid and store.uniacid=o.uniacid";
             } else if ($searchfield == 'goodstitle') {
                 $sqlcondition =  " inner join ( select DISTINCT(og.orderid) from " . tablename('ewei_shop_order_goods') . " og left join " . tablename('ewei_shop_goods') . " g on g.id=og.goodsid where og.uniacid = '$uniacid' and (locate(:keyword,g.title)>0)) gs on gs.orderid=o.id";
             } else if ($searchfield == 'goodssn') {
@@ -100,10 +94,10 @@ class List_EweiShopV2Page extends MerchWebPage {
                 $statuscondition = " AND o.status=-1 and (o.refundtime=0 or o.refundstate=3)";
                 $priceStatus = " AND status=-1 and (refundtime=0 or refundstate=3)";
             } else if ($status == '4') {
-                $statuscondition = " AND (o.refundstate>0 and o.refundid<>0 and r.status <> -1 or (o.refundtime=0 and o.refundstate=3))";
-                $priceStatus = " AND (refundstate>0 and refundid<>0 and r.status <> -1 or (o.refundtime<>0 and o.refundstate=3))";
+                $statuscondition = " AND (o.refundstate>0 and o.refundid<>0 or (o.refundtime=0 and o.refundstate=3))";
+                $priceStatus = " AND (refundstate>0 and refundid<>0 or (o.refundtime<>0 and o.refundstate=3))";
             } else if ($status == '5') {
-                $statuscondition = " AND o.refundtime<>0 ";
+                $statuscondition = " AND o.refundtime<>0";
                 $priceStatus = " AND refundtime<>0";
             } else if ($status=='1'){
                 $statuscondition = " AND ( o.status = 1 or (o.status=0 and o.paytype=3) )";
@@ -164,13 +158,12 @@ class List_EweiShopV2Page extends MerchWebPage {
             }
         }
 
-        $sql = "select distinct o.* ,a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress,a.street as astreet,d.dispatchname,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername,r.rtype,r.status as rstatus from " . tablename('ewei_shop_order') . " o"
+        $sql = "select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress,a.street as astreet,d.dispatchname,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername,r.rtype,r.status as rstatus from " . tablename('ewei_shop_order') . " o"
             . " left join " . tablename('ewei_shop_order_refund') . " r on r.id =o.refundid "
             . " left join " . tablename('ewei_shop_member') . " m on m.openid=o.openid and m.uniacid =  o.uniacid "
             . " left join " . tablename('ewei_shop_member_address') . " a on a.id=o.addressid "
             . " left join " . tablename('ewei_shop_dispatch') . " d on d.id = o.dispatchid "
-            . " left join " . tablename('ewei_shop_verifyorder_log') . " vol on vol.orderid=o.id "
-            . " left join " . tablename('ewei_shop_merch_saler') . " s on (s.openid = o.verifyopenid or s.id=vol.salerid) and s.uniacid=o.uniacid and s.merchid=o.merchid"
+            . " left join " . tablename('ewei_shop_merch_saler') . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid and s.merchid=o.merchid"
             . " left join " . tablename('ewei_shop_member') . " sm on sm.openid = s.openid and sm.uniacid=s.uniacid"
             . " $sqlcondition where $condition $statuscondition GROUP BY o.id ORDER BY o.createtime DESC,o.status DESC  ";
 
@@ -178,6 +171,7 @@ class List_EweiShopV2Page extends MerchWebPage {
             $sql.="LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
         }
         $list = pdo_fetchall($sql, $paras);
+
         $paytype = array(
             '0' => array('css' => 'default', 'name' => '未支付'),
             '1' => array('css' => 'danger', 'name' => '余额支付'),
@@ -543,40 +537,42 @@ class List_EweiShopV2Page extends MerchWebPage {
                     $levelname = $mlevel['levelname'];
                 }
                 $row['levelname'] = $levelname;
-    
-    
-                if (!empty($row['verifyopenid']) && $row['verifytype'] == 0) {
-                    $row['storeinfo'] = "[".pdo_fetchcolumn('select storename from ' . tablename('ewei_shop_merch_store') . ' where id=:storeid limit 1 ', array(':storeid' => $row['verifystoreid']))."]";
-                    $salermember = pdo_fetch("SELECT * FROM ".tablename('ewei_shop_merch_saler')." s left join ".tablename('ewei_shop_member')." m on m.openid=s.openid
-                     WHERE s.openid='{$row['verifyopenid']}'");
-                    $row['salerinfo'] = "[" . $salermember['id'] . "]" . $salermember['salername'] . "(" . $salermember['nickname'] . ")";
-                }else {
-                    $orderid = $row['id'];
-                    $ordersn = $row['ordersn'];
-                    if (strstr($ordersn, 'ME')) {
-                        if (!empty($row['verifyinfo'])) {
-                            $verifyinfo = iunserializer($row['verifyinfo']);
-                            if (!empty($verifyinfo)) {
-                                foreach ($verifyinfo as $k => $v) {
-                                    $verifyopenid = $v['verifyopenid'];
-                                    $verifystoreid = $v['verifystoreid'];
-                                    if (!empty($verifyopenid)) {
-                                        $verify_member = com('verify')->getSalerInfo($verifyopenid, $row['merchid']);
-                                        $row['salerinfo'] .= "[" . $verify_member['salerid'] . "]" . $verify_member['salername'] . "(" . $verify_member['salernickname'] . ")";
-                                        $verify_store = com('verify')->getStoreInfo($verifystoreid, $row['merchid']);
-                                        $row['storeinfo'] .= '[' .$verify_store['storename'] .']';
+                if (com('verify')) {
+                    $verifyinfo = iunserializer($row['verifyinfo']);
+
+                    if (!empty($row['verifyopenid'])) {
+                        $saler = m('member')->getMember($row['verifyopenid']);
+                        $merch_saler = pdo_fetch('select id,salername from ' . tablename('ewei_shop_merch_saler') . ' where openid=:openid and uniacid=:uniacid and merchid = :merchid limit 1 ', array(':uniacid' => $_W['uniacid'], ':merchid' => $_W['merchid'], ':openid' => $row['verifyopenid']));
+                        $saler['salername'] = isset($merch_saler['salername']) ? $merch_saler['salername'] : '';
+                        $row['salerinfo'] = "[" . isset($merch_saler['id']) ? $merch_saler['id'] : ''. "]" . $saler['salername'] . "(" . $row['nickname'] . ")";
+                    }
+                    if (!empty($row['verifystoreid'])) {
+                        $row['storeinfo'] = pdo_fetchcolumn('select storename from ' . tablename('ewei_shop_merch_store') . ' where id=:storeid limit 1 ', array(':storeid' => $row['verifystoreid']));
+                    }
+
+                    //核销
+                    if ($row['isverify']) {
+                        if (is_array($verifyinfo)) {
+                            if (empty($row['dispatchtype']))
+                            {
+                                $v = $verifyinfo[0];
+                                if ($v['verified'] || $row['verifytype']==1) {
+                                    $v['storename'] = pdo_fetchcolumn('select storename from ' . tablename('ewei_shop_merch_store') . " where id=:id limit 1", array(':id' => $v['verifystoreid']));
+                                    if (empty($v['storename'])) {
+                                        $v['storename'] = "总店";
                                     }
+                                    $row['storeinfo'] = $v['storename'];
+                                    //readytodo
+                                    $v['nickname'] = pdo_fetchcolumn('select nickname from ' . tablename('ewei_shop_member') . " where openid=:openid and uniacid=:uniacid limit 1", array(':openid' => $v['verifyopenid'], ':uniacid' => $_W['uniacid']));
+                                    $v['salername'] = pdo_fetchcolumn('select salername from ' . tablename('ewei_shop_merch_saler') . " where openid=:openid and uniacid=:uniacid and merchid = :merchid limit 1", array(':openid' => $v['verifyopenid'], ':uniacid' => $_W['uniacid'], ':merchid' => $_W['merchid']));
+                                    $row['salerinfo'] = $v['salername'] . "(" . $v['nickname'] . ")";
                                 }
+                                unset($v);
                             }
+
                         }
                     }
                 }
-    
-                if (!empty($row['verifystoreid']) && $row['verifytype'] == 0) {
-                    $row['storeinfo'] = "[".pdo_fetchcolumn('select storename from ' . tablename('ewei_shop_merch_store') . ' where id=:storeid limit 1 ', array(':storeid' => $row['verifystoreid']))."]";
-                }
-                
-                
                 if (p('diyform')  && !empty($row['diyformfields']) && !empty($row['diyformdata'])) {
                     $diyformdata_array = p('diyform')->getDatas(iunserializer($row['diyformfields']), iunserializer($row['diyformdata']));
                     $diyformdata = "";
@@ -679,8 +675,7 @@ class List_EweiShopV2Page extends MerchWebPage {
             $t = pdo_fetch(
                 'SELECT count(DISTINCT(o.id)) as count,sum(o.price) as sumprice FROM ' . tablename('ewei_shop_order') . " o "
                 . " left join " . tablename('ewei_shop_order_refund') . " r on r.id =o.refundid "
-                . " left join " . tablename('ewei_shop_verifyorder_log') . " vol on vol.orderid=o.id "
-                . " left join " . tablename('ewei_shop_merch_saler') . " s on (s.openid = o.verifyopenid or s.id=vol.salerid) and s.uniacid=o.uniacid and s.merchid=o.merchid"
+                . " left join " . tablename('ewei_shop_merch_saler') . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid and s.merchid=o.merchid"
                 . " left join " . tablename('ewei_shop_member') . " sm on sm.openid = s.openid and sm.uniacid=s.uniacid"
                 . " $sqlcondition WHERE $condition $statuscondition", $paras);
             $total = $t['count'];

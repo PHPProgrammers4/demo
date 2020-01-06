@@ -1,5 +1,4 @@
 <?php
-//dezend by http://www.yunlu99.com/
 class Favorite_EweiShopV2Page extends PluginMobileLoginPage
 {
 	public function get_list()

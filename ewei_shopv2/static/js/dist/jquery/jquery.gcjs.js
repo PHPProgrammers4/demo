@@ -71,7 +71,7 @@ jQuery.extend({
     },
     isMobile: function(str) {
         if(str != undefined){
-            str = str.replace(/\D/g,""); /* 替换手机号中的空格*/
+          str = str.replace(/\D/g,""); /* 替换手机号中的空格*/
         }
         return $.trim(str) !== '' && /^[1][3-9]\d{9}$|^([6|9])\d{7}$|^[0][9]\d{8}$|^[6]([8|6])\d{5}$/.test(str);
     },
@@ -79,7 +79,7 @@ jQuery.extend({
         return $.trim(str) != '' & !/[^\u4e00-\u9fa5]/.test($.trim(str));
     },
     isEnglish:function(str){
-        return $.trim(str) != '' & !/[^a-zA-Z]/.test($.trim(str));
+       return $.trim(str) != '' & !/[^a-zA-Z]/.test($.trim(str));
     },
     isPassword: function(str) {
         return  /^[^\u4e00-\u9fa5\s]{6,20}$/.test($.trim(str));
@@ -88,7 +88,7 @@ jQuery.extend({
         return /^(\+|-)?\d+($|\.\d+$)/.test($.trim(str));
     },
     isNumber: function(str) {
-        return !$.isEmpty(str) && !isNaN(str);
+        return !$.isEmpty(str) && !isNaN(str); 
     },
     isIP: function(str) {
         if (/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.test($.trim(str))) {
@@ -296,34 +296,34 @@ jQuery.extend({
     }
 })(jQuery);
 (function($){
-
+    
     $.fn.resizeImage = function(iwidth,iheight){
-
+        
         var w = $(this).width() ;
         var h =  $(this).height() ;
         var _img = new Image();
         _img.src = $(this).attr("src");
         if(_img.width > _img.height)
         {
-            h = (_img.height / _img.width) *w;
+           h = (_img.height / _img.width) *w;
             w = (_img.width > iwidth) ? iwidth : _img.width;
-
+           
         }
         else if(_img.width < _img.height)
         {
-            w= (_img.width / _img.height) * h ;
-            h= (_img.height > iheight) ? iheight : _img.height;
-
+           w= (_img.width / _img.height) * h ;
+           h= (_img.height > iheight) ? iheight : _img.height;
+           
         }
         else
         {
-            h = (_img.height > iheight) ? iheight : _img.height;
-            w= (_img.width > iwidth) ? iwidth : _img.width;
+          h = (_img.height > iheight) ? iheight : _img.height;
+          w= (_img.width > iwidth) ? iwidth : _img.width;
         }
         $(this).css({width: w+ "px",height:h+"px"});
     }
-
-
+       
+    
 })(jQuery);
 (function($) {
 
@@ -378,13 +378,13 @@ jQuery.extend({
     $.fn.limitLength = function(num, inputID,isInput) {
 
         var textarea = $(this);
-
+         
         var input = null;
         if (inputID) {
             input = $("#" + inputID);
         }
         if (input) {
-            isInput?input.val(num - textarea.len()):input.html(num - textarea.len());
+          isInput?input.val(num - textarea.len()):input.html(num - textarea.len());
         }
         function limit(textarea, num) {
             if (textarea.len() >= num) {
@@ -392,7 +392,7 @@ jQuery.extend({
             }
             else {
                 if (input) {
-                    isInput?input.val(num - textarea.len()):input.html(num - textarea.len());
+                   isInput?input.val(num - textarea.len()):input.html(num - textarea.len());
                 }
             }
         }
@@ -411,163 +411,163 @@ jQuery.extend({
     }
 })(jQuery);
 var GC = {
-        addFavorite: function(url, text) //收藏夹
-        {
-            if (document.all) {
-                window.external.addFavorite(url, text);
+    addFavorite: function(url, text) //收藏夹
+    {
+        if (document.all) {
+            window.external.addFavorite(url, text);
+        }
+        else if (window.sidebar) {
+            window.sidebar.addPanel(text, url, "");
+        }
+    },
+        
+    holder: function(objid){
+          
+          var _this = $("#" + objid);
+          var placeholder = _this.attr("holder");
+          if($.trim(_this.val())==""){
+                  _this.addClass("placeholder");
+                  _this.val(placeholder);
+          }
+          _this.focus(function(){
+              if($.trim(_this.val())==placeholder){
+                  _this.removeClass("placeholder");
+                  _this.val("");
+              }
+           }).blur(function(){ 
+              if($.trim(_this.val())==""){
+                  _this.addClass("placeholder");
+                  _this.val(placeholder);
+              }
+           });
+    },
+        
+    setHomePage: function(obj, vrl) //首页
+    {
+        if (confirm('确认要将' + vrl + '设置为首页?')) {
+            try {
+                obj.style.behavior = 'url(#default#homepage)';
+                obj.setHomePage(vrl);
             }
-            else if (window.sidebar) {
-                window.sidebar.addPanel(text, url, "");
-            }
-        },
-
-        holder: function(objid){
-
-            var _this = $("#" + objid);
-            var placeholder = _this.attr("holder");
-            if($.trim(_this.val())==""){
-                _this.addClass("placeholder");
-                _this.val(placeholder);
-            }
-            _this.focus(function(){
-                if($.trim(_this.val())==placeholder){
-                    _this.removeClass("placeholder");
-                    _this.val("");
-                }
-            }).blur(function(){
-                if($.trim(_this.val())==""){
-                    _this.addClass("placeholder");
-                    _this.val(placeholder);
-                }
-            });
-        },
-
-        setHomePage: function(obj, vrl) //首页
-        {
-            if (confirm('确认要将' + vrl + '设置为首页?')) {
-                try {
-                    obj.style.behavior = 'url(#default#homepage)';
-                    obj.setHomePage(vrl);
-                }
-                catch (e) {
-                    if (window.netscape) {
-                        try {
-                            netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
-                        }
-                        catch (e) {
-                            alert("此操作被浏览器拒绝！\n请在浏览器地址栏填写“about:config”并回车\n然后将[signed.applets.codebase_principal_support]设置为'true'");
-                        }
-                        var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefBranch);
-                        prefs.setCharPref('browser.startup.homepage', vrl);
+            catch (e) {
+                if (window.netscape) {
+                    try {
+                        netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
                     }
+                    catch (e) {
+                        alert("此操作被浏览器拒绝！\n请在浏览器地址栏填写“about:config”并回车\n然后将[signed.applets.codebase_principal_support]设置为'true'");
+                    }
+                    var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefBranch);
+                    prefs.setCharPref('browser.startup.homepage', vrl);
                 }
             }
-        },
-        undefined: function(variable) {
-            return typeof variable == 'undefined' ? true : false;
-        },
-        form: function(formid) {
-            if (formid == null || formid == undefined)
-            {
-                return document.forms[0];
-            }
-            else {
-                return document.forms[formid];
-            }
-        },
-        openWindow : function(url){
-            var a = document.createElement("a");
+        }
+    },
+    undefined: function(variable) {
+        return typeof variable == 'undefined' ? true : false;
+    },
+    form: function(formid) {
+        if (formid == null || formid == undefined)
+        {
+            return document.forms[0];
+        }
+        else {
+            return document.forms[formid];
+        }
+    },
+    openWindow : function(url){
+        var a = document.createElement("a");
             a.setAttribute("href", url);
             a.setAttribute("target", "_blank");
             a.setAttribute("id", "openwin");
             document.body.appendChild(a);
             a.click();
-        },
-        getElementsByName: function(name) {
-            var ret = [];
-            var elements = document.getElementsByTagName("input");
+    },
+    getElementsByName: function(name) {
+        var ret = [];
+        var elements = document.getElementsByTagName("input");
 
-            for (var i = 0; i < elements.length; i++) {
-                if (elements[i].name == name) {
-                    ret.push(elements[i]);
-                }
+        for (var i = 0; i < elements.length; i++) {
+            if (elements[i].name == name) {
+                ret.push(elements[i]);
             }
-            return ret;
-        },
-        checkAll: function(ischecked, formid) {
+        }
+        return ret;
+    },
+    checkAll: function(ischecked, formid) {
 
-            if (formid) {
-                $("#" + formid + " input[type='checkbox']").attr("checked", ischecked);
-            } else {
-                $("input[type='checkbox']").attr("checked", ischecked);
+        if (formid) {
+            $("#" + formid + " input[type='checkbox']").attr("checked", ischecked);
+        } else {
+            $("input[type='checkbox']").attr("checked", ischecked);
+        }
+
+    },
+    selectedCount: function(formid) {
+        var chks = null;
+        var n = 0;
+        if (formid) {
+            chks = $("#" + formid + " input[type='checkbox']");
+        } else {
+            chks = $("input[type='checkbox']");
+        }
+        chks.each(function() {
+            if ($(this).get(0).checked) {
+                n++;
             }
+        });
+        return n;
+    },
+    selecteds: function(formid) {
+        var ids = "";
+        var chks = null;
 
-        },
-        selectedCount: function(formid) {
-            var chks = null;
-            var n = 0;
-            if (formid) {
-                chks = $("#" + formid + " input[type='checkbox']");
-            } else {
-                chks = $("input[type='checkbox']");
-            }
-            chks.each(function() {
-                if ($(this).get(0).checked) {
-                    n++;
-                }
-            });
-            return n;
-        },
-        selecteds: function(formid) {
-            var ids = "";
-            var chks = null;
-
-            if (formid) {
-                chks = $("#" + formid + " input[type='checkbox']");
-            } else {
-                chks = $("input[type='checkbox']");
-            }
-            chks.each(function() {
-                if ($(this).get(0).checked) {
-                    if (ids != "") {
-                        ids += ",";
-                    }
-                    ids += $(this).val();
-                }
-            });
-            return ids;
-
-        },
-        allids: function(formid) {
-            var ids = "";
-            var chks = null;
-
-            if (formid) {
-                chks = $("#" + formid + " input[type='checkbox']");
-            } else {
-                chks = $("input[type='checkbox']");
-            }
-            chks.each(function() {
-
+        if (formid) {
+            chks = $("#" + formid + " input[type='checkbox']");
+        } else {
+            chks = $("input[type='checkbox']");
+        }
+        chks.each(function() {
+            if ($(this).get(0).checked) {
                 if (ids != "") {
                     ids += ",";
                 }
                 ids += $(this).val();
-
-            });
-            return ids;
-
-        },
-        uncheckAll: function(formid) {
-            if (formid) {
-                $("#" + formid + " input[type='checkbox']").attr("checked", false);
-            } else {
-                $("input[type='checkbox']").attr("checked", false);
             }
+        });
+        return ids;
 
+    },
+    allids: function(formid) {
+        var ids = "";
+        var chks = null;
 
+        if (formid) {
+            chks = $("#" + formid + " input[type='checkbox']");
+        } else {
+            chks = $("input[type='checkbox']");
         }
+        chks.each(function() {
+
+            if (ids != "") {
+                ids += ",";
+            }
+            ids += $(this).val();
+
+        });
+        return ids;
+
+    },
+    uncheckAll: function(formid) {
+        if (formid) {
+            $("#" + formid + " input[type='checkbox']").attr("checked", false);
+        } else {
+            $("input[type='checkbox']").attr("checked", false);
+        }
+
+
     }
+}
 
 
 
@@ -593,7 +593,7 @@ var GC = {
 
                     var defaultColor = $(_this).css('color');
                     if (!options.isUseSpan) {
-
+                
                         $(_this).focus(function() {
                             var pattern = new RegExp("^" + defaultValue + "$|^$");
                             pattern.test($(_this).val()) && $(_this).val('').css('color', defaultColor);
@@ -616,8 +616,8 @@ var GC = {
                             'line-height': _this.nodeName.toLowerCase() == 'textarea' ? $(_this).css('line-weight') : $(_this).outerHeight() + 'px',
                             'padding-top': _this.nodeName.toLowerCase() == 'textarea' ? parseInt($(_this).css('padding-top')) + 2 : 0,
                             "left":$(_this).position().left + "px",
-                            "top":$(_this).position().top + "px"
-
+                            "top":$(_this).position().top + "px" 
+                    
                         });
                         $(_this).before($imitate.click(function() {
                             $(_this).trigger('focus');
@@ -656,47 +656,47 @@ var GC = {
                 debug: false,
                 maxlength:10
             }, options);
-
+           
             $(this).each(function() {
-                var _input =$(this);
-                var _div = $("#" + $(this).attr("id") + "_div");
-                var _ul =  $("#" + $(this).attr("id") + "_ul");
-                _div.mouseenter(function(){
-                    _ul.show();
-                }).mouseleave(function(){
-                    _ul.hide();
-                });
-                var txt = "";
-                var val = _input.val();
-
-                $("li",_ul).each(function(){
-
+                 var _input =$(this);
+                 var _div = $("#" + $(this).attr("id") + "_div");
+                 var _ul =  $("#" + $(this).attr("id") + "_ul");
+                 _div.mouseenter(function(){
+                     _ul.show();
+                 }).mouseleave(function(){ 
+                     _ul.hide();
+                 });
+                 var txt = "";
+                 var val = _input.val();
+                 
+                 $("li",_ul).each(function(){
+                    
                     var item = $(this);
                     if(item.attr("val")==val){
-                        $("span",$(".selected",_div)).html( item.attr("text").substr(0,options.maxlength));
-                    }
-
-                    if( item.attr("haschild")=="true"){
-
-                        var _cul =   $("#" + _input.attr("id") + "_" + item.attr("val")+"_ul");
-                        item.mouseenter(function(){
+                       $("span",$(".selected",_div)).html( item.attr("text").substr(0,options.maxlength));
+                     }
+                     
+                     if( item.attr("haschild")=="true"){
+               
+                         var _cul =   $("#" + _input.attr("id") + "_" + item.attr("val")+"_ul");
+                            item.mouseenter(function(){
                             _cul.show();
-                        }).mouseleave(function(){
+                        }).mouseleave(function(){ 
                             _cul.hide();
                         });
-                    }
-                }).click(function(ev){
-                    var txt1 = $(this).attr("text");
-                    var val1 = $(this).attr("val");
-
-                    $("ul",_div).hide();
-                    _input.val( val1 );
-                    $("span",$(".selected",_div)).html(txt1.substr(0,options.maxlength));
-                    ev.stopPropagation();
-                });;
-
-
-
+                     }
+                 }).click(function(ev){
+                         var txt1 = $(this).attr("text");
+                         var val1 = $(this).attr("val");
+                        
+                        $("ul",_div).hide();
+                        _input.val( val1 );
+                        $("span",$(".selected",_div)).html(txt1.substr(0,options.maxlength));
+                        ev.stopPropagation();
+                     });;
+                 
+                 
+                
             });
             return this;
         }
